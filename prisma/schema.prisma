@@ -11,9 +11,9 @@ datasource db {
 model Category {
   id        Int      @id @default(autoincrement())
   name      String   @unique
-  foods     Food[]
   createAt  DateTime @default(now())
   updatedAt DateTime @updatedAt
+  foods     Food[]
 }
 
 model Food {
@@ -25,37 +25,37 @@ model Food {
   carbohydrates    Float?
   fiber            Float?
   sugar            Float?
-  category         Category?         @relation(fields: [categoryId], references: [id])
   categoryId       Int?
   createdAt        DateTime          @default(now())
   updateAt         DateTime          @updatedAt
   mealId           Int?
+  category         Category?         @relation(fields: [categoryId], references: [id])
   meal             Meal?             @relation(fields: [mealId], references: [id])
   foodServingUnits FoodServingUnit[]
-  servingUnit      ServingUnit[]
   mealFood         MealFood[]
+  servingUnit      ServingUnit[]
 }
 
 model ServingUnit {
   id              Int               @id @default(autoincrement())
   name            String            @unique
-  food            Food?             @relation(fields: [foodId], references: [id])
   foodId          Int?
   createdAt       DateTime          @default(now())
   updateAt        DateTime          @updatedAt
   FoodServingUnit FoodServingUnit[]
   mealFood        MealFood[]
+  food            Food?             @relation(fields: [foodId], references: [id])
 }
 
 model FoodServingUnit {
   id            Int         @id @default(autoincrement())
-  food          Food?       @relation(fields: [foodId], references: [id])
   foodId        Int
-  servingUnit   ServingUnit @relation(fields: [servingUnitId], references: [id])
   servingUnitId Int
   createdAt     DateTime    @default(now())
   updateAt      DateTime    @updatedAt
   grams         Float?
+  food          Food        @relation(fields: [foodId], references: [id])
+  servingUnit   ServingUnit @relation(fields: [servingUnitId], references: [id])
 }
 
 model User {
@@ -63,7 +63,7 @@ model User {
   name      String
   email     String   @unique
   password  String
-  role      Role     @default(USER)
+  role      String   @default("USER")
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
   meals     Meal[]
@@ -72,28 +72,23 @@ model User {
 model Meal {
   id        Int        @id @default(autoincrement())
   dateTime  DateTime
-  user      User?      @relation(fields: [userId], references: [id])
   userId    Int?
-  Food      Food[]
-  mealFoods MealFood[]
   createdAt DateTime   @default(now())
   updateAt  DateTime   @updatedAt
+  Food      Food[]
+  user      User?      @relation(fields: [userId], references: [id])
+  mealFoods MealFood[]
 }
 
 model MealFood {
   id            Int         @id @default(autoincrement())
-  food          Food        @relation(fields: [foodId], references: [id])
-  meal          Meal        @relation(fields: [mealId], references: [id])
   foodId        Int
   mealId        Int
   amount        Float
-  servingUnit   ServingUnit @relation(fields: [servingUnitId], references: [id])
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   servingUnitId Int
-}
-
-enum Role {
-  USER
-  ADMIN
+  food          Food        @relation(fields: [foodId], references: [id])
+  meal          Meal        @relation(fields: [mealId], references: [id])
+  servingUnit   ServingUnit @relation(fields: [servingUnitId], references: [id])
 }
