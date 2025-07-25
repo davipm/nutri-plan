@@ -38,11 +38,15 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 Set up DB
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx prisma init --datasource-provider postgresql --output ../generated/prisma
+# init
+npx prisma migrate dev --name init
+# pull
+npx prisma db pull
+#generate
+npx prisma generate
+#seed
+npx prisma db seed
+#studio
+npx prisma studio
 ```

@@ -3,7 +3,9 @@
 import { ReactNode } from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
+import { AlertDialogProvider } from "@/providers/alert-dialog-provider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +36,7 @@ export function Providers({ children }: Props) {
       <QueryClientProvider client={queryClient}>
         <NextThemesProvider>{children}</NextThemesProvider>
         <Toaster />
+        <AlertDialogProvider />
       </QueryClientProvider>
     </NextThemesProvider>
   );

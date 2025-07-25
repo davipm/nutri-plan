@@ -92,3 +92,8 @@ model MealFood {
   meal          Meal        @relation(fields: [mealId], references: [id])
   servingUnit   ServingUnit @relation(fields: [servingUnitId], references: [id])
 }
+
+enum Role {
+  USER
+  ADMIN
+}
