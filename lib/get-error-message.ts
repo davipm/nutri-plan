@@ -68,25 +68,14 @@ const PRISMA_ERROR_CODES = new Map<string, string>([
 export const getErrorMessage = (error: unknown) => {
   if (error instanceof AuthError) {
     return "Wrong credentials or the user did not found.";
-  } else if (error instanceof ZodError) {
-    const message = fromError(error);
-    if (message) {
-      return message.toString();
-    }
+  }
+
+  if (error instanceof ZodError) {
+    return handleZodError(error);
   }
 
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    const errorCode = error.code;
-    const message = PRISMA_ERROR_CODES.get(errorCode);
-
-    if (message) {
-      return message;
-    }
-
-    if (errorCode === "P2002") {
-      const field = (error.meta?.target as string[])?.[0] || "field";
-      return `A record with this ${field} already exists.`;
-    }
+    return handlePrismaKnownError(error);
   }
 
   if (error instanceof Prisma.PrismaClientValidationError) {
@@ -98,4 +87,31 @@ export const getErrorMessage = (error: unknown) => {
   }
 
   return "An unexpected error occurred.";
+};
+
+const handleZodError = (error: ZodError) => {
+  const message = fromError(error);
+  return message ? message.toString() : "Validation error occurred.";
+};
+
+type PrismaError = Prisma.PrismaClientKnownRequestError;
+
+const handlePrismaKnownError = (error: PrismaError) => {
+  const errorCode = error.code;
+  const mappedMessage = PRISMA_ERROR_CODES.get(errorCode);
+
+  if (mappedMessage) {
+    return mappedMessage;
+  }
+
+  if (errorCode === "P2002") {
+    return handleDuplicateRecordError(error);
+  }
+
+  return "A database error occurred.";
+};
+
+const handleDuplicateRecordError = (error: PrismaError) => {
+  const field = (error.meta?.target as string[])?.[0] || "field";
+  return `A record with this ${field} already exists.`;
 };
