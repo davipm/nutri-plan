@@ -13,17 +13,22 @@ import {
 export function AlertDialogProvider() {
   const { alertOpen, updateAlertOpen, alertConfig } = useGlobalStore();
 
+  const {
+    title = "Confirmation Required",
+    description = "Are you sure you want to perform this action?",
+    confirmLabel = "Continue",
+    cancelLabel = "Cancel",
+    onConfirm,
+    onCancel,
+  } = alertConfig || {};
+
   const handleConfirm = () => {
-    if (alertConfig?.onConfirm) {
-      alertConfig.onConfirm();
-    }
+    onConfirm?.();
     updateAlertOpen(false);
   };
 
   const handleCancel = () => {
-    if (alertConfig?.onCancel) {
-      alertConfig.onCancel();
-    }
+    onCancel?.();
     updateAlertOpen(false);
   };
 
@@ -33,20 +38,15 @@ export function AlertDialogProvider() {
     <AlertDialog open={alertOpen} onOpenChange={updateAlertOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            {alertConfig?.title || "Confirmation Required"}
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            {alertConfig?.description ||
-              "Are you sure you want to perform this action?"}
-          </AlertDialogDescription>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogAction onClick={handleConfirm}>
-            {alertConfig?.confirmLabel || "Continue"}
+            {confirmLabel}
           </AlertDialogAction>
           <AlertDialogCancel onClick={handleCancel}>
-            {alertConfig?.confirmLabel || "Cancel"}
+            {cancelLabel}
           </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
