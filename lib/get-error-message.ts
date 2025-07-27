@@ -60,7 +60,7 @@ const PRISMA_ERROR_CODES = new Map<string, string>([
  * - AuthError: Indicates authentication failure or missing users and provides a predefined message.
  * - ZodError: Extracts and returns the validation error message if available.
  * - PrismaClientKnownRequestError: Uses a mapping of Prisma error codes to return appropriate messages,
- *   with special handling for duplicate record errors (e.g., `P2002` with meta information).
+ *   with special handling for duplicate record errors (e.g., `P2002` with meta-information).
  * - PrismaClientValidationError: Returns a predefined message for invalid data errors.
  * - Native JavaScript `Error`: Returns the error's message property.
  * - Fallback case: Provides a generic error message for unknown or unexpected errors.

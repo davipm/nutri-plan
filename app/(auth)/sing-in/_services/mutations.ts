@@ -26,14 +26,15 @@ export const singIn = async (data: SingInSchema) => {
 };
 
 /**
- * singOut
+ * Asynchronous function to sign out a user.
  *
- * Executes the user sign-out process by calling the designated
- * authentication sign-out function.
+ * Executes the `authSingOut` action through a generic action executor utility.
+ * This handles the user sign-out process and triggers any necessary authentication cleanup.
  *
+ * @returns {Promise<void>} A promise that resolves when the sign-out process is complete.
  */
-export const singOut = () => {
-  return executeAction({
+export const singOut = async (): Promise<void> => {
+  return await executeAction({
     actionFn: authSingOut,
   });
 };

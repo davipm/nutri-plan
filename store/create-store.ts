@@ -19,7 +19,7 @@ type ConfigType<T> = {
  * like `name`, `storage`, `skipPersist`, and `excludeFromPersist`.
  * @returns A Zustand store hook for the created store.
  */
-const createStore = <T extends object>(
+export const createStore = <T extends object>(
   storeCreator: StateCreator<T, [["zustand/immer", never]], []>,
   config?: ConfigType<T>,
 ) => {
@@ -49,5 +49,3 @@ const createStore = <T extends object>(
     }),
   );
 };
-
-export { createStore };

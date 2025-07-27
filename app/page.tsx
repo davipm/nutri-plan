@@ -18,7 +18,7 @@ export default function Home() {
             <Link href="/sing-in">
               <Button
                 size="lg"
-                className="px-8 py-6 text-lg font-medium hover:cursor-pointer"
+                className="bg-primary px-8 py-6 text-lg font-medium hover:cursor-pointer"
               >
                 Get Started
               </Button>
