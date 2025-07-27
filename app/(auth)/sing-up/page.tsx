@@ -1,15 +1,10 @@
-"use client";
-
-import {useState} from "react";
-
-// import { Container } from "./styles";
+import Link from "next/link";
 
 export default function Page() {
-  const [item, setItem] = useState(null);
-
   return (
     <div>
-      <p>Page</p>
+      <h1>Home</h1>
+      <Link href="/about">About</Link>
     </div>
-  )
+  );
 }
