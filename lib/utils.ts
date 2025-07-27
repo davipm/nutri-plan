@@ -47,7 +47,7 @@ export const toNumberSafe = (value: unknown): number => {
  * @param {string} password - The plain text password to be hashed.
  * @returns {Promise<string>} A promise that resolves to the hashed password.
  */
-export const hashPassword = async (password: string) => {
+export const hashPassword = async (password: string): Promise<string> => {
   const salt = await bcrypt.genSalt(10);
   return bcrypt.hash(password, salt);
 };

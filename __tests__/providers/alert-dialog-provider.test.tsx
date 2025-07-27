@@ -106,7 +106,7 @@ describe("AlertDialogProvider", () => {
   it("Closes the dialog without error when `onConfirm` or `onCancel` callbacks are not provided.", async () => {
     const user = userEvent.setup();
 
-    // Test confirm without callback
+    // Test confirm without a callback
     useGlobalStore.setState({
       alertOpen: true,
       alertConfig: {},
