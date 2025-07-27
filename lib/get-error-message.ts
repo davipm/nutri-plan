@@ -89,14 +89,32 @@ export const getErrorMessage = (error: unknown) => {
   return "An unexpected error occurred.";
 };
 
-const handleZodError = (error: ZodError) => {
+/**
+ * Processes a ZodError and extracts an error message.
+ *
+ * The `handleZodError` function takes a `ZodError` instance as input,
+ * attempts to extract a message from it using the `fromError` utility,
+ * and returns the error message as a string. If no message is extracted,
+ * a default validation error message is returned.
+ *
+ * @function
+ * @param {ZodError} error - The ZodError object to be handled.
+ * @returns {string} A string that represents the extracted error message or a default validation error message.
+ */
+const handleZodError = (error: ZodError): string => {
   const message = fromError(error);
   return message ? message.toString() : "Validation error occurred.";
 };
 
 type PrismaError = Prisma.PrismaClientKnownRequestError;
 
-const handlePrismaKnownError = (error: PrismaError) => {
+/**
+ * Handles known Prisma errors by mapping them to user-friendly messages or performing specific logic.
+ *
+ * @param {PrismaError} error - The error object thrown by Prisma, containing error details such as the code.
+ * @returns {string} A message describing the error in a user-friendly manner, or a default message for unknown errors.
+ */
+const handlePrismaKnownError = (error: PrismaError): string => {
   const errorCode = error.code;
   const mappedMessage = PRISMA_ERROR_CODES.get(errorCode);
 
@@ -111,7 +129,20 @@ const handlePrismaKnownError = (error: PrismaError) => {
   return "A database error occurred.";
 };
 
-const handleDuplicateRecordError = (error: PrismaError) => {
+/**
+ * Handles errors related to duplicate records in the database.
+ *
+ * This function is designed to process errors caused by unique constraint violations
+ * within a database, typically thrown by the Prisma client. It extracts the specific
+ * database field causing the violation (if available) and returns a user-friendly
+ * error message.
+ *
+ * @param {PrismaError} error - The error object originating from the Prisma client
+ *                              that indicates a unique constraint violation.
+ * @returns {string} A formatted error message indicating which field is causing
+ *                   the duplication error.
+ */
+const handleDuplicateRecordError = (error: PrismaError): string => {
   const field = (error.meta?.target as string[])?.[0] || "field";
   return `A record with this ${field} already exists.`;
 };
