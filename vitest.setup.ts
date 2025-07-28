@@ -59,3 +59,26 @@ vi.mock("@prisma/client", async () => {
     },
   };
 });
+
+// Mock next-auth
+vi.mock("next-auth", () => ({
+  default: () => ({
+    handlers: { GET: vi.fn(), POST: vi.fn() },
+    auth: vi.fn(),
+    signIn: vi.fn(),
+    signOut: vi.fn(),
+  }),
+}));
+
+// Mock next-auth/providers/credentials
+vi.mock("next-auth/providers/credentials", () => ({
+  default: vi.fn(),
+}));
+
+// Mock next/server if needed
+vi.mock("next/server", () => ({
+  NextResponse: {
+    json: vi.fn((data) => ({ json: () => Promise.resolve(data) })),
+    redirect: vi.fn((url) => ({ url })),
+  },
+}));
