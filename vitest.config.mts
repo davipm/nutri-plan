@@ -8,13 +8,5 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
     globals: true,
-    exclude: [
-      "prisma/**", // Excludes all files within the 'src/utils' directory
-      "generated/**", // Excludes a specific file
-      "node_modules/**",
-      "components/ui/**",
-      "next.config.ts",
-      "postcss.config.mjs",
-    ],
   },
 });
