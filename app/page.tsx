@@ -32,7 +32,8 @@ export default function Home() {
             alt="Meal planning illustration"
             width={500}
             height={400}
-            className="rounded-xl shadow-lg"
+            className="h-auto w-full rounded-xl shadow-lg"
+            priority
           />
         </div>
       </div>
