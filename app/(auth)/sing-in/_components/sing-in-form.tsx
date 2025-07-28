@@ -13,6 +13,10 @@ import { useSingIn } from "@/app/(auth)/sing-in/_services/use-mutations";
 import { ControlledInput } from "@/components/controlled-input";
 import { Button } from "@/components/ui/button";
 
+/**
+ * SingInForm is a React functional component that renders a sign-in form allowing users to authenticate with their email and password.
+ * It integrates with a form state management library and performs form validation and submission using Zod schemas. Upon successful submission, it triggers a sign-in mutation to handle the authentication logic.
+ */
 export function SingInForm() {
   const form = useForm<SingInSchema>({
     defaultValues: singInDefaultValues,
