@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { Loader2Icon } from "lucide-react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -8,6 +10,8 @@ import {
   SingInSchema,
 } from "@/app/(auth)/sing-in/_types/sing-in-schema";
 import { useSingIn } from "@/app/(auth)/sing-in/_services/use-mutations";
+import { ControlledInput } from "@/components/controlled-input";
+import { Button } from "@/components/ui/button";
 
 export function SingInForm() {
   const form = useForm<SingInSchema>({
@@ -17,7 +21,7 @@ export function SingInForm() {
 
   const singInMutation = useSingIn();
 
-  const onSubmit = (data: SingInSchema) => {
+  const onSubmit: SubmitHandler<SingInSchema> = (data: SingInSchema) => {
     singInMutation.mutate(data);
   };
 
@@ -34,7 +38,29 @@ export function SingInForm() {
           </p>
         </div>
 
-        <div className="space-y-3">{/* TODO: Inputs */}</div>
+        <div className="space-y-3">
+          <ControlledInput<SingInSchema> name="email" label="Email" />
+          <ControlledInput<SingInSchema>
+            name="password"
+            label="Password"
+            type="password"
+          />
+        </div>
+
+        <Button className="w-full" disabled={singInMutation.isPending}>
+          {singInMutation.isPending && <Loader2Icon className="animate-spin" />}
+          Sing in
+        </Button>
+
+        <div className="text-center text-sm">
+          Don&apos;t have an account?
+          <Link
+            href="/sing-up"
+            className="text-primary ml-1 font-medium hover:underline"
+          >
+            Sign up
+          </Link>
+        </div>
       </form>
     </FormProvider>
   );
