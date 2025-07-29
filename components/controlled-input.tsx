@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 type InputProps<T extends FieldValues> = {
   name: Path<T>;
   label?: string;
+  required?: boolean;
   containerClassName?: string;
 } & ComponentProps<"input">;
 
@@ -24,7 +25,7 @@ export function ControlledInput<T extends FieldValues>({
 
   return (
     <div className={cn("w-full", containerClassName)}>
-      {!!label && (
+      {label && (
         <Label className="mb-2" htmlFor={name}>
           {label}
         </Label>
@@ -44,7 +45,7 @@ export function ControlledInput<T extends FieldValues>({
               {...field}
               {...props}
             />
-            {!!error && (
+            {error && (
               <p className="text-destructive text-sm">{error.message}</p>
             )}
           </>

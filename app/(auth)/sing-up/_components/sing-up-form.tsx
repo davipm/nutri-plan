@@ -21,12 +21,12 @@ import Link from "next/link";
  * and performs the sign-up operation when the form is submitted.
  */
 export function SingUpForm() {
+  const signUpMutation = useSingUp();
+
   const form = useForm<SingUpSchema>({
     defaultValues: singUpDefaultValues,
     resolver: zodResolver(singUpSchema),
   });
-
-  const signUpMutation = useSingUp();
 
   const onSubmit: SubmitHandler<SingUpSchema> = (data) => {
     signUpMutation.mutate(data);

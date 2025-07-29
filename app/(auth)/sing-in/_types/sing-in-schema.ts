@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 const singInSchema = z.object({
-  email: z.string(),
-  password: z.string(),
+  email: z.string().min(1, "Email is required."),
+  password: z.string().min(1, "Password is required."),
 });
 
 type SingInSchema = z.infer<typeof singInSchema>;

@@ -25,7 +25,7 @@ export default async function Page() {
   }
 
   return (
-    <div>
+    <div className="flex min-h-screen items-center justify-center">
       <SingUpForm />
     </div>
   );

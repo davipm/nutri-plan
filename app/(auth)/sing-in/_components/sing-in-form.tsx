@@ -18,12 +18,12 @@ import { Button } from "@/components/ui/button";
  * It integrates with a form state management library and performs form validation and submission using Zod schemas. Upon successful submission, it triggers a sign-in mutation to handle the authentication logic.
  */
 export function SingInForm() {
+  const singInMutation = useSingIn();
+
   const form = useForm<SingInSchema>({
     defaultValues: singInDefaultValues,
     resolver: zodResolver(singInSchema),
   });
-
-  const singInMutation = useSingIn();
 
   const onSubmit: SubmitHandler<SingInSchema> = (data: SingInSchema) => {
     singInMutation.mutate(data);

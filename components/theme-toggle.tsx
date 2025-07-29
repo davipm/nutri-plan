@@ -4,8 +4,12 @@ import { useState } from "react";
 
 // import { Container } from "./styles";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export function ThemeToggle() {
   const [item, setItem] = useState(null);
 
-  return <div>{children}</div>;
+  return (
+    <div>
+      <p>ThemeToggle</p>
+    </div>
+  );
 }
