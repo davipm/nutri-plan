@@ -6,14 +6,12 @@ import { singUp } from "@/app/(auth)/sing-up/_services/mutations";
 
 /**
  * useSingUp is a custom hook that provides a mutation handler for signing up a user.
- * It utilizes `useMutation` to handle the signup process and handle side effects upon success.
+ * It uses `useMutation` to handle the signup process and handle side effects upon success.
  *
  * On a successful signup, the function displays a success toast message
  * and redirects the user to the sign-in page.
- *
- * @returns {Object} An object containing properties and methods for performing the signup mutation.
  */
-export const useSingUp = (): object => {
+export const useSingUp = () => {
   const router = useRouter();
 
   return useMutation({

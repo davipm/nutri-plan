@@ -7,7 +7,7 @@ import prisma from "@/lib/prisma";
 declare module "next-auth" {
   interface User {
     name?: string | null;
-    role?: unknown;
+    role?: string | null;
   }
 }
 
@@ -16,7 +16,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     name?: string | null;
-    role?: unknown;
+    role?: string | null;
   }
 }
 
@@ -85,6 +85,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     jwt({ token, user }) {
       const clonedToken = token;
+
       if (user) {
         clonedToken.id = toNumberSafe(user.id);
         clonedToken.name = user.name;
@@ -93,13 +94,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return clonedToken;
     },
     session({ session, token }) {
-      if (session.user) {
-        session.user.id = toStringSafe(token.id);
-        session.user.name = token.name;
-        session.user.role = token.role;
+      const clonedSession = session;
+
+      if (clonedSession.user) {
+        clonedSession.user.id = toStringSafe(token.id);
+        clonedSession.user.name = token.name;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        clonedSession.user.role = token.role;
       }
 
-      return session;
+      return clonedSession;
     },
   },
 });

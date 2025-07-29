@@ -27,9 +27,8 @@ export const useSingIn = () => {
  * It triggers the `singOut` function and redirects the user to the "/sing-in" route upon success.
  *
  * @function useSingOut
- * @returns {Object} An object containing mutation-related properties and methods, provided by the `useMutation` hook.
  */
-export const useSingOut = (): object => {
+export const useSingOut = () => {
   const router = useRouter();
 
   return useMutation({
