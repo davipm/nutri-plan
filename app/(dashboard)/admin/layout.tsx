@@ -9,7 +9,6 @@ import { Role } from "@/generated/prisma";
  *
  * @param {Object} props - The component's input props.
  * @param {ReactNode} props.children - React node elements to be rendered as children inside the layout.
- * @return {JSX.Element} Returns a JSX element containing the children wrapped in a responsive layout.
  * Redirects the user if there is no session or based on the user's role.
  */
 export default async function Layout({ children }: { children: ReactNode }) {
