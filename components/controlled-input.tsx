@@ -13,6 +13,17 @@ type InputProps<T extends FieldValues> = {
   containerClassName?: string;
 } & ComponentProps<"input">;
 
+/**
+ * A controlled input component that integrates with React Hook Form.
+ *
+ * @param {InputProps<T>} props - The properties for the controlled input component.
+ * @param {string} props.className - The custom styles to apply to the input field.
+ * @param {string} props.type - The type of the input field (e.g., text, email, password).
+ * @param {string} props.name - The name of the input field to be used in the form.
+ * @param {string} [props.label] - The label text associated with the input field.
+ * @param {string} [props.containerClassName] - The custom styles to apply to the container of the input field.
+ * @param {...any} props.props - Additional properties to spread on the input field.
+ */
 export function ControlledInput<T extends FieldValues>({
   className,
   type,

@@ -7,7 +7,6 @@ import { useSingOut } from "@/app/(auth)/sing-in/_services/use-mutations";
 import {
   ROUTE_GROUPS,
   Role,
-  RouteGroupType,
   RouterGroup,
 } from "@/app/(dashboard)/_components/router-group";
 import { Button } from "@/components/ui/button";
@@ -30,18 +29,41 @@ type Props = {
   session: Session;
 };
 
+/**
+ * DashboardLayout component that provides the main structure of the dashboard,
+ * including navigation, theme toggling, and user session management.
+ *
+ * @param {Object} props - The properties object.
+ * @param {React.ReactNode} props.children - Child components to render within the layout.
+ * @param {Object} props.session - The session object which contains user data.
+ * @param {Object} [props.session.user] - The user information within the session.
+ * @param {string} [props.session.user.name] - The name of the user.
+ * @param {string} [props.session.user.email] - The email of the user.
+ */
 export function DashboardLayout({ children, session }: Props) {
   const [open, setOpen] = useState(false);
   const signOutMutation = useSingOut();
   const userRole: Role = (session.user?.role as Role) || Role.USER;
 
-  const getFilteredRouteGroups = (): RouteGroupType[] => {
-    if (!userRole) return [];
+  // const getFilteredRouteGroups = (): RouteGroupType[] => {
+  //   if (!userRole) return [];
+  //
+  //   return ROUTE_GROUPS.filter((group) =>
+  //     group.allowedRoles.includes(userRole),
+  //   );
+  // };
 
-    return ROUTE_GROUPS.filter((group) =>
-      group.allowedRoles.includes(userRole),
-    );
-  };
+  /**
+   * Filters route groups based on the user's role.
+   *
+   * The `getFilteredRouteGroups` variable contains the result of filtering the `ROUTE_GROUPS` array.
+   * Each group is included in the filtered result if the `allowedRoles` of the group includes the specified `userRole`.
+   *
+   * @constant {Array} getFilteredRouteGroups - The array of route groups filtered based on the user's role.
+   */
+  const getFilteredRouteGroups = ROUTE_GROUPS.filter((group) =>
+    group.allowedRoles.includes(userRole),
+  );
 
   const handleSignOut = () => {
     signOutMutation.mutate();
@@ -125,7 +147,7 @@ export function DashboardLayout({ children, session }: Props) {
             <Separator className="my-2" />
 
             <div className="mt-4 flex flex-col">
-              {getFilteredRouteGroups().map((group) => (
+              {getFilteredRouteGroups.map((group) => (
                 <RouterGroup {...group} key={group.group} />
               ))}
             </div>
