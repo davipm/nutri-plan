@@ -1,15 +1,12 @@
-"use client";
-
-import { useState } from "react";
-
-// import { Container } from "./styles";
-
 export default function Page() {
-  const [item, setItem] = useState(null);
-
   return (
-    <div>
-      <p>Foods</p>
+    <div className="space-y-2">
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-3xl font-semibold">Foods List</h1>
+        {/* TODO: FoodFormDialog */}
+      </div>
+      {/* TODO: FoodFiltersDrawer */}
+      {/* TODO: FoodCards */}
     </div>
   );
 }

@@ -45,14 +45,6 @@ export function DashboardLayout({ children, session }: Props) {
   const signOutMutation = useSingOut();
   const userRole: Role = (session.user?.role as Role) || Role.USER;
 
-  // const getFilteredRouteGroups = (): RouteGroupType[] => {
-  //   if (!userRole) return [];
-  //
-  //   return ROUTE_GROUPS.filter((group) =>
-  //     group.allowedRoles.includes(userRole),
-  //   );
-  // };
-
   /**
    * Filters route groups based on the user's role.
    *

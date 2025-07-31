@@ -23,7 +23,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         href: item.href,
         icon: item.icon,
       }))
-      .filter((tab) => Boolean(tab.icon)) ?? []; // Type guard to ensure valid tabs
+      .filter((tab) => !!tab.icon) ?? [];
 
   /**
    * The defaultTab variable determines the initially selected tab based on the current pathname.
