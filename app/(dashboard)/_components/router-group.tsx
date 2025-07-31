@@ -3,7 +3,7 @@
 import Link from "next/link";
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { motion } from "framer-motion";
-import { ReactNode, useState } from "react";
+import { ComponentType, useState } from "react";
 import { Apple, Boxes, ChevronDown, Ruler, Utensils } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,8 @@ export enum Role {
 interface RouteItemType {
   href: string;
   label: string;
-  icon: ReactNode;
+  icon: ComponentType<{ className?: string }>;
+  value: string;
 }
 
 export interface RouteGroupType {
@@ -50,17 +51,20 @@ export const ROUTE_GROUPS: RouteGroupType[] = [
       {
         href: "/admin/foods-management/foods",
         label: "Foods",
-        icon: <Apple className="mr-2 size-3" />,
+        value: "foods",
+        icon: Apple,
       },
       {
         href: "/admin/foods-management/categories",
         label: "Categories",
-        icon: <Boxes className="mr-2 size-3" />,
+        value: "categories",
+        icon: Boxes,
       },
       {
         href: "/admin/foods-management/serving-units",
         label: "Serving Units",
-        icon: <Ruler className="mr-2 size-3" />,
+        value: "serving-units",
+        icon: Ruler,
       },
     ],
   },
@@ -71,7 +75,8 @@ export const ROUTE_GROUPS: RouteGroupType[] = [
       {
         href: "/client",
         label: "Meals",
-        icon: <Utensils className="mr-2 size-3" />,
+        value: "meals",
+        icon: Utensils,
       },
     ],
   },
@@ -112,27 +117,30 @@ export function RouterGroup({ group, items }: RouteGroupType) {
           animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
           className={cn("flex flex-col gap-2", !open && "pointer-events-none")}
         >
-          {items.map((item) => (
-            <Button
-              key={item.href}
-              variant="link"
-              asChild
-              className="w-full justify-start font-normal"
-            >
-              <Link
-                href={item.href}
-                className={cn(
-                  "flex items-center rounded-md px-5 py-1 transition-all",
-                  pathname === item.href
-                    ? "bg-foreground/10 hover:bg-foreground/5"
-                    : "hover:bg-foreground/10",
-                )}
+          {items.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Button
+                key={item.href}
+                variant="link"
+                asChild
+                className="w-full justify-start font-normal"
               >
-                {item.icon}
-                <span className="text-sm">{item.label}</span>
-              </Link>
-            </Button>
-          ))}
+                <Link
+                  href={item.href}
+                  className={cn(
+                    "flex items-center rounded-md px-5 py-1 transition-all",
+                    pathname === item.href
+                      ? "bg-foreground/10 hover:bg-foreground/5"
+                      : "hover:bg-foreground/10",
+                  )}
+                >
+                  <Icon className="mr-2 size-3" />
+                  <span className="text-sm">{item.label}</span>
+                </Link>
+              </Button>
+            );
+          })}
         </motion.div>
       </Collapsible.Content>
     </Collapsible.Root>
