@@ -3,7 +3,7 @@ import { createStore } from "@/store/create-store";
 import {
   foodFiltersDefaultValues,
   FoodFiltersSchema,
-} from "@/app/(dashboard)/admin/foods-management/foods/_types/FoodFilterSchema";
+} from "@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema";
 
 type State = {
   selectedFoodId: number | null;
