@@ -4,14 +4,19 @@ import {
   foodFiltersSchema,
   FoodFiltersSchema,
 } from "@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema";
+import { PaginateResult } from "@/types/paginate-result";
+import { FoodSchema } from "@/app/(dashboard)/admin/foods-management/foods/_types/food-schema";
+import { toStringSafe } from "@/lib/utils";
 
-type FoodWithServingUnit = Prisma.FoodGetPayload<{
+type FoodWithServingUnits = Prisma.FoodGetPayload<{
   include: {
     foodServingUnits: true;
   };
 }>;
 
-export const getFoods = async (filters: FoodFiltersSchema) => {
+export const getFoods = async (
+  filters: FoodFiltersSchema,
+): Promise<PaginateResult<FoodWithServingUnits>> => {
   const validatedFilters = foodFiltersSchema.parse(filters);
 
   const {
@@ -94,7 +99,7 @@ export const getFoods = async (filters: FoodFiltersSchema) => {
   };
 };
 
-export const getFood = async (id: number) => {
+export const getFood = async (id: number): Promise<FoodSchema | null> => {
   const res = await prisma.food.findFirst({
     where: { id },
     include: {
@@ -103,4 +108,22 @@ export const getFood = async (id: number) => {
   });
 
   if (!res) return null;
+
+  return {
+    id,
+    action: "update" as const,
+    name: toStringSafe(res.name),
+    calories: toStringSafe(res.calories),
+    carbohydrates: toStringSafe(res.carbohydrates),
+    fat: toStringSafe(res.fat),
+    fiber: toStringSafe(res.fiber),
+    protein: toStringSafe(res.protein),
+    sugar: toStringSafe(res.sugar),
+    categoryId: toStringSafe(res.categoryId),
+    foodServingUnits:
+      res.foodServingUnits.map((unit) => ({
+        foodServingUnitId: toStringSafe(unit.servingUnitId),
+        grams: toStringSafe(unit.grams),
+      })) ?? [],
+  };
 };
