@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+/**
+ * A custom Zod error map to provide user-friendly validation messages.
+ * It overrides default messages for common issues like invalid types,
+ * required fields, and size constraints for strings and numbers.
+ */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 const customErrorMap: z.ZodErrorMap = (issue, ctx) => {

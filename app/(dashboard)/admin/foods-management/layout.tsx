@@ -6,6 +6,15 @@ import { usePathname } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ROUTE_GROUPS } from "@/app/(dashboard)/_components/router-group";
 
+/**
+ * A layout component designed to render the main structure of the application,
+ * including a dynamic tab navigation system based on the current page context.
+ * It uses React children for content injection and handles route-based tab configuration dynamically.
+ *
+ * @param {object} props - The props required by the Layout component.
+ * @param {ReactNode} props.children - The content to be rendered within the layout.
+ * @return The rendered layout component, including dynamic tab navigation and the provided children.
+ */
 export default function Layout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 

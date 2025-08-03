@@ -25,6 +25,15 @@ type Props = {
   children: ReactNode;
 };
 
+/**
+ * A context provider component that wraps its children with necessary providers
+ * such as NextThemesProvider for theme management, QueryClientProvider for
+ * React Query, and other necessary UI utilities.
+ *
+ * @param {object} props - The property object.
+ * @param {React.ReactNode} props.children - The child components to be wrapped by the providers.
+ * @return The wrapped components with all applicable providers.
+ */
 export function Providers({ children }: Props) {
   return (
     <NextThemesProvider
