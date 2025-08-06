@@ -4,7 +4,7 @@ import { useState } from "react";
 
 // import { Container } from "./styles";
 
-export default function FoodCardsSkeleton() {
+export function FoodCardsSkeleton() {
   const [item, setItem] = useState(null);
 
   return (
