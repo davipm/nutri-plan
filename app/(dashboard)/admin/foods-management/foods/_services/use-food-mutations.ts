@@ -38,6 +38,17 @@ export const useCreateFood = () => {
   });
 };
 
+/**
+ * useUpdateFood is a custom hook that provides functionality to update food data.
+ * It uses the `useMutation` hook from react-query to handle the mutation operation
+ * and performs optimistic UI updates upon a successful mutation.
+ *
+ * The mutation function calls the `updateFood` API method with the provided food data.
+ * Upon successful mutation, it invalidates the "foods" query to refresh the related data.
+ * Additionally, it displays a success toast notification to indicate the update operation was successful.
+ *
+ * @returns An object with properties and methods specifically returned by the `useMutation` hook.
+ */
 export const useUpdateFood = () => {
   const queryClient = useQueryClient();
 
@@ -52,6 +63,17 @@ export const useUpdateFood = () => {
   });
 };
 
+/**
+ * A custom hook that provides the ability to delete a food item.
+ *
+ * This hook utilizes `useMutation` from React Query to handle the delete
+ * operation and ensures that the cache is updated upon successful deletion
+ * by invalidating the "foods" query. Additionally, it displays a success
+ * toast notification on successful deletion.
+ *
+ * @returns  An object containing mutation methods and state
+ *           for handling the food deletion process.
+ */
 export const useDeleteFood = () => {
   const queryClient = useQueryClient();
 
