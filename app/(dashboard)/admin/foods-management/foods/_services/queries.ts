@@ -16,23 +16,6 @@ type FoodWithServingUnits = Prisma.FoodGetPayload<{
 
 /**
  * Fetches a paginated list of foods based on the provided filter criteria.
- *
- * @param {FoodFiltersSchema} filters - An object containing filter and pagination options.
- *   - `searchTerm` {string} - A string to search for matching food names.
- *   - `caloriesRange` {[string, string]} - A tuple specifying the minimum and maximum calorie values as strings.
- *   - `proteinRange` {[string, string]} - A tuple specifying the minimum and maximum protein values as strings.
- *   - `categoryId` {string | undefined} - The ID of the food category to filter by.
- *   - `sortBy` {string} - The property to sort the results by (default is "name").
- *   - `sortOrder` {'asc' | 'desc'} - The sorting order, either ascending ('asc') or descending ('desc') (default is "asc").
- *   - `page` {number} - The current page number for pagination (default is 1).
- *   - `pageSize` {number} - The number of items per page for pagination (default is 10).
- *
- * @returns {Promise<PaginateResult<FoodWithServingUnits>>} A promise that resolves to an object containing:
- *   - `data` {FoodWithServingUnits[]} - The list of foods matching the filters.
- *   - `total` {number} - The total number of foods matching the filters.
- *   - `page` {number} - The current page number.
- *   - `pageSize` {number} - The number of items per page.
- *   - `totalPages` {number} - The total number of pages based on the current filters and page size.
  */
 export const getFoods = async (
   filters: FoodFiltersSchema,
@@ -48,53 +31,20 @@ export const getFoods = async (
     sortOrder = "asc",
     page = 1,
     pageSize = 10,
-  } = validatedFilters || {};
+  } = validatedFilters;
 
-  const where: Prisma.FoodWhereInput = {};
+  // Build WHERE clause
+  const where = buildWhereClause({
+    searchTerm,
+    caloriesRange,
+    proteinRange,
+    categoryId,
+  });
 
-  if (searchTerm) {
-    where.name = { contains: searchTerm };
-  }
-
-  const [minCaloriesStr, maxCaloriesStr] = caloriesRange;
-  const numericMinCalories =
-    minCaloriesStr === "" ? undefined : Number(minCaloriesStr);
-  const numericMaxCalories =
-    maxCaloriesStr === "" ? undefined : Number(maxCaloriesStr);
-
-  if (numericMinCalories !== undefined || numericMaxCalories !== undefined) {
-    where.calories = {};
-    if (numericMinCalories !== undefined) {
-      where.calories.gte = numericMinCalories;
-    }
-    if (numericMaxCalories !== undefined) {
-      where.calories.lte = numericMaxCalories;
-    }
-  }
-
-  const [minProteinStr, maxProteinStr] = proteinRange;
-  const numericMinProtein =
-    minProteinStr === "" ? undefined : Number(minProteinStr);
-  const numericMaxProtein =
-    maxProteinStr === "" ? undefined : Number(maxProteinStr);
-
-  if (numericMinProtein !== undefined || numericMaxProtein !== undefined) {
-    where.protein = {};
-    if (numericMinProtein !== undefined) {
-      where.protein.gte = numericMinProtein;
-    }
-    if (numericMaxProtein !== undefined) {
-      where.protein.lte = numericMaxProtein;
-    }
-  }
-
-  const numericCategoryId = categoryId ? Number(categoryId) : undefined;
-  if (numericCategoryId !== undefined && numericCategoryId !== 0) {
-    where.category = { id: numericCategoryId };
-  }
-
+  // Calculate pagination
   const skip = (page - 1) * pageSize;
 
+  // Execute queries in parallel
   const [total, data] = await Promise.all([
     prisma.food.count({ where }),
     prisma.food.findMany({
@@ -118,6 +68,104 @@ export const getFoods = async (
     totalPages: Math.ceil(total / pageSize),
   };
 };
+
+/**
+ * Builds the Prisma WHERE clause for food filtering
+ */
+function buildWhereClause({
+  searchTerm,
+  caloriesRange,
+  proteinRange,
+  categoryId,
+}: {
+  searchTerm?: string;
+  caloriesRange: [string, string];
+  proteinRange: [string, string];
+  categoryId?: string;
+}): Prisma.FoodWhereInput {
+  const where: Prisma.FoodWhereInput = {};
+
+  // Search term filter
+  if (searchTerm?.trim()) {
+    where.name = {
+      contains: searchTerm.trim(),
+      // mode: "insensitive" as const,
+    };
+  }
+
+  // Calorie range filter
+  const calorieFilter = buildRangeFilter(caloriesRange);
+  if (calorieFilter) {
+    where.calories = calorieFilter;
+  }
+
+  // Protein range filter
+  const proteinFilter = buildRangeFilter(proteinRange);
+  if (proteinFilter) {
+    where.protein = proteinFilter;
+  }
+
+  // Category filter
+  const categoryFilter = buildCategoryFilter(categoryId);
+  if (categoryFilter) {
+    where.category = categoryFilter;
+  }
+
+  return where;
+}
+
+/**
+ * Builds a numeric range filter from a string tuple
+ */
+function buildRangeFilter([minStr, maxStr]: [string, string]): {
+  gte?: number;
+  lte?: number;
+} | null {
+  const min = parseNumericValue(minStr);
+  const max = parseNumericValue(maxStr);
+
+  if (min === null && max === null) {
+    return null;
+  }
+
+  const filter: { gte?: number; lte?: number } = {};
+
+  if (min !== null) {
+    filter.gte = min;
+  }
+  if (max !== null) {
+    filter.lte = max;
+  }
+
+  return filter;
+}
+
+/**
+ * Builds category filter from string ID
+ */
+function buildCategoryFilter(categoryId?: string): { id: number } | null {
+  if (!categoryId?.trim()) {
+    return null;
+  }
+
+  const numericCategoryId = parseNumericValue(categoryId);
+
+  return numericCategoryId && numericCategoryId > 0
+    ? { id: numericCategoryId }
+    : null;
+}
+
+/**
+ * Safely parses a string to number, returning null for invalid values
+ */
+function parseNumericValue(value: string): number | null {
+  if (!value?.trim()) {
+    return null;
+  }
+
+  const parsed = Number(value.trim());
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+}
 
 /**
  * Fetches a food item and its associated serving units from the database by its unique identifier.

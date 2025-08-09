@@ -25,6 +25,26 @@ type Actions = {
 
 type Store = State & Actions;
 
+/**
+ * A store instance for managing the state of food-related functionality in the application.
+ *
+ * The `useFoodsStore` manages various properties and methods, including:
+ * - `selectedFoodId`: Tracks the currently selected food item's ID.
+ * - `updateSelectedFoodId`: Updates the `selectedFoodId` property with a new value.
+ * - `foodDialogOpen`: A boolean to manage the open/close state of the food dialog.
+ * - `updateFoodDialogOpen`: Updates the `foodDialogOpen` state.
+ * - `foodFilters`: Contains the filtering criteria for foods, initialized with default values.
+ * - `updateFoodFilters`: Updates the `foodFilters` property with a new set of filters.
+ * - `foodFiltersDrawerOpen`: A boolean managing the open/close state of the filters drawer.
+ * - `updateFoodFiltersDrawerOpen`: Updates the `foodFiltersDrawerOpen` state.
+ * - `updateFoodFilterPage`: A function for navigating pages in the food filters, which handles "next," "prev," or specific page numbers.
+ *
+ * Configuration options:
+ * - `name`: Specifies the name of the store as "foods-store".
+ * - `excludeFromPersist`: Avoids persisting specific properties, such as `foodFilters` in this case.
+ *
+ * This store provides reactive functionality to simplify food-related state management in the application.
+ */
 export const useFoodsStore = createStore<Store>(
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
