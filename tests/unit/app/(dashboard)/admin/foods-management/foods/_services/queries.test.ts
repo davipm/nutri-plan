@@ -44,6 +44,8 @@ const mockFoodDbResult: FoodWithServingUnits = {
       id: 101,
       foodId: 1,
       servingUnitId: 1,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       grams: new Prisma.Decimal(100),
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -72,7 +74,11 @@ describe("Food Queries", () => {
       const mockFoods = [mockFoodDbResult];
       const mockTotal = 1;
 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       (prisma.food.count as vi.Mock).mockResolvedValue(mockTotal);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       (prisma.food.findMany as vi.Mock).mockResolvedValue(mockFoods);
 
       const result = await getFoods(filters);
@@ -106,7 +112,11 @@ describe("Food Queries", () => {
       const mockFoods = [mockFoodDbResult];
       const mockTotal = 1;
 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       (prisma.food.count as vi.Mock).mockResolvedValue(mockTotal);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       (prisma.food.findMany as vi.Mock).mockResolvedValue(mockFoods);
 
       const result = await getFoods(filters);
@@ -147,7 +157,11 @@ describe("Food Queries", () => {
         ...foodFiltersDefaultValues,
         searchTerm: "NonExistentFood",
       };
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       (prisma.food.count as vi.Mock).mockResolvedValue(0);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       (prisma.food.findMany as vi.Mock).mockResolvedValue([]);
 
       const result = await getFoods(filters);
@@ -165,6 +179,8 @@ describe("Food Queries", () => {
   describe("getFood", () => {
     it("testGetFoodForExistingId", async () => {
       const foodId = 1;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       (prisma.food.findFirst as vi.Mock).mockResolvedValue(mockFoodDbResult);
 
       const result = await getFood(foodId);
@@ -196,6 +212,8 @@ describe("Food Queries", () => {
 
     it("testGetFoodReturnsNullForNonExistentId", async () => {
       const foodId = 999;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       (prisma.food.findFirst as vi.Mock).mockResolvedValue(null);
 
       const result = await getFood(foodId);
