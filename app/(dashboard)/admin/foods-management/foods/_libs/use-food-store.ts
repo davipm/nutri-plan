@@ -35,7 +35,7 @@ type Store = State & Actions;
  * - `updateFoodDialogOpen`: Updates the `foodDialogOpen` state.
  * - `foodFilters`: Contains the filtering criteria for foods, initialized with default values.
  * - `updateFoodFilters`: Updates the `foodFilters` property with a new set of filters.
- * - `foodFiltersDrawerOpen`: A boolean managing the open/close state of the filters drawer.
+ * - `foodFiltersDrawerOpen`: A boolean managing the open/close state of the filters' drawer.
  * - `updateFoodFiltersDrawerOpen`: Updates the `foodFiltersDrawerOpen` state.
  * - `updateFoodFilterPage`: A function for navigating pages in the food filters, which handles "next," "prev," or specific page numbers.
  *
@@ -46,8 +46,6 @@ type Store = State & Actions;
  * This store provides reactive functionality to simplify food-related state management in the application.
  */
 export const useFoodsStore = createStore<Store>(
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
   (set) => ({
     selectedFoodId: null,
     updateSelectedFoodId: (id) =>
@@ -89,6 +87,11 @@ export const useFoodsStore = createStore<Store>(
           },
         };
       }),
+    updateFoodFiltersSearchTerm: (searchTerm) => {
+      set((state) => {
+        state.foodFilters.searchTerm = searchTerm;
+      });
+    },
   }),
   {
     name: "foods-store",

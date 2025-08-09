@@ -52,43 +52,54 @@ export function Pagination({
     );
   }
 
+  /**
+   * Generates an array representing pagination based on the total number of pages and the current page.
+   * The pagination includes logical ellipsis placeholders where appropriate for large numbers of pages.
+   *
+   * Rules for pagination generation:
+   * - If the total number of pages is less than or equal to 7, all pages are included without any ellipsis.
+   * - If the current page is within the first four pages, the output includes the first five pages, an ellipsis, and the last page.
+   * - If the current page is within the last four pages, the output includes the first page, an ellipsis, and the last five pages.
+   * - For all other cases, the output includes the first page, an ellipsis, the current page (with its adjacent pages), another ellipsis, and the last page.
+   *
+   * @function
+   * @param {number} totalPages - The total number of pages available.
+   * @param {number} currentPage - The current page number.
+   * @returns An array representing pagination. Page numbers are represented as numbers, while ellipsis placeholders are represented as the string "ellipsis".
+   */
   const generatePagination = () => {
-    const pages: (number | "ellipsis")[] = [];
-
-    if (totalPages <= 1) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      pages.push(1);
-      if (currentPage > 3) {
-        pages.push("ellipsis");
-      }
-
-      const startPages = Math.max(2, currentPage - 1);
-      const endPages = Math.max(totalPages - 1, currentPage + 1);
-
-      for (let i = startPages; i <= endPages; i++) {
-        pages.push(i);
-      }
-
-      if (currentPage < totalPages - 2) {
-        pages.push("ellipsis");
-      }
-
-      if (totalPages > 1) {
-        pages.push(totalPages);
-      }
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
 
-    return pages;
+    if (currentPage < 5) {
+      return [1, 2, 3, 4, 5, "ellipsis", totalPages];
+    }
+
+    if (currentPage > totalPages - 4) {
+      return [
+        1,
+        "ellipsis",
+        totalPages - 4,
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
+    }
+
+    return [
+      1,
+      "ellipsis",
+      currentPage - 1,
+      currentPage,
+      currentPage + 1,
+      "ellipsis",
+      totalPages,
+    ];
   };
 
   const pages = generatePagination();
-
-  const handlePageUpdate = (pageAction: "next" | "prev" | number) => {
-    updatePage(pageAction);
-  };
 
   return (
     <nav
@@ -100,7 +111,7 @@ export function Pagination({
       <ul className="flex flex-row items-center gap-1">
         <li>
           <button
-            onClick={() => handlePageUpdate("prev")}
+            onClick={() => updatePage("prev")}
             disabled={currentPage === 1}
             aria-label="Go to previous page"
             className={cn(
@@ -130,7 +141,7 @@ export function Pagination({
               </span>
             ) : (
               <button
-                onClick={() => handlePageUpdate(page)}
+                onClick={() => updatePage(page as number)}
                 aria-current={currentPage === page ? "page" : undefined}
                 data-active={currentPage === page}
                 className={cn(
@@ -148,16 +159,17 @@ export function Pagination({
 
         <li>
           <button
-            onClick={() => handlePageUpdate("next")}
-            disabled={currentPage === totalPages}
-            aria-label="Go to previous page"
+            onClick={() => updatePage("next")}
+            disabled={currentPage === totalPages || !totalPages}
+            aria-label="Go to next page"
             className={cn(
               buttonVariants({
                 variant: "ghost",
                 size: "default",
               }),
               "gap-1 px-2.5 sm:pr-2.5",
-              currentPage === totalPages && "pointer-events-none opacity-50",
+              (currentPage === totalPages || !totalPages) &&
+                "pointer-events-none opacity-50",
             )}
           >
             <span className="hidden sm:block">Next</span>

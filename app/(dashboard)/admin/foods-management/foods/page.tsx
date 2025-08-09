@@ -1,5 +1,6 @@
 import FoodFormDialog from "@/app/(dashboard)/admin/foods-management/foods/_components/food-form-dialog";
 import { FoodCards } from "@/app/(dashboard)/admin/foods-management/foods/_components/food-cards";
+import { FoodFilterDrawer } from "@/app/(dashboard)/admin/foods-management/foods/_components/food-filter-drawer";
 
 export default function Page() {
   return (
@@ -8,7 +9,7 @@ export default function Page() {
         <h1 className="text-3xl font-semibold">Foods List</h1>
         <FoodFormDialog />
       </div>
-      {/* TODO: FoodFiltersDrawer */}
+      <FoodFilterDrawer />
       <FoodCards />
     </div>
   );
