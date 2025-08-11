@@ -3,6 +3,7 @@
 import { ReactNode } from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { AlertDialogProvider } from "@/providers/alert-dialog-provider";
@@ -46,6 +47,7 @@ export function Providers({ children }: Props) {
         <NextThemesProvider>{children}</NextThemesProvider>
         <Toaster />
         <AlertDialogProvider />
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </NextThemesProvider>
   );
