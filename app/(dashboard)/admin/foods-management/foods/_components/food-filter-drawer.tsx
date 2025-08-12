@@ -114,7 +114,7 @@ export function FoodFilterDrawer() {
               </DrawerDescription>
             </DrawerHeader>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="space-y-2 p-4">
               <div className="flex flex-wrap gap-2">
                 <ControlledSelect<FoodFiltersSchema>
                   label="Category"
@@ -150,7 +150,7 @@ export function FoodFilterDrawer() {
                 />
               </div>
 
-              <div className="flex flex-row gap-2">
+              <div className="flex flex-wrap gap-2">
                 <ControlledSlider<FoodFiltersSchema>
                   name="caloriesRange"
                   label="Calories"

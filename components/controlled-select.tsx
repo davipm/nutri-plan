@@ -59,7 +59,7 @@ export const ControlledSelect = <T extends FieldValues>({
           <>
             <Select onValueChange={onChange} {...restField}>
               <div className="relative flex">
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
                 {clearable && !!restField.value && (
