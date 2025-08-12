@@ -1,6 +1,15 @@
 "use client";
 
-import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   FormProvider,
   SubmitHandler,
@@ -23,15 +32,22 @@ import { cn } from "@/lib/utils";
 import { badgeVariants } from "@/components/ui/badge";
 import { useDebounce } from "@/lib/use-debounce";
 import { useCategories } from "@/app/(dashboard)/admin/foods-management/categories/_services/use-queries";
+import { ControlledSelect } from "@/components/controlled-select";
+import { ControlledSlider } from "@/components/controlled-slider";
 
-// TODO: finish this
+/**
+ * FoodFilterDrawer is a component responsible for rendering a filterable, interactive drawer interface.
+ * It allows users to customize food filtering options such as category, sorting, and range-based filters.
+ * The component communicates with a food filters state management system, processes user input,
+ * and triggers appropriate updates to the filter state.
+ *
+ * @return The rendered FoodFilterDrawer component.
+ */
 export function FoodFilterDrawer() {
   const {
     updateFoodFilters,
     foodFilters,
-    updateFoodFilterPage,
     foodFiltersDrawerOpen,
-    updateFoodDialogOpen,
     updateFoodFiltersDrawerOpen,
     updateFoodFiltersSearchTerm,
   } = useFoodsStore();
@@ -88,6 +104,86 @@ export function FoodFilterDrawer() {
             </Button>
           </DrawerTrigger>
         </div>
+
+        <form>
+          <DrawerContent>
+            <DrawerHeader className="text-left">
+              <DrawerTitle>Filters</DrawerTitle>
+              <DrawerDescription>
+                Customize your food search criteria
+              </DrawerDescription>
+            </DrawerHeader>
+
+            <div className="space-y-2 p-4">
+              <div className="flex flex-wrap gap-2">
+                <ControlledSelect<FoodFiltersSchema>
+                  label="Category"
+                  name="categoryId"
+                  clearable
+                  options={categoriesQuery.data?.map((item) => ({
+                    label: item.name,
+                    value: item.id,
+                  }))}
+                />
+
+                <ControlledSelect<FoodFiltersSchema>
+                  label="Sort By"
+                  name="sortBy"
+                  clearable
+                  options={[
+                    { label: "Name", value: "name" },
+                    { label: "Calories", value: "calories" },
+                    { label: "Carbohydrates", value: "carbohydrates" },
+                    { label: "Fat", value: "fat" },
+                    { label: "Protein", value: "protein" },
+                  ]}
+                />
+
+                <ControlledSelect<FoodFiltersSchema>
+                  label="Sort Order"
+                  name="sortOrder"
+                  clearable
+                  options={[
+                    { label: "Ascending", value: "asc" },
+                    { label: "Descending", value: "desc" },
+                  ]}
+                />
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <ControlledSlider<FoodFiltersSchema>
+                  name="caloriesRange"
+                  label="Calories"
+                  min={0}
+                  max={9999}
+                />
+                <ControlledSlider<FoodFiltersSchema>
+                  name="proteinRange"
+                  label="Protein"
+                  min={0}
+                  max={9999}
+                />
+              </div>
+            </div>
+            <DrawerFooter className="pt-2">
+              <DrawerClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DrawerClose>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => {
+                  form.reset(foodFiltersDefaultValues);
+                }}
+              >
+                Reset
+              </Button>
+              <Button type="submit" onClick={form.handleSubmit(onSubmit)}>
+                Apply Filters
+              </Button>
+            </DrawerFooter>
+          </DrawerContent>
+        </form>
       </FormProvider>
     </Drawer>
   );
