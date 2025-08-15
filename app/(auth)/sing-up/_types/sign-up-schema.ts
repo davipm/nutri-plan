@@ -1,6 +1,23 @@
 import * as z from "zod";
 import { passwordSchema, requiredStringSchema } from "@/lib/zod-schemas";
 
+/**
+ * Schema definition for user sign-up validation.
+ *
+ * This defines the structure and rules for validating user input during the sign-up process.
+ * The schema ensures that user-provided information meets all necessary requirements.
+ *
+ * Properties:
+ * - name: A required string validated using the `requiredStringSchema`.
+ * - email: A required string with a custom validation message when missing.
+ * - password: A password validated using the `passwordSchema`.
+ * - confirmPassword: A required string with a custom validation message when missing.
+ *
+ * Additional Rules:
+ * - Ensures that the `password` and `confirmPassword` fields match.
+ *   - If the values do not match, the validation fails and an error message
+ *     ("Passwords don't match") is associated with the `confirmPassword` field.
+ */
 export const singUpSchema = z
   .object({
     name: requiredStringSchema,

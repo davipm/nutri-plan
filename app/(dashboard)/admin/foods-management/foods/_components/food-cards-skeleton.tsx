@@ -3,6 +3,11 @@
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
+/**
+ * A functional React component that generates a skeleton loading UI for a grid of food item cards. This skeleton serves as a placeholder while actual content is being loaded.
+ *
+ * @return A JSX element representing a collection of skeleton cards, including loading indicators styled as placeholder elements.
+ */
 export function FoodCardsSkeleton() {
   const skeletonCards = Array(12).fill(null);
 
