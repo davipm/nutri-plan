@@ -7,7 +7,7 @@ import { useGlobalStore } from "@/store/use-global-store";
 
 const initialState = useGlobalStore.getState();
 
-describe("AlertDialogProvider", () => {
+describe("<AlertDialogProvider />", () => {
   beforeEach(() => {
     useGlobalStore.setState(initialState, true);
   });

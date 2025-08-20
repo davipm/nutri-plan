@@ -5,7 +5,7 @@ import React from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 
-describe("Providers", () => {
+describe("<Providers />", () => {
   const MutationComponent = ({
     mutationFn,
     buttonText,
@@ -30,7 +30,7 @@ describe("Providers", () => {
     );
   };
 
-  test("test_renders_children_within_providers", () => {
+  test("Renders children within providers", () => {
     render(
       <Providers>
         <div>Child Component</div>
@@ -39,7 +39,7 @@ describe("Providers", () => {
     expect(screen.getByText("Child Component")).toBeInTheDocument();
   });
 
-  test("test_shows_success_toast_on_mutation_success", async () => {
+  test("shows success toast on mutation success", async () => {
     render(
       <Providers>
         <MutationComponent

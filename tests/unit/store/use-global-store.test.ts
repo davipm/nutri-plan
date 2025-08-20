@@ -12,12 +12,12 @@ type AlertConfig = {
 
 const initialState = useGlobalStore.getState();
 
-describe("alert", () => {
+describe("Alert", () => {
   beforeEach(() => {
     useGlobalStore.setState(initialState, true);
   });
 
-  it("test_alert_updates_store_with_full_config", () => {
+  it("Alert updates store with full config", () => {
     const onConfirm = vi.fn();
     const onCancel = vi.fn();
     const fullConfig: AlertConfig = {
@@ -36,7 +36,7 @@ describe("alert", () => {
     expect(state.alertConfig).toEqual(fullConfig);
   });
 
-  it("test_alert_handles_partial_config", () => {
+  it("Alert handles partial config", () => {
     const partialConfig: AlertConfig = {
       title: "Partial Alert",
     };
@@ -48,7 +48,7 @@ describe("alert", () => {
     expect(state.alertConfig).toEqual(partialConfig);
   });
 
-  it("test_alert_handles_empty_config_object", () => {
+  it("Alert handles empty config object", () => {
     const emptyConfig: AlertConfig = {};
 
     alert(emptyConfig);
@@ -58,7 +58,7 @@ describe("alert", () => {
     expect(state.alertConfig).toEqual(emptyConfig);
   });
 
-  it("test_alert_overwrites_existing_alert_config", () => {
+  it("Alert overwrites existing alert config", () => {
     const initialConfig: AlertConfig = { title: "First Alert" };
     alert(initialConfig);
 
@@ -74,7 +74,7 @@ describe("alert", () => {
     expect(state.alertConfig).not.toEqual(initialConfig);
   });
 
-  it("test_alert_config_is_reset_to_null_on_close", () => {
+  it("Alert config is reset to null on close", () => {
     const config: AlertConfig = { title: "Temporary Alert" };
 
     alert(config);
@@ -88,7 +88,7 @@ describe("alert", () => {
     expect(state.alertConfig).toBeNull();
   });
 
-  it("test_alert_correctly_stores_callback_functions", () => {
+  it("Alert correctly stores callback functions", () => {
     const onConfirmCallback = vi.fn();
     const onCancelCallback = vi.fn();
     const configWithCallbacks: AlertConfig = {

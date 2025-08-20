@@ -32,6 +32,20 @@ import { ControlledSelect } from "@/components/controlled-select";
 import { CategoryFormDialog } from "@/app/(dashboard)/admin/foods-management/categories/_components/category-form-dialog";
 import { SpecifyFoodServingUnits } from "@/app/(dashboard)/admin/foods-management/foods/_components/specify-food-serving-units";
 
+const nutritionalFields = [
+  { name: "calories", label: "Calories", placeholder: "kcal", type: "text" },
+  { name: "protein", label: "Protein", placeholder: "grams", type: "number" },
+  {
+    name: "carbohydrates",
+    label: "Carbohydrates",
+    placeholder: "grams",
+    type: "number",
+  },
+  { name: "fat", label: "Fat", placeholder: "grams", type: "number" },
+  { name: "fiber", label: "Fiber", placeholder: "grams", type: "number" },
+  { name: "sugar", label: "Sugar", placeholder: "grams", type: "number" },
+];
+
 export default function FoodFormDialog() {
   const form = useForm<FoodSchema>({
     defaultValues: foodDefaultValues,
@@ -58,20 +72,11 @@ export default function FoodFormDialog() {
   const { servingUnitDialogOpen } = useServingUnitsStore();
 
   useEffect(() => {
-    if (!!selectedFoodId && foodQuery.data) {
+    if (selectedFoodId && foodQuery.data) {
       form.reset(foodQuery.data);
     }
   }, [foodQuery.data, form, selectedFoodId]);
 
-  /**
-   * Handles the change event for dialog open state.
-   *
-   * This function manages the opening and closing state of a dialog by
-   * updating the dialog's state and resetting relevant form and selected
-   * data when the dialog is closed.
-   *
-   * @param {boolean} open - The new state of the dialog (true for open, false for close).
-   */
   const handleDialogOpenChange = (open: boolean) => {
     updateFoodDialogOpen(open);
     if (!open) {
@@ -80,32 +85,15 @@ export default function FoodFormDialog() {
     }
   };
 
-  const handleSuccess = () => {
-    handleDialogOpenChange(false);
-  };
-
   const disableSubmit = servingUnitDialogOpen || categoryDialogOpen;
 
-  /**
-   * Handle submission of food data based on the specified action type.
-   *
-   * This variable is a function that processes form data by mutating it
-   * through appropriate mutation handlers. If the action type in the
-   * submitted data is "create", a create operation is triggered; otherwise,
-   * an update operation is performed. Both operations invoke a success
-   * handler upon completion.
-   *
-   * @type {SubmitHandler<FoodSchema>}
-   * @param data - The food data submitted by the form,
-   * containing an action type which determines the operation ("create" or otherwise).
-   */
   const onSubmit: SubmitHandler<FoodSchema> = (data) => {
+    const onSuccess = () => handleDialogOpenChange(false);
+
     if (data.action === "create") {
-      createFoodMutation.mutate(data, {
-        onSuccess: handleSuccess,
-      });
+      createFoodMutation.mutate(data, { onSuccess });
     } else {
-      updateFoodMutation.mutate(data, { onSuccess: handleSuccess });
+      updateFoodMutation.mutate(data, { onSuccess });
     }
   };
 
@@ -123,7 +111,7 @@ export default function FoodFormDialog() {
           </DialogTitle>
         </DialogHeader>
         <form
-          onSubmit={disableSubmit ? undefined : form.handleSubmit(onSubmit)}
+          onSubmit={!disableSubmit ? form.handleSubmit(onSubmit) : undefined}
           className="space-y-6"
         >
           <FormProvider {...form}>
@@ -148,58 +136,16 @@ export default function FoodFormDialog() {
                 <CategoryFormDialog smallTrigger />
               </div>
 
-              <div>
-                <ControlledInput
-                  name="calories"
-                  label="Calories"
-                  placeholder="kcal"
-                />
-              </div>
-
-              <div>
-                <ControlledInput<FoodSchema>
-                  name="protein"
-                  label="Protein"
-                  type="number"
-                  placeholder="grams"
-                />
-              </div>
-
-              <div>
-                <ControlledInput<FoodSchema>
-                  name="carbohydrates"
-                  label="Carbohydrates"
-                  type="number"
-                  placeholder="grams"
-                />
-              </div>
-
-              <div>
-                <ControlledInput<FoodSchema>
-                  name="fat"
-                  label="Fat"
-                  type="number"
-                  placeholder="grams"
-                />
-              </div>
-
-              <div>
-                <ControlledInput<FoodSchema>
-                  name="fiber"
-                  label="Fiber"
-                  type="number"
-                  placeholder="grams"
-                />
-              </div>
-
-              <div>
-                <ControlledInput<FoodSchema>
-                  name="sugar"
-                  label="Sugar"
-                  type="number"
-                  placeholder="grams"
-                />
-              </div>
+              {nutritionalFields.map((field) => (
+                <div key={field.name}>
+                  <ControlledInput<FoodSchema>
+                    name={field.name as keyof FoodSchema}
+                    label={field.label}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                  />
+                </div>
+              ))}
 
               <div className="col-span-2">
                 <SpecifyFoodServingUnits />
@@ -209,7 +155,7 @@ export default function FoodFormDialog() {
           <DialogFooter>
             <Button type="submit">
               {isPending && <Loader2Icon className="animate-spin" />}
-              {!!selectedFoodId ? "Edit" : "Create"} Food
+              {selectedFoodId ? "Edit" : "Create"} Food
             </Button>
           </DialogFooter>
         </form>
