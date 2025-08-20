@@ -39,7 +39,7 @@ describe("ControlledInput", () => {
     expect(input).toHaveValue("testuser");
   });
 
-  it("test Displays Label When Provided", () => {
+  it("Displays Label When Provided", () => {
     type FormVals = { email: string };
 
     render(

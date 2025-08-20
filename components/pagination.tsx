@@ -1,5 +1,3 @@
-"use client";
-
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -18,6 +16,19 @@ type PaginationProps = {
   scrollToTopOnPaginate?: boolean;
 };
 
+/**
+ * Renders a pagination component for navigating between pages.
+ * Includes "Previous" and "Next" buttons, as well as individual page numbers and ellipses for larger paginations.
+ * Automatically scrolls to the top of the page when navigating between pages if `scrollToTopOnPaginate` is enabled.
+ *
+ * @param {Object} props - The properties for the pagination component.
+ * @param {number} props.currentPage - The current active page number.
+ * @param {number} props.totalPages - The total number of pages available.
+ * @param {function} props.updatePage - A callback function to update the current page. Accepts either a page number or the strings "prev" and "next".
+ * @param {string} [props.className] - Optional additional class names to style the pagination component.
+ * @param {boolean} [props.scrollToTopOnPaginate=true] - Whether to scroll to the top of the page when changing pages.
+ * @return The rendered pagination component.
+ */
 export function Pagination({
   currentPage,
   totalPages,

@@ -10,6 +10,21 @@ interface SliderProps<T extends FieldValues>
   minStepsBetweenThumbs?: number;
 }
 
+/**
+ * A controlled slider component designed to handle range or single-value sliders
+ * with advanced behavior and validation.
+ *
+ * @param {string} className - Additional class names for custom styling.
+ * @param {string} name - The name used for the form field to control the slider values.
+ * @param {string} label - Label displayed above the slider. Defaults to "Price Range".
+ * @param {number[] | undefined} defaultValue - Optional default value for the slider. Should be a range [min, max].
+ * @param {number} min - The minimum value the slider can take. Defaults to 0.
+ * @param {number} max - The maximum value the slider can take. Defaults to 100.
+ * @param {number} minStepsBetweenThumbs - Minimum step distance between slider thumbs when handling ranges. Defaults to 1.
+ * @param {object} props - Additional SliderProps extending the base slider component functionalities.
+ * @template T
+ * @return Returns a controlled slider component wrapped with form control and custom rendering options.
+ */
 export function ControlledSlider<T extends FieldValues>({
   className,
   name,
@@ -27,12 +42,26 @@ export function ControlledSlider<T extends FieldValues>({
       name={name}
       control={control}
       render={({ field }) => {
+        /**
+         * Holds the resolved array value based on the following logic:
+         * If `field.value` is an array, its value is assigned to `values`.
+         * If `field.value` is not an array, `defaultValue` is checked:
+         *   - If `defaultValue` is an array, its value is assigned to `values`.
+         *   - Otherwise, a new array consisting of `min` and `max` is assigned to `values`.
+         */
         const values = Array.isArray(field.value)
           ? field.value
           : Array.isArray(defaultValue)
             ? defaultValue
             : [min, max];
 
+        /**
+         * Handles the change of values in a numeric array while ensuring a minimum step difference
+         * between consecutive values if the specified condition is met. Invokes a callback function
+         * to update the values if all conditions are satisfied.
+         *
+         * @param {number[]} newValue - The updated array of numeric values to be processed.
+         */
         const handleValuesChange = (newValue: number[]) => {
           if (minStepsBetweenThumbs > 1 && newValue.length > 1) {
             for (let i = 0; i < newValue.length - 1; i++) {

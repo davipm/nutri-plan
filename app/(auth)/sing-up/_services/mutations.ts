@@ -12,7 +12,7 @@ import prisma from "@/lib/prisma";
  * Handles user sign-up functionality by validating input data, hashing the user's password,
  * and creating a new user record in the database.
  *
- * @param {SignUpSchema} data - The input data containing user details such as name, email, and password.
+ * @param data - The input data containing user details such as name, email, and password.
  * @returns {Promise<void>} A promise that resolves when the user is successfully signed up.
  * @throws {Error} Throws an error if validation or database interaction fails.
  */

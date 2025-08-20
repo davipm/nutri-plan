@@ -1,7 +1,7 @@
 "use client";
 
-import { Plus } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Loader2Icon, Plus } from "lucide-react";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   foodDefaultValues,
@@ -11,6 +11,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -23,6 +24,27 @@ import {
   useUpdateFood,
 } from "@/app/(dashboard)/admin/foods-management/foods/_services/use-food-mutations";
 import { useFoodsStore } from "@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store";
+import { useCategoriesStore } from "@/app/(dashboard)/admin/foods-management/categories/_libs/use-categories-store";
+import { useServingUnitsStore } from "@/app/(dashboard)/admin/foods-management/serving-units/_libs/use-serving-units-store";
+import { useEffect } from "react";
+import { ControlledInput } from "@/components/controlled-input";
+import { ControlledSelect } from "@/components/controlled-select";
+import { CategoryFormDialog } from "@/app/(dashboard)/admin/foods-management/categories/_components/category-form-dialog";
+import { SpecifyFoodServingUnits } from "@/app/(dashboard)/admin/foods-management/foods/_components/specify-food-serving-units";
+
+const nutritionalFields = [
+  { name: "calories", label: "Calories", placeholder: "kcal", type: "text" },
+  { name: "protein", label: "Protein", placeholder: "grams", type: "number" },
+  {
+    name: "carbohydrates",
+    label: "Carbohydrates",
+    placeholder: "grams",
+    type: "number",
+  },
+  { name: "fat", label: "Fat", placeholder: "grams", type: "number" },
+  { name: "fiber", label: "Fiber", placeholder: "grams", type: "number" },
+  { name: "sugar", label: "Sugar", placeholder: "grams", type: "number" },
+];
 
 export default function FoodFormDialog() {
   const form = useForm<FoodSchema>({
@@ -46,8 +68,37 @@ export default function FoodFormDialog() {
     updateFoodDialogOpen,
   } = useFoodsStore();
 
+  const { categoryDialogOpen } = useCategoriesStore();
+  const { servingUnitDialogOpen } = useServingUnitsStore();
+
+  useEffect(() => {
+    if (selectedFoodId && foodQuery.data) {
+      form.reset(foodQuery.data);
+    }
+  }, [foodQuery.data, form, selectedFoodId]);
+
+  const handleDialogOpenChange = (open: boolean) => {
+    updateFoodDialogOpen(open);
+    if (!open) {
+      updateSelectedFoodId(null);
+      form.reset(foodDefaultValues);
+    }
+  };
+
+  const disableSubmit = servingUnitDialogOpen || categoryDialogOpen;
+
+  const onSubmit: SubmitHandler<FoodSchema> = (data) => {
+    const onSuccess = () => handleDialogOpenChange(false);
+
+    if (data.action === "create") {
+      createFoodMutation.mutate(data, { onSuccess });
+    } else {
+      updateFoodMutation.mutate(data, { onSuccess });
+    }
+  };
+
   return (
-    <Dialog open={foodDialogOpen} onOpenChange={() => {}}>
+    <Dialog open={foodDialogOpen} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2" /> Create Food
@@ -59,6 +110,55 @@ export default function FoodFormDialog() {
             {selectedFoodId ? "Edit Food" : "Create a New Food"}
           </DialogTitle>
         </DialogHeader>
+        <form
+          onSubmit={!disableSubmit ? form.handleSubmit(onSubmit) : undefined}
+          className="space-y-6"
+        >
+          <FormProvider {...form}>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-1 grid">
+                <ControlledInput
+                  name="name"
+                  label="Name"
+                  placeholder="Enter food name"
+                />
+              </div>
+
+              <div className="col-span-1 flex items-center">
+                <ControlledSelect<FoodSchema>
+                  name="categoryId"
+                  label="Category"
+                  options={categoriesQuery.data?.map((item) => ({
+                    label: item.name,
+                    value: item.id,
+                  }))}
+                />
+                <CategoryFormDialog smallTrigger />
+              </div>
+
+              {nutritionalFields.map((field) => (
+                <div key={field.name}>
+                  <ControlledInput<FoodSchema>
+                    name={field.name as keyof FoodSchema}
+                    label={field.label}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                  />
+                </div>
+              ))}
+
+              <div className="col-span-2">
+                <SpecifyFoodServingUnits />
+              </div>
+            </div>
+          </FormProvider>
+          <DialogFooter>
+            <Button type="submit">
+              {isPending && <Loader2Icon className="animate-spin" />}
+              {selectedFoodId ? "Edit" : "Create"} Food
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
