@@ -95,7 +95,7 @@ export const getCategories = async () => {
  * @param {number} id - The unique identifier of the category to retrieve.
  * @returns A promise that resolves to an object representing the category.
  */
-export const getCategory = async (id: number) => {
+export const getCategory = async (id: number): Promise<CategorySchema> => {
   const response = await prisma.category.findFirst({
     where: { id },
   });
@@ -104,6 +104,6 @@ export const getCategory = async (id: number) => {
     ...response,
     id,
     action: "update",
-    name: response?.name,
+    name: response?.name ?? "",
   };
 };

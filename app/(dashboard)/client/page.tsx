@@ -1,8 +1,6 @@
 "use client";
 
-import {useState} from "react";
-
-// import { Container } from "./styles";
+import { useState } from "react";
 
 export default function Page() {
   const [item, setItem] = useState(null);
@@ -11,5 +9,5 @@ export default function Page() {
     <div>
       <p>Page</p>
     </div>
-  )
+  );
 }
