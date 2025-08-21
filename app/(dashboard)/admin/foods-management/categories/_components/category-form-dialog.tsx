@@ -31,11 +31,6 @@ type Props = {
 };
 
 export function CategoryFormDialog({ smallTrigger }: Props) {
-  const form = useForm<CategorySchema>({
-    defaultValues: categoryDefaultValues,
-    resolver: zodResolver(categorySchema),
-  });
-
   const {
     categoryDialogOpen,
     selectedCategoryId,
@@ -43,37 +38,41 @@ export function CategoryFormDialog({ smallTrigger }: Props) {
     updateSelectedCategoryId,
   } = useCategoriesStore();
 
-  const categoryQuery = useCategory();
+  const { data: categoryToEdit } = useCategory();
   const createCategoryMutation = useCreateCategory();
   const updateCategoryMutation = useUpdateCategory();
 
   const isPending = createCategoryMutation.isPending || updateCategoryMutation.isPending;
+  const isEditMode = !!selectedCategoryId;
+
+  const form = useForm<CategorySchema>({
+    resolver: zodResolver(categorySchema),
+    defaultValues: categoryDefaultValues,
+  });
 
   useEffect(() => {
-    if (!!selectedCategoryId && categoryQuery.data) {
-      form.reset(categoryQuery.data);
+    if (categoryDialogOpen) {
+      if (isEditMode && categoryToEdit) {
+        form.reset(categoryToEdit);
+      } else {
+        form.reset(categoryDefaultValues);
+      }
     }
-  }, [categoryQuery.data, form, selectedCategoryId]);
+  }, [categoryDialogOpen, isEditMode, categoryToEdit, form]);
 
   const handleDialogOpenChange = (open: boolean) => {
     updateCategoryDialogOpen(open);
-
     if (!open) {
       updateSelectedCategoryId(null);
-      form.reset(categoryDefaultValues);
     }
-  };
-
-  const handleSuccess = () => {
-    handleDialogOpenChange(false);
   };
 
   const onSubmit: SubmitHandler<CategorySchema> = (data) => {
-    if (data.action === 'create') {
-      createCategoryMutation.mutate(data, { onSuccess: handleSuccess });
-    } else {
-      updateCategoryMutation.mutate(data, { onSuccess: handleSuccess });
-    }
+    const mutation = data.action === 'create' ? createCategoryMutation : updateCategoryMutation;
+
+    mutation.mutate(data, {
+      onSuccess: () => handleDialogOpenChange(false),
+    });
   };
 
   return (
@@ -93,25 +92,21 @@ export function CategoryFormDialog({ smallTrigger }: Props) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-2xl">
-            {selectedCategoryId ? 'Edit Category' : 'Create a New Category'}
+            {isEditMode ? 'Edit Category' : 'Create a New Category'}
           </DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
-                <ControlledInput<CategorySchema>
-                  name="name"
-                  label="Name"
-                  placeholder="Enter category name"
-                />
+                <ControlledInput name="name" label="Name" placeholder="Enter category name" />
               </div>
             </div>
 
             <DialogFooter>
-              <Button type="submit">
-                {isPending && <Loader2Icon className="animate-spin" />}
-                {!!selectedCategoryId ? 'Edit' : 'Create'}
+              <Button type="submit" disabled={isPending}>
+                {isPending && <Loader2Icon className="mr-2 size-4 animate-spin" />}
+                <span>{isEditMode ? 'Save Changes' : 'Create Category'}</span>
               </Button>
             </DialogFooter>
           </form>
