@@ -1,7 +1,11 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createCategory } from "@/app/(dashboard)/admin/foods-management/categories/_services/services";
-import { CategorySchema } from "@/app/(dashboard)/admin/foods-management/categories/_types/schema";
 import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  createCategory,
+  deleteCategory,
+  updateCategory,
+} from "@/app/(dashboard)/admin/foods-management/categories/_services/services";
+import { CategorySchema } from "@/app/(dashboard)/admin/foods-management/categories/_types/schema";
 
 /**
  * A custom hook for creating a new category using a mutation function.
@@ -22,6 +26,34 @@ export const useCreateCategory = () => {
     },
     onSuccess: () => {
       toast.success("Category created successfully.");
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
+};
+
+export const useUpdateCategory = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: CategorySchema) => {
+      await updateCategory(data);
+    },
+    onSuccess: () => {
+      toast.success("Category updated successfully.");
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
+};
+
+export const useDeleteCategory = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      await deleteCategory(id);
+    },
+    onSuccess: () => {
+      toast.success("Category deleted successfully.");
       queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
   });

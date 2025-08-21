@@ -1,5 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCategories } from "@/app/(dashboard)/admin/foods-management/categories/_services/services";
+import {
+  getCategories,
+  getCategory,
+} from "@/app/(dashboard)/admin/foods-management/categories/_services/services";
+import { useCategoriesStore } from "@/app/(dashboard)/admin/foods-management/categories/_libs/use-categories-store";
 
 /**
  * A custom hook that retrieves the list of categories using a query.
@@ -13,5 +17,15 @@ export const useCategories = () => {
   return useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
+  });
+};
+
+export const useCategory = () => {
+  const { selectedCategoryId } = useCategoriesStore();
+
+  return useQuery({
+    queryKey: ["categories", { selectedCategoryId: selectedCategoryId! }],
+    queryFn: () => getCategory(selectedCategoryId!),
+    enabled: !!selectedCategoryId,
   });
 };

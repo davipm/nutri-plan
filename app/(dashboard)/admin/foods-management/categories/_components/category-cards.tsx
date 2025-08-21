@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 
-export default function Page() {
+// import { Container } from "./styles";
+
+export function CategoryCards() {
   const [item, setItem] = useState(null);
 
   return (
     <div>
-      <p>Page</p>
+      <p></p>
     </div>
   );
 }

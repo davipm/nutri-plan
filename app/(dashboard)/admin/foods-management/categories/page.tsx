@@ -1,15 +1,14 @@
-"use client";
-
-import { useState } from "react";
-
-// import { Container } from "./styles";
+import { CategoryFormDialog } from "@/app/(dashboard)/admin/foods-management/categories/_components/category-form-dialog";
+import { CategoryCards } from "@/app/(dashboard)/admin/foods-management/categories/_components/category-cards";
 
 export default function Page() {
-  const [item, setItem] = useState(null);
-
   return (
-    <div>
-      <p>Categories</p>
-    </div>
+    <>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-3xl font-semibold">Categories List</h1>
+        <CategoryFormDialog />
+      </div>
+      <CategoryCards />
+    </>
   );
 }
