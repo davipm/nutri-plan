@@ -1,4 +1,4 @@
-import { createStore } from "@/store/create-store";
+import { createStore } from '@/store/create-store';
 
 type AlertConfig = {
   title?: string;
@@ -15,7 +15,7 @@ type State = {
 };
 
 type Actions = {
-  updateAlertOpen: (is: State["alertOpen"]) => void;
+  updateAlertOpen: (is: State['alertOpen']) => void;
   showAlert: (config: AlertConfig) => void;
 };
 
@@ -35,7 +35,7 @@ type Store = State & Actions;
  * - `name`: A custom name for the store, set to "global-store".
  * - `excludeFromPersist`: An array of keys excluded from persistence, which in this case includes `alertOpen`.
  */
-const useGlobalStore = createStore<Store>(
+export const useGlobalStore = createStore<Store>(
   (set) => ({
     alertOpen: false,
     alertConfig: null,
@@ -52,10 +52,7 @@ const useGlobalStore = createStore<Store>(
         state.alertConfig = config;
       }),
   }),
-  { name: "global-store", excludeFromPersist: ["alertOpen"] },
+  { name: 'global-store', excludeFromPersist: ['alertOpen'] },
 );
 
-const alert = (config: AlertConfig) =>
-  useGlobalStore.getState().showAlert(config);
-
-export { useGlobalStore, alert };
+export const alert = (config: AlertConfig) => useGlobalStore.getState().showAlert(config);
