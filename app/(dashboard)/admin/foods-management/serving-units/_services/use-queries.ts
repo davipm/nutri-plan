@@ -1,5 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
-import { getServingUnits } from "@/app/(dashboard)/admin/foods-management/serving-units/_services/services";
+import { useServingUnitsStore } from '@/app/(dashboard)/admin/foods-management/serving-units/_libs/use-serving-units-store';
+import {
+  getServingUnit,
+  getServingUnits,
+} from '@/app/(dashboard)/admin/foods-management/serving-units/_services/services';
+import { useQuery } from '@tanstack/react-query';
 
 /**
  * Custom hook `useServingUnits` for fetching serving unit data using a query.
@@ -13,14 +17,17 @@ import { getServingUnits } from "@/app/(dashboard)/admin/foods-management/servin
  */
 export const useServingUnits = () => {
   return useQuery({
-    queryKey: ["servingUnits"],
+    queryKey: ['servingUnits'],
     queryFn: getServingUnits,
   });
 };
 
 export const useServingUnit = () => {
+  const { selectedServingUnitId } = useServingUnitsStore();
+
   return useQuery({
-    queryKey: ["servingUnits"],
-    queryFn: () => () => {},
+    queryKey: ['servingUnits', { selectedServingUnitId: selectedServingUnitId! }],
+    queryFn: () => getServingUnit(selectedServingUnitId!),
+    enabled: !!selectedServingUnitId,
   });
 };

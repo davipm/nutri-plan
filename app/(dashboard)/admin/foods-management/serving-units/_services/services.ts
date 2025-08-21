@@ -1,6 +1,37 @@
-"use server";
+'use server';
 
-import prisma from "@/lib/prisma";
+import { ServingUnitSchema } from '@/app/(dashboard)/admin/foods-management/serving-units/_types/schema';
+import { executeAction } from '@/lib/execute-action';
+import prisma from '@/lib/prisma';
+
+export const createServingUnit = async (data: ServingUnitSchema) => {
+  await executeAction({
+    actionFn: () =>
+      prisma.servingUnit.create({
+        data: {
+          name: data.name,
+        },
+      }),
+  });
+};
+
+export const updateServingUnit = async (data: ServingUnitSchema) => {
+  if (data.action === 'update') {
+    await executeAction({
+      actionFn: () =>
+        prisma.servingUnit.update({
+          where: { id: data.id },
+          data: { name: data.name },
+        }),
+    });
+  }
+};
+
+export const deleteServingUnit = async (id: number) => {
+  await executeAction({
+    actionFn: () => prisma.servingUnit.delete({ where: { id } }),
+  });
+};
 
 /**
  * Retrieves a list of all serving units from the database.
@@ -15,4 +46,17 @@ import prisma from "@/lib/prisma";
  */
 export const getServingUnits = async () => {
   return await prisma.servingUnit.findMany();
+};
+
+export const getServingUnit = async (id: number) => {
+  const res = await prisma.servingUnit.findFirst({
+    where: { id },
+  });
+
+  return {
+    ...res,
+    id,
+    action: 'update',
+    name: res?.name ?? '',
+  };
 };

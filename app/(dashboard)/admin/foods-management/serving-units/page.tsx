@@ -1,15 +1,11 @@
-"use client";
-
-import { useState } from "react";
-
-// import { Container } from "./styles";
-
 export default function Page() {
-  const [item, setItem] = useState(null);
-
   return (
-    <div>
-      <p>Serving Unit</p>
-    </div>
+    <>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-3xl font-semibold">Serving Units List</h1>
+        <div />
+      </div>
+      <div />
+    </>
   );
 }
