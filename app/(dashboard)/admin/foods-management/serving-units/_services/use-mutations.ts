@@ -10,13 +10,15 @@ import { toast } from 'sonner';
 export const useCreateServingUnit = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (data: ServingUnitSchema) => {
-      await createServingUnit(data);
-    },
+  return useMutation<void, Error, ServingUnitSchema>({
+    mutationKey: ['servingUnits', 'create'],
+    mutationFn: async (data) => await createServingUnit(data),
     onSuccess: () => {
       toast.success('Serving Unit created successfully.');
       queryClient.invalidateQueries({ queryKey: ['servingUnits'] });
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to create Serving Unit.');
     },
   });
 };
