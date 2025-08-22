@@ -1,6 +1,6 @@
 'use client';
 
-import { CategoryCard } from '@/app/(dashboard)/admin/foods-management/categories/_components/category-card';
+import CategoryCard from '@/app/(dashboard)/admin/foods-management/categories/_components/category-card';
 import { CategoryCardsSkeleton } from '@/app/(dashboard)/admin/foods-management/categories/_components/category-cards-skeleton';
 import { useCategoriesStore } from '@/app/(dashboard)/admin/foods-management/categories/_libs/use-categories-store';
 import { useCategories } from '@/app/(dashboard)/admin/foods-management/categories/_services/use-queries';

@@ -31,17 +31,19 @@ type Props = {
 };
 
 export function ServingUnitFormDialog({ smallTrigger }: Props) {
-  const form = useForm<ServingUnitSchema>({
-    resolver: zodResolver(servingUnitSchema),
-    defaultValues: servingUnitDefaultValues,
-  });
-
   const {
     updateSelectedServingUnitId,
     updateServingUnitDialogOpen,
     servingUnitDialogOpen,
     selectedServingUnitId,
   } = useServingUnitsStore();
+
+  const isEditMode = !!selectedServingUnitId;
+
+  const form = useForm<ServingUnitSchema>({
+    resolver: zodResolver(servingUnitSchema),
+    defaultValues: servingUnitDefaultValues,
+  });
 
   const servingUnitQuery = useServingUnit();
   const createServingUnitMutation = useCreateServingUnit();
@@ -50,10 +52,10 @@ export function ServingUnitFormDialog({ smallTrigger }: Props) {
   const isPending = createServingUnitMutation.isPending || updateServingUnitMutation.isPending;
 
   useEffect(() => {
-    if (!!selectedServingUnitId && servingUnitQuery.data) {
+    if (isEditMode && servingUnitQuery.data) {
       form.reset(servingUnitQuery.data);
     }
-  }, [form, selectedServingUnitId, servingUnitQuery.data]);
+  }, [isEditMode, servingUnitQuery.data, form]);
 
   const handleDialogOpenChange = (open: boolean) => {
     updateServingUnitDialogOpen(open);
@@ -63,17 +65,13 @@ export function ServingUnitFormDialog({ smallTrigger }: Props) {
     }
   };
 
-  const handleSuccess = () => {
-    handleDialogOpenChange(false);
-  };
-
   const onSubmit: SubmitHandler<ServingUnitSchema> = (data) => {
+    const onSuccess = () => handleDialogOpenChange(false);
+
     if (data.action === 'create') {
-      createServingUnitMutation.mutate(data, {
-        onSuccess: handleSuccess,
-      });
+      createServingUnitMutation.mutate(data, { onSuccess });
     } else {
-      updateServingUnitMutation.mutate(data, { onSuccess: handleSuccess });
+      updateServingUnitMutation.mutate(data, { onSuccess });
     }
   };
 
@@ -94,7 +92,7 @@ export function ServingUnitFormDialog({ smallTrigger }: Props) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-2xl">
-            {selectedServingUnitId ? 'Edit Serving Unit' : 'Create a New Serving Unit'}
+            {isEditMode ? 'Edit Serving Unit' : 'Create a New Serving Unit'}
           </DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
@@ -112,7 +110,7 @@ export function ServingUnitFormDialog({ smallTrigger }: Props) {
             <DialogFooter>
               <Button type="submit" disabled={isPending}>
                 {isPending && <Loader2Icon className="mr-2 size-4 animate-spin" />}
-                <span>{!!selectedServingUnitId ? 'Save Changes' : 'Create'}</span>
+                <span>{isEditMode ? 'Save Changes' : 'Create'}</span>
               </Button>
             </DialogFooter>
           </form>
