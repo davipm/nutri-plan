@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useDeleteFood } from "@/app/(dashboard)/admin/foods-management/foods/_services/use-food-mutations";
-import { useFoods } from "@/app/(dashboard)/admin/foods-management/foods/_services/use-food-queries";
-import NoItemFound from "@/components/no-item-found";
-import { useFoodsStore } from "@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store";
-import { Pagination } from "@/components/pagination";
-import { FoodCardsSkeleton } from "@/app/(dashboard)/admin/foods-management/foods/_components/food-cards-skeleton";
-import { Button } from "@/components/ui/button";
-import { FoodCard } from "@/app/(dashboard)/admin/foods-management/foods/_components/food-card";
+import { FoodCard } from '@/app/(dashboard)/admin/foods-management/foods/_components/food-card';
+import { FoodCardsSkeleton } from '@/app/(dashboard)/admin/foods-management/foods/_components/food-cards-skeleton';
+import { useFoodsStore } from '@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store';
+import { useDeleteFood } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-mutations';
+import { useFoods } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-queries';
+import NoItemFound from '@/components/no-item-found';
+import { Pagination } from '@/components/pagination';
+import { Button } from '@/components/ui/button';
 
 /**
  * FoodCards component displays a grid of food items with CRUD operations
@@ -19,12 +19,8 @@ import { FoodCard } from "@/app/(dashboard)/admin/foods-management/foods/_compon
  * - Nutritional information display
  */
 export function FoodCards() {
-  const {
-    updateSelectedFoodId,
-    updateFoodDialogOpen,
-    foodFilters,
-    updateFoodFilterPage,
-  } = useFoodsStore();
+  const { updateSelectedFoodId, updateFoodDialogOpen, foodFilters, updateFoodFilterPage } =
+    useFoodsStore();
 
   const { data, isError, refetch, isRefetching, isLoading } = useFoods();
   const deleteFoodMutation = useDeleteFood();
@@ -39,12 +35,8 @@ export function FoodCards() {
     return (
       <div className="flex flex-col items-center justify-center space-y-4 py-12">
         <p className="text-destructive text-sm">Failed to load food items</p>
-        <Button
-          variant="outline"
-          onClick={() => refetch()}
-          disabled={isRefetching}
-        >
-          {isRefetching ? "Retrying..." : "Try Again"}
+        <Button variant="outline" onClick={() => refetch()} disabled={isRefetching}>
+          {isRefetching ? 'Retrying...' : 'Try Again'}
         </Button>
       </div>
     );

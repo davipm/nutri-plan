@@ -16,15 +16,17 @@ export const createServingUnit = async (data: ServingUnitSchema) => {
 };
 
 export const updateServingUnit = async (data: ServingUnitSchema) => {
-  if (data.action === 'update') {
-    await executeAction({
-      actionFn: () =>
-        prisma.servingUnit.update({
-          where: { id: data.id },
-          data: { name: data.name },
-        }),
-    });
+  if (data.action !== 'update') {
+    throw new Error('Invalid action for update.');
   }
+
+  await executeAction({
+    actionFn: () =>
+      prisma.servingUnit.update({
+        where: { id: data.id },
+        data: { name: data.name },
+      }),
+  });
 };
 
 export const deleteServingUnit = async (id: number) => {
