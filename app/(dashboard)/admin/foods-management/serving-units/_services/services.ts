@@ -48,7 +48,7 @@ export const getServingUnits = async () => {
   return await prisma.servingUnit.findMany();
 };
 
-export const getServingUnit = async (id: number) => {
+export const getServingUnit = async (id: number): Promise<ServingUnitSchema> => {
   const res = await prisma.servingUnit.findFirst({
     where: { id },
   });

@@ -1,15 +1,19 @@
-'use client';
-
-import { useState } from 'react';
-
-// import { Container } from "./styles";
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ServingUnitSkeleton() {
-  const [item, setItem] = useState(null);
+  const skeletonCards = Array(12).fill(null);
 
   return (
-    <div>
-      <p></p>
-    </div>
+    <>
+      {skeletonCards.map((_, index) => (
+        <div key={index} className="flex flex-col justify-between gap-3 rounded-lg border p-6">
+          <Skeleton className="h-5 w-24" />
+          <div className="flex gap-1">
+            <Skeleton className="size-6 rounded-md" />
+            <Skeleton className="size-6 rounded-md" />
+          </div>
+        </div>
+      ))}
+    </>
   );
 }
