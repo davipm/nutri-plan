@@ -24,7 +24,7 @@ type ConfigType<T> = {
  * @returns A Zustand store hook for the created store.
  */
 export const createStore = <T extends object>(
-  storeCreator: StateCreator<T, [['zustand/immer', never]], []>,
+  storeCreator: StateCreator<T, [['zustand/immer', never], ['zustand/immer', never]], []>,
   config?: ConfigType<T>,
 ) => {
   const {
@@ -36,28 +36,31 @@ export const createStore = <T extends object>(
   } = config || {};
 
   // Apply immer middleware first
-  let enhancedStoreCreator = immer(storeCreator);
+  let enhancedStoreCreator = immer(storeCreator) as StateCreator<
+    T,
+    [['zustand/devtools', never]],
+    [['zustand/immer', never]],
+    T
+  >;
 
   // Apply devtools middleware if enabled
   const isDevtoolsEnabled = devtoolsConfig?.enabled ?? process.env.NODE_ENV === 'development';
 
   if (isDevtoolsEnabled) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
     enhancedStoreCreator = devtools(enhancedStoreCreator, {
       name: devtoolsConfig?.name || name || 'zustand-store',
       enabled: true,
-    });
+    }) as typeof enhancedStoreCreator;
   }
 
   // Apply persistence if not skipped
   if (skipPersist) {
-    return create<T>()(enhancedStoreCreator);
+    return create<T>()(enhancedStoreCreator as StateCreator<T, [], [['zustand/immer', never]]>);
   }
 
   // When using persistence, wrap the enhanced store creator
   return create<T>()(
-    persist(enhancedStoreCreator, {
+    persist(enhancedStoreCreator as StateCreator<T, [], [['zustand/immer', never]]>, {
       name: name || 'zustand-store',
       storage: createJSONStorage(() => {
         if (storage) return storage;
