@@ -11,12 +11,20 @@ import {
   servingUnitDefaultValues,
   servingUnitSchema,
 } from '@/app/(dashboard)/admin/foods-management/serving-units/_types/schema';
+import { ControlledInput } from '@/components/controlled-input';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus } from 'lucide-react';
+import { Loader2Icon, Plus } from 'lucide-react';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 type Props = {
   smallTrigger?: boolean;
@@ -39,6 +47,8 @@ export function ServingUnitFormDialog({ smallTrigger }: Props) {
   const createServingUnitMutation = useCreateServingUnit();
   const updateServingUnitMutation = useUpdateServingUnit();
 
+  const isPending = createServingUnitMutation.isPending || updateServingUnitMutation.isPending;
+
   useEffect(() => {
     if (!!selectedServingUnitId && servingUnitQuery.data) {
       form.reset(servingUnitQuery.data);
@@ -50,6 +60,20 @@ export function ServingUnitFormDialog({ smallTrigger }: Props) {
     if (!open) {
       updateSelectedServingUnitId(null);
       form.reset(servingUnitDefaultValues);
+    }
+  };
+
+  const handleSuccess = () => {
+    handleDialogOpenChange(false);
+  };
+
+  const onSubmit: SubmitHandler<ServingUnitSchema> = (data) => {
+    if (data.action === 'create') {
+      createServingUnitMutation.mutate(data, {
+        onSuccess: handleSuccess,
+      });
+    } else {
+      updateServingUnitMutation.mutate(data, { onSuccess: handleSuccess });
     }
   };
 
@@ -67,7 +91,33 @@ export function ServingUnitFormDialog({ smallTrigger }: Props) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent></DialogContent>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="text-2xl">
+            {selectedServingUnitId ? 'Edit Serving Unit' : 'Create a New Serving Unit'}
+          </DialogTitle>
+        </DialogHeader>
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <ControlledInput<ServingUnitSchema>
+                  name="name"
+                  label="Name"
+                  placeholder="Enter serving unit name"
+                />
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button type="submit" disabled={isPending}>
+                {isPending && <Loader2Icon className="mr-2 size-4 animate-spin" />}
+                <span>{!!selectedServingUnitId ? 'Save Changes' : 'Create'}</span>
+              </Button>
+            </DialogFooter>
+          </form>
+        </FormProvider>
+      </DialogContent>
     </Dialog>
   );
 }
