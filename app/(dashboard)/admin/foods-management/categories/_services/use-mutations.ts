@@ -1,11 +1,11 @@
-import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createCategory,
   deleteCategory,
   updateCategory,
-} from "@/app/(dashboard)/admin/foods-management/categories/_services/services";
-import { CategorySchema } from "@/app/(dashboard)/admin/foods-management/categories/_types/schema";
+} from '@/app/(dashboard)/admin/foods-management/categories/_services/services';
+import { CategorySchema } from '@/app/(dashboard)/admin/foods-management/categories/_types/schema';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 /**
  * A custom hook for creating a new category using a mutation function.
@@ -25,8 +25,8 @@ export const useCreateCategory = () => {
       await createCategory(data);
     },
     onSuccess: () => {
-      toast.success("Category created successfully.");
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      toast.success('Category created successfully.');
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 };
@@ -34,13 +34,20 @@ export const useCreateCategory = () => {
 export const useUpdateCategory = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<void, Error, CategorySchema>({
+    mutationKey: ['categories', 'update'],
     mutationFn: async (data: CategorySchema) => {
-      await updateCategory(data);
+      if (data.action !== 'update') {
+        return Promise.reject(new Error('Invalid action for update.'));
+      }
+      return updateCategory(data);
     },
     onSuccess: () => {
-      toast.success("Category updated successfully.");
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      toast.success('Category updated successfully.');
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to update Category.');
     },
   });
 };
@@ -53,8 +60,8 @@ export const useDeleteCategory = () => {
       await deleteCategory(id);
     },
     onSuccess: () => {
-      toast.success("Category deleted successfully.");
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      toast.success('Category deleted successfully.');
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 };
