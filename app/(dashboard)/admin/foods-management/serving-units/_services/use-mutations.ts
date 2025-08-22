@@ -24,13 +24,20 @@ export const useCreateServingUnit = () => {
 export const useUpdateServingUnit = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<void, Error, ServingUnitSchema>({
+    mutationKey: ['servingUnits', 'update'],
     mutationFn: async (data: ServingUnitSchema) => {
-      await updateServingUnit(data);
+      if (data.action !== 'update') {
+        return Promise.reject(new Error('Invalid action for update.'));
+      }
+      return updateServingUnit(data);
     },
     onSuccess: () => {
       toast.success('Serving Unit updated successfully.');
       queryClient.invalidateQueries({ queryKey: ['servingUnits'] });
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to update Serving Unit.');
     },
   });
 };

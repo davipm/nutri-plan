@@ -8,7 +8,7 @@ import NoItemFound from '@/components/no-item-found';
 import { Button } from '@/components/ui/button';
 
 export function ServingUnitCards() {
-  const { updateServingUnitDialogOpen } = useServingUnitsStore();
+  const { updateServingUnitDialogOpen, updateSelectedServingUnitId } = useServingUnitsStore();
 
   const { data, isError, isLoading, isRefetching, refetch } = useServingUnits();
 
@@ -22,8 +22,8 @@ export function ServingUnitCards() {
 
   if (isError) {
     return (
-      <div role="alet" className="flex flex-col items-center justify-center space-y-4 py-12">
-        <p>Failed to load food items</p>
+      <div role="alert" className="flex flex-col items-center justify-center space-y-4 py-12">
+        <p>Failed to load serving units</p>
         <Button variant="outline" onClick={() => refetch()} disabled={isRefetching}>
           {isRefetching ? 'Retrying...' : 'Try Again'}
         </Button>
@@ -32,7 +32,14 @@ export function ServingUnitCards() {
   }
 
   if (data?.length === 0) {
-    return <NoItemFound onClick={() => updateServingUnitDialogOpen(true)} />;
+    return (
+      <NoItemFound
+        onClick={() => {
+          updateServingUnitDialogOpen(true);
+          updateSelectedServingUnitId(null);
+        }}
+      />
+    );
   }
 
   return (

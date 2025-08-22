@@ -34,10 +34,26 @@ function ServingUnitCard({ servingUnit }: ServingUnitCardProps) {
     <div className="flex flex-col justify-between gap-3 rounded-lg border p-6">
       <p className="truncate font-medium">{servingUnit.name}</p>
       <div className="flex gap-1">
-        <Button className="size-6" variant="ghost" size="icon" onClick={handleEdit}>
+        <Button
+          className="size-6"
+          variant="ghost"
+          size="icon"
+          onClick={handleEdit}
+          aria-label={`Edit ${servingUnit.name}`}
+          title={`Edit ${servingUnit.name}`}
+        >
           <Edit />
         </Button>
-        <Button className="size-6" variant="ghost" size="icon" onClick={handleDelete}>
+        <Button
+          className="size-6"
+          variant="ghost"
+          size="icon"
+          onClick={handleDelete}
+          aria-label={`Delete ${servingUnit.name}`}
+          title={`Delete ${servingUnit.name}`}
+          disabled={servingUnitsMutation.isPending}
+          aria-disabled={servingUnitsMutation.isPending}
+        >
           <Trash />
         </Button>
       </div>

@@ -59,7 +59,10 @@ export const createStore = <T extends object>(
   return create<T>()(
     persist(enhancedStoreCreator, {
       name: name || 'zustand-store',
-      storage: createJSONStorage(() => storage || localStorage),
+      storage: createJSONStorage(() => {
+        if (storage) return storage;
+        return (typeof window !== 'undefined' ? localStorage : undefined) as Storage;
+      }),
       partialize: (state) =>
         Object.fromEntries(
           Object.entries(state).filter(([key]) => !excludeFromPersist.includes(key as keyof T)),
