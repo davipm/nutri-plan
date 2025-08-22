@@ -51,14 +51,15 @@ export const getServingUnits = async () => {
 };
 
 export const getServingUnit = async (id: number): Promise<ServingUnitSchema> => {
-  const res = await prisma.servingUnit.findFirst({
-    where: { id },
-  });
+  const res = await prisma.servingUnit.findFirst({ where: { id } });
+
+  if (!res) {
+    throw new Error('Serving unit not found');
+  }
 
   return {
-    ...res,
-    id,
+    id: res.id,
+    name: res.name,
     action: 'update',
-    name: res?.name ?? '',
   };
 };
