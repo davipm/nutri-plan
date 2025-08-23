@@ -1,13 +1,17 @@
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
-import { immer } from "zustand/middleware/immer";
-import { StateCreator } from "zustand/vanilla";
+import { create } from 'zustand';
+import { createJSONStorage, devtools, persist } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
+import { StateCreator } from 'zustand/vanilla';
 
 type ConfigType<T> = {
   name?: string;
   storage?: Storage;
   skipPersist?: boolean;
   excludeFromPersist?: Array<keyof T>;
+  devtools?: {
+    enabled?: boolean;
+    name?: string;
+  };
 };
 
 /**
@@ -16,11 +20,11 @@ type ConfigType<T> = {
  * @template T The type of the state object.
  * @param storeCreator The state creator function that defines the state and actions.
  * @param config Optional configuration for the store, including persistence settings
- * like `name`, `storage`, `skipPersist`, and `excludeFromPersist`.
+ * like `name`, `storage`, `skipPersist`, `excludeFromPersist`, and `devtools`.
  * @returns A Zustand store hook for the created store.
  */
 export const createStore = <T extends object>(
-  storeCreator: StateCreator<T, [["zustand/immer", never]], []>,
+  storeCreator: StateCreator<T, [['zustand/immer', never]], []>,
   config?: ConfigType<T>,
 ) => {
   const {
@@ -28,23 +32,39 @@ export const createStore = <T extends object>(
     storage,
     skipPersist = false,
     excludeFromPersist = [] as Array<keyof T>,
+    devtools: devtoolsConfig,
   } = config || {};
 
-  const immerStore = immer(storeCreator);
+  let enhancedStoreCreator = immer(storeCreator);
+  const isDevtoolsEnabled = devtoolsConfig?.enabled ?? process.env.NODE_ENV === 'development';
+
+  if (isDevtoolsEnabled) {
+    enhancedStoreCreator = devtools(enhancedStoreCreator, {
+      name: devtoolsConfig?.name || name || 'zustand-store',
+      enabled: true,
+    }) as typeof enhancedStoreCreator;
+  }
 
   if (skipPersist) {
-    return create<T>()(immerStore);
+    return create<T>()(enhancedStoreCreator);
+  }
+
+  if (!name) {
+    throw new Error(
+      'createStore: `config.name` is required when persistence is enabled to prevent storage key collisions.',
+    );
   }
 
   return create<T>()(
-    persist(immerStore, {
-      name: name || "zustand-store",
-      storage: createJSONStorage(() => storage || localStorage),
+    persist(enhancedStoreCreator, {
+      name: name,
+      storage: createJSONStorage(() => {
+        if (storage) return storage;
+        return (typeof window !== 'undefined' ? localStorage : undefined) as Storage;
+      }),
       partialize: (state) =>
         Object.fromEntries(
-          Object.entries(state).filter(
-            ([key]) => !excludeFromPersist.includes(key as keyof T),
-          ),
+          Object.entries(state).filter(([key]) => !excludeFromPersist.includes(key as keyof T)),
         ),
     }),
   );

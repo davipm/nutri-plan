@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { patterns } from "@/lib/constants";
-import { regexSchema, requiredStringSchema } from "@/lib/zod-schemas";
+import { patterns } from '@/lib/constants';
+import { regexSchema, requiredStringSchema } from '@/lib/zod-schemas';
+import { z } from 'zod';
 
 /**
  * Represents a schema definition for a food item, combining general food attributes
@@ -42,33 +42,34 @@ export const foodSchema = z.intersection(
       }),
     ),
   }),
-  z.discriminatedUnion("action", [
-    z.object({ action: z.literal("create") }),
-    z.object({ action: z.literal("update"), id: z.number() }),
+  z.discriminatedUnion('action', [
+    z.object({ action: z.literal('create') }),
+    z.object({ action: z.literal('update'), id: z.number() }),
   ]),
 );
 
 export type FoodSchema = z.infer<typeof foodSchema>;
 
 export const foodDefaultValues: FoodSchema = {
-  action: "create",
+  action: 'create',
   foodServingUnits: [],
-  name: "",
-  categoryId: "",
-  calories: "",
-  carbohydrates: "",
-  fat: "",
-  fiber: "",
-  protein: "",
-  sugar: "",
+  name: '',
+  categoryId: '',
+  calories: '',
+  carbohydrates: '',
+  fat: '',
+  fiber: '',
+  protein: '',
+  sugar: '',
 };
 
 export const servingUnitSchema = z.intersection(
   z.object({
     name: requiredStringSchema,
+    id: z.number().optional(),
   }),
-  z.discriminatedUnion("action", [
-    z.object({ action: z.literal("create") }),
-    z.object({ action: z.literal("update"), id: z.number() }),
+  z.discriminatedUnion('action', [
+    z.object({ action: z.literal('create') }),
+    z.object({ action: z.literal('update'), id: z.number() }),
   ]),
 );

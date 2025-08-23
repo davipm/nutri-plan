@@ -6,12 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Category } from '@/generated/prisma';
 import { alert } from '@/store/use-global-store';
 import { Edit, Trash } from 'lucide-react';
+import { memo } from 'react';
 
 type CategoryCardProps = {
   category: Category;
 };
 
-export function CategoryCard({ category }: CategoryCardProps) {
+function CategoryCard({ category }: CategoryCardProps) {
   const { updateSelectedCategoryId, updateCategoryDialogOpen } = useCategoriesStore();
   const deleteCategoryMutation = useDeleteCategory();
 
@@ -35,6 +36,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={handleEdit}
           aria-label={`Edit ${category.name}`}
         >
@@ -43,6 +45,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={handleDelete}
           aria-label={`Delete ${category.name}`}
         >
@@ -52,3 +55,5 @@ export function CategoryCard({ category }: CategoryCardProps) {
     </div>
   );
 }
+
+export default memo(CategoryCard);

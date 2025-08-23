@@ -1,15 +1,14 @@
-"use client";
-
-import { useState } from "react";
-
-// import { Container } from "./styles";
+import { ServingUnitCards } from '@/app/(dashboard)/admin/foods-management/serving-units/_components/serving-unit-cards';
+import { ServingUnitFormDialog } from '@/app/(dashboard)/admin/foods-management/serving-units/_components/serving-unit-form-dialog';
 
 export default function Page() {
-  const [item, setItem] = useState(null);
-
   return (
-    <div>
-      <p>Serving Unit</p>
-    </div>
+    <>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-3xl font-semibold">Serving Units List</h1>
+        <ServingUnitFormDialog />
+      </div>
+      <ServingUnitCards />
+    </>
   );
 }

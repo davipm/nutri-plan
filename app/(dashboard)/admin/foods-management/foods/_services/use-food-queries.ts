@@ -1,9 +1,9 @@
-import { useFoodsStore } from "@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store";
-import { useQuery } from "@tanstack/react-query";
+import { useFoodsStore } from '@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store';
 import {
   getFood,
   getFoods,
-} from "@/app/(dashboard)/admin/foods-management/foods/_services/queries";
+} from '@/app/(dashboard)/admin/foods-management/foods/_services/queries';
+import { useQuery } from '@tanstack/react-query';
 
 /**
  * Custom hook that retrieves a list of foods based on the current filters.
@@ -19,7 +19,7 @@ import {
 export const useFoods = () => {
   const { foodFilters } = useFoodsStore();
   return useQuery({
-    queryKey: ["foods", foodFilters],
+    queryKey: ['foods', foodFilters],
     queryFn: () => getFoods(foodFilters),
   });
 };
@@ -41,7 +41,7 @@ export const useFoods = () => {
 export const useFood = () => {
   const { selectedFoodId } = useFoodsStore();
   return useQuery({
-    queryKey: ["food", { selectedFoodId }],
+    queryKey: ['food', { selectedFoodId }],
     queryFn: () => getFood(selectedFoodId!),
     enabled: !!selectedFoodId,
   });
