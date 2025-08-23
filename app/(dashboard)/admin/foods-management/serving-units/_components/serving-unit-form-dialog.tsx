@@ -1,10 +1,7 @@
 'use client';
 
 import { useServingUnitsStore } from '@/app/(dashboard)/admin/foods-management/serving-units/_libs/use-serving-units-store';
-import {
-  useCreateServingUnit,
-  useUpdateServingUnit,
-} from '@/app/(dashboard)/admin/foods-management/serving-units/_services/use-mutations';
+import { useSaveServingUnit } from '@/app/(dashboard)/admin/foods-management/serving-units/_services/use-mutations';
 import { useServingUnit } from '@/app/(dashboard)/admin/foods-management/serving-units/_services/use-queries';
 import {
   ServingUnitSchema,
@@ -46,14 +43,13 @@ export function ServingUnitFormDialog({ smallTrigger }: Props) {
   });
 
   const servingUnitQuery = useServingUnit();
-  const createServingUnitMutation = useCreateServingUnit();
-  const updateServingUnitMutation = useUpdateServingUnit();
+  const saveServingUnitMutation = useSaveServingUnit();
 
-  const isPending = createServingUnitMutation.isPending || updateServingUnitMutation.isPending;
+  const isPending = saveServingUnitMutation.isPending;
 
   useEffect(() => {
     if (isEditMode && servingUnitQuery.data) {
-      form.reset(servingUnitQuery.data);
+      form.reset({ ...servingUnitQuery.data, action: 'update' });
     }
   }, [isEditMode, servingUnitQuery.data, form]);
 
@@ -66,13 +62,9 @@ export function ServingUnitFormDialog({ smallTrigger }: Props) {
   };
 
   const onSubmit: SubmitHandler<ServingUnitSchema> = (data) => {
-    const onSuccess = () => handleDialogOpenChange(false);
-
-    if (data.action === 'create') {
-      createServingUnitMutation.mutate(data, { onSuccess });
-    } else {
-      updateServingUnitMutation.mutate(data, { onSuccess });
-    }
+    saveServingUnitMutation.mutate(data, {
+      onSuccess: () => handleDialogOpenChange(false),
+    });
   };
 
   return (

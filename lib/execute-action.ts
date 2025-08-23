@@ -17,7 +17,7 @@ type Options<T> = {
  */
 export const executeAction = async <T>({ actionFn }: Options<T>) => {
   try {
-    await actionFn();
+    return await actionFn();
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
