@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { Loader2Icon } from "lucide-react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { useSignUp } from '@/app/(auth)/sing-up/_services/use-mutations';
 import {
-  singUpDefaultValues,
-  singUpSchema,
-  SingUpSchema,
-} from "@/app/(auth)/sing-up/_types/sign-up-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useSingUp } from "@/app/(auth)/sing-up/_services/use-mutations";
-import { Button } from "@/components/ui/button";
-import { ControlledInput } from "@/components/controlled-input";
-import Link from "next/link";
+  SignUpSchema,
+  signUpDefaultValues,
+  signUpSchema,
+} from '@/app/(auth)/sing-up/_types/sign-up-schema';
+import { ControlledInput } from '@/components/controlled-input';
+import { Button } from '@/components/ui/button';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2Icon } from 'lucide-react';
+import Link from 'next/link';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 /**
  * A component that renders the sign-up form for user registration.
@@ -20,15 +20,15 @@ import Link from "next/link";
  * It collects user information such as full name, email, password, and confirmation password,
  * and performs the sign-up operation when the form is submitted.
  */
-export function SingUpForm() {
-  const signUpMutation = useSingUp();
+export function SignUpForm() {
+  const signUpMutation = useSignUp();
 
-  const form = useForm<SingUpSchema>({
-    defaultValues: singUpDefaultValues,
-    resolver: zodResolver(singUpSchema),
+  const form = useForm<SignUpSchema>({
+    defaultValues: signUpDefaultValues,
+    resolver: zodResolver(signUpSchema),
   });
 
-  const onSubmit: SubmitHandler<SingUpSchema> = (data) => {
+  const onSubmit: SubmitHandler<SignUpSchema> = (data) => {
     signUpMutation.mutate(data);
   };
 
@@ -40,20 +40,14 @@ export function SingUpForm() {
       >
         <div className="text-center">
           <h2 className="mb-1 text-2xl font-semibold">Create Account</h2>
-          <p className="text-muted-foreground text-sm">
-            Sign up to get started
-          </p>
+          <p className="text-muted-foreground text-sm">Sign up to get started</p>
         </div>
 
         <div className="space-y-3">
-          <ControlledInput<SingUpSchema> name="name" label="Full Name" />
-          <ControlledInput<SingUpSchema> name="email" label="Email" />
-          <ControlledInput<SingUpSchema>
-            name="password"
-            label="Password"
-            type="password"
-          />
-          <ControlledInput<SingUpSchema>
+          <ControlledInput<SignUpSchema> name="name" label="Full Name" />
+          <ControlledInput<SignUpSchema> name="email" label="Email" />
+          <ControlledInput<SignUpSchema> name="password" label="Password" type="password" />
+          <ControlledInput<SignUpSchema>
             name="confirmPassword"
             label="Confirm Password"
             type="password"
@@ -61,16 +55,16 @@ export function SingUpForm() {
         </div>
 
         <Button className="w-full" disabled={signUpMutation.isPending}>
-          {signUpMutation.isPending && <Loader2Icon className="animate-spin" />}
-          Sing up
+          {signUpMutation.isPending ? (
+            <Loader2Icon className="animate-spin" />
+          ) : (
+            'Sign up'
+          )}
         </Button>
 
         <div className="text-center text-sm">
           Already have an account?
-          <Link
-            href="/sing-in"
-            className="text-primary ml-1 font-medium hover:underline"
-          >
+          <Link href="/sing-in" className="text-primary ml-1 font-medium hover:underline">
             Sing in
           </Link>
         </div>

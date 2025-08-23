@@ -18,7 +18,7 @@ import { passwordSchema, requiredStringSchema } from "@/lib/zod-schemas";
  *   - If the values do not match, the validation fails and an error message
  *     ("Passwords don't match") is associated with the `confirmPassword` field.
  */
-export const singUpSchema = z
+export const signUpSchema = z
   .object({
     name: requiredStringSchema,
     email: z.string().min(1, "Email is required."),
@@ -30,9 +30,9 @@ export const singUpSchema = z
     path: ["confirmPassword"],
   });
 
-export type SingUpSchema = z.infer<typeof singUpSchema>;
+export type SignUpSchema = z.infer<typeof signUpSchema>;
 
-export const singUpDefaultValues: SingUpSchema = {
+export const signUpDefaultValues: SignUpSchema = {
   name: "",
   email: "",
   password: "",
