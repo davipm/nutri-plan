@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const servingUnitSchema = z.intersection(
   z.object({
-    name: z.string().min(1, { message: 'Name is required' }).max(255),
+    name: z.string().min(1, { message: 'More than one characters' }).max(255),
   }),
   z.discriminatedUnion('action', [
     z.object({ action: z.literal('create') }),

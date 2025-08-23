@@ -1,13 +1,24 @@
-"use client";
+'use client';
 
-import { Loader2Icon, Plus } from "lucide-react";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { CategoryFormDialog } from '@/app/(dashboard)/admin/foods-management/categories/_components/category-form-dialog';
+import { useCategoriesStore } from '@/app/(dashboard)/admin/foods-management/categories/_libs/use-categories-store';
+import { useCategories } from '@/app/(dashboard)/admin/foods-management/categories/_services/use-queries';
+import { SpecifyFoodServingUnits } from '@/app/(dashboard)/admin/foods-management/foods/_components/specify-food-serving-units';
+import { useFoodsStore } from '@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store';
 import {
+  useCreateFood,
+  useUpdateFood,
+} from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-mutations';
+import { useFood } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-queries';
+import {
+  FoodSchema,
   foodDefaultValues,
   foodSchema,
-  FoodSchema,
-} from "@/app/(dashboard)/admin/foods-management/foods/_types/food-schema";
+} from '@/app/(dashboard)/admin/foods-management/foods/_types/food-schema';
+import { useServingUnitsStore } from '@/app/(dashboard)/admin/foods-management/serving-units/_libs/use-serving-units-store';
+import { ControlledInput } from '@/components/controlled-input';
+import { ControlledSelect } from '@/components/controlled-select';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -15,35 +26,24 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { useFood } from "@/app/(dashboard)/admin/foods-management/foods/_services/use-food-queries";
-import { useCategories } from "@/app/(dashboard)/admin/foods-management/categories/_services/use-queries";
-import {
-  useCreateFood,
-  useUpdateFood,
-} from "@/app/(dashboard)/admin/foods-management/foods/_services/use-food-mutations";
-import { useFoodsStore } from "@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store";
-import { useCategoriesStore } from "@/app/(dashboard)/admin/foods-management/categories/_libs/use-categories-store";
-import { useServingUnitsStore } from "@/app/(dashboard)/admin/foods-management/serving-units/_libs/use-serving-units-store";
-import { useEffect } from "react";
-import { ControlledInput } from "@/components/controlled-input";
-import { ControlledSelect } from "@/components/controlled-select";
-import { CategoryFormDialog } from "@/app/(dashboard)/admin/foods-management/categories/_components/category-form-dialog";
-import { SpecifyFoodServingUnits } from "@/app/(dashboard)/admin/foods-management/foods/_components/specify-food-serving-units";
+} from '@/components/ui/dialog';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2Icon, Plus } from 'lucide-react';
+import { useEffect } from 'react';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 const nutritionalFields = [
-  { name: "calories", label: "Calories", placeholder: "kcal", type: "text" },
-  { name: "protein", label: "Protein", placeholder: "grams", type: "number" },
+  { name: 'calories', label: 'Calories', placeholder: 'kcal', type: 'text' },
+  { name: 'protein', label: 'Protein', placeholder: 'grams', type: 'number' },
   {
-    name: "carbohydrates",
-    label: "Carbohydrates",
-    placeholder: "grams",
-    type: "number",
+    name: 'carbohydrates',
+    label: 'Carbohydrates',
+    placeholder: 'grams',
+    type: 'number',
   },
-  { name: "fat", label: "Fat", placeholder: "grams", type: "number" },
-  { name: "fiber", label: "Fiber", placeholder: "grams", type: "number" },
-  { name: "sugar", label: "Sugar", placeholder: "grams", type: "number" },
+  { name: 'fat', label: 'Fat', placeholder: 'grams', type: 'number' },
+  { name: 'fiber', label: 'Fiber', placeholder: 'grams', type: 'number' },
+  { name: 'sugar', label: 'Sugar', placeholder: 'grams', type: 'number' },
 ];
 
 export default function FoodFormDialog() {
@@ -58,15 +58,10 @@ export default function FoodFormDialog() {
   const createFoodMutation = useCreateFood();
   const updateFoodMutation = useUpdateFood();
 
-  const isPending =
-    createFoodMutation.isPending || updateFoodMutation.isPending;
+  const isPending = createFoodMutation.isPending || updateFoodMutation.isPending;
 
-  const {
-    selectedFoodId,
-    updateSelectedFoodId,
-    foodDialogOpen,
-    updateFoodDialogOpen,
-  } = useFoodsStore();
+  const { selectedFoodId, updateSelectedFoodId, foodDialogOpen, updateFoodDialogOpen } =
+    useFoodsStore();
 
   const { categoryDialogOpen } = useCategoriesStore();
   const { servingUnitDialogOpen } = useServingUnitsStore();
@@ -90,7 +85,7 @@ export default function FoodFormDialog() {
   const onSubmit: SubmitHandler<FoodSchema> = (data) => {
     const onSuccess = () => handleDialogOpenChange(false);
 
-    if (data.action === "create") {
+    if (data.action === 'create') {
       createFoodMutation.mutate(data, { onSuccess });
     } else {
       updateFoodMutation.mutate(data, { onSuccess });
@@ -107,7 +102,7 @@ export default function FoodFormDialog() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-2xl">
-            {selectedFoodId ? "Edit Food" : "Create a New Food"}
+            {selectedFoodId ? 'Edit Food' : 'Create a New Food'}
           </DialogTitle>
         </DialogHeader>
         <form
@@ -117,11 +112,7 @@ export default function FoodFormDialog() {
           <FormProvider {...form}>
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-1 grid">
-                <ControlledInput
-                  name="name"
-                  label="Name"
-                  placeholder="Enter food name"
-                />
+                <ControlledInput name="name" label="Name" placeholder="Enter food name" />
               </div>
 
               <div className="col-span-1 flex items-center">
@@ -155,7 +146,7 @@ export default function FoodFormDialog() {
           <DialogFooter>
             <Button type="submit">
               {isPending && <Loader2Icon className="animate-spin" />}
-              {selectedFoodId ? "Edit" : "Create"} Food
+              {selectedFoodId ? 'Edit' : 'Create'} Food
             </Button>
           </DialogFooter>
         </form>

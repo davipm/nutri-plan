@@ -3,7 +3,7 @@ import {
   deleteServingUnit,
   updateServingUnit,
 } from '@/app/(dashboard)/admin/foods-management/serving-units/_services/services';
-import { ServingUnitSchema } from '@/app/(dashboard)/admin/foods-management/serving-units/_types/schema';
+import type { ServingUnitSchema } from '@/app/(dashboard)/admin/foods-management/serving-units/_types/schema';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -57,9 +57,9 @@ export const useDeleteServingUnit = () => {
     mutationFn: async (id) => {
       await deleteServingUnit(id);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Serving Unit deleted successfully.');
-      queryClient.invalidateQueries({ queryKey: ['servingUnits'] });
+      await queryClient.invalidateQueries({ queryKey: ['servingUnits'] });
     },
     onError: (error) => {
       toast.error(error.message || 'Failed to delete Serving Unit.');

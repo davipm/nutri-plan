@@ -1,10 +1,12 @@
 'use server';
 
+import { servingUnitSchema } from '@/app/(dashboard)/admin/foods-management/foods/_types/food-schema';
 import { ServingUnitSchema } from '@/app/(dashboard)/admin/foods-management/serving-units/_types/schema';
 import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
 
 export const createServingUnit = async (data: ServingUnitSchema) => {
+  const input = servingUnitSchema.parse(data);
   if (data.action !== 'create') {
     throw new Error('Invalid action for create.');
   }
@@ -12,14 +14,14 @@ export const createServingUnit = async (data: ServingUnitSchema) => {
   await executeAction({
     actionFn: () =>
       prisma.servingUnit.create({
-        data: {
-          name: data.name,
-        },
+        data: { name: input.name },
       }),
   });
 };
 
 export const updateServingUnit = async (data: ServingUnitSchema) => {
+  const input = servingUnitSchema.parse(data);
+
   if (data.action !== 'update') {
     throw new Error('Invalid action for update.');
   }
@@ -27,8 +29,8 @@ export const updateServingUnit = async (data: ServingUnitSchema) => {
   await executeAction({
     actionFn: () =>
       prisma.servingUnit.update({
-        where: { id: data.id },
-        data: { name: data.name },
+        where: { id: input.id },
+        data: { name: input.name },
       }),
   });
 };

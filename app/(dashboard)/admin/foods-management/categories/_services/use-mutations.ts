@@ -3,7 +3,7 @@ import {
   deleteCategory,
   updateCategory,
 } from '@/app/(dashboard)/admin/foods-management/categories/_services/services';
-import { CategorySchema } from '@/app/(dashboard)/admin/foods-management/categories/_types/schema';
+import type { CategorySchema } from '@/app/(dashboard)/admin/foods-management/categories/_types/schema';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -20,13 +20,20 @@ import { toast } from 'sonner';
 export const useCreateCategory = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (data: CategorySchema) => {
+  return useMutation<void, Error, CategorySchema>({
+    mutationKey: ['categories', 'create'],
+    mutationFn: async (data) => {
+      if (data.action !== 'create') {
+        throw new Error('Invalid action for create.');
+      }
       await createCategory(data);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Category created successfully.');
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      await queryClient.invalidateQueries({ queryKey: ['categories'] });
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to create Category.');
     },
   });
 };
@@ -36,15 +43,15 @@ export const useUpdateCategory = () => {
 
   return useMutation<void, Error, CategorySchema>({
     mutationKey: ['categories', 'update'],
-    mutationFn: async (data: CategorySchema) => {
+    mutationFn: async (data) => {
       if (data.action !== 'update') {
         throw new Error('Invalid action for update.');
       }
       return updateCategory(data);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Category updated successfully.');
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      await queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
     onError: (error) => {
       toast.error(error.message || 'Failed to update Category.');
@@ -57,13 +64,12 @@ export const useDeleteCategory = () => {
 
   return useMutation<void, Error, number>({
     mutationKey: ['categories', 'delete'],
-    // mutationFn: async (id: number) => {
-    //   await deleteCategory(id);
-    // },
-    mutationFn: deleteCategory,
-    onSuccess: () => {
+    mutationFn: async (id) => {
+      await deleteCategory(id);
+    },
+    onSuccess: async () => {
       toast.success('Category deleted successfully.');
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      await queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
     onError: (error) => {
       toast.error(error.message || 'Failed to deleted Category.');
