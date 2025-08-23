@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { Prisma } from "@/generated/prisma";
-import prisma from "@/lib/prisma";
 import {
-  foodFiltersSchema,
   FoodFiltersSchema,
-} from "@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema";
-import { PaginateResult } from "@/types/paginate-result";
-import { FoodSchema } from "@/app/(dashboard)/admin/foods-management/foods/_types/food-schema";
-import { toStringSafe } from "@/lib/utils";
+  foodFiltersSchema,
+} from '@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema';
+import { FoodSchema } from '@/app/(dashboard)/admin/foods-management/foods/_types/food-schema';
+import { Prisma } from '@/generated/prisma';
+import prisma from '@/lib/prisma';
+import { toStringSafe } from '@/lib/utils';
+import { PaginateResult } from '@/types/paginate-result';
 
 type FoodWithServingUnits = Prisma.FoodGetPayload<{
   include: {
@@ -26,11 +26,11 @@ export const getFoods = async (
 
   const {
     searchTerm,
-    caloriesRange = ["", ""],
-    proteinRange = ["", ""],
+    caloriesRange = ['', ''],
+    proteinRange = ['', ''],
     categoryId,
-    sortBy = "name",
-    sortOrder = "asc",
+    sortBy = 'name',
+    sortOrder = 'asc',
     page = 1,
     pageSize = 10,
   } = validatedFilters;
@@ -152,9 +152,7 @@ function buildCategoryFilter(categoryId?: string): { id: number } | null {
 
   const numericCategoryId = parseNumericValue(categoryId);
 
-  return numericCategoryId && numericCategoryId > 0
-    ? { id: numericCategoryId }
-    : null;
+  return numericCategoryId && numericCategoryId > 0 ? { id: numericCategoryId } : null;
 }
 
 /**
@@ -188,7 +186,7 @@ export const getFood = async (id: number): Promise<FoodSchema | null> => {
 
   return {
     id,
-    action: "update" as const,
+    action: 'update' as const,
     name: toStringSafe(res.name),
     calories: toStringSafe(res.calories),
     carbohydrates: toStringSafe(res.carbohydrates),

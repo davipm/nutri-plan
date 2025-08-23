@@ -24,7 +24,7 @@ type ConfigType<T> = {
  * @returns A Zustand store hook for the created store.
  */
 export const createStore = <T extends object>(
-  storeCreator: StateCreator<T, [['zustand/immer', never], ['zustand/immer', never]], []>,
+  storeCreator: StateCreator<T, [['zustand/immer', never]], []>,
   config?: ConfigType<T>,
 ) => {
   const {
@@ -35,15 +35,7 @@ export const createStore = <T extends object>(
     devtools: devtoolsConfig,
   } = config || {};
 
-  // Apply immer middleware first
-  let enhancedStoreCreator = immer(storeCreator) as StateCreator<
-    T,
-    [['zustand/devtools', never]],
-    [['zustand/immer', never]],
-    T
-  >;
-
-  // Apply devtools middleware if enabled
+  let enhancedStoreCreator = immer(storeCreator);
   const isDevtoolsEnabled = devtoolsConfig?.enabled ?? process.env.NODE_ENV === 'development';
 
   if (isDevtoolsEnabled) {
@@ -53,15 +45,19 @@ export const createStore = <T extends object>(
     }) as typeof enhancedStoreCreator;
   }
 
-  // Apply persistence if not skipped
   if (skipPersist) {
-    return create<T>()(enhancedStoreCreator as StateCreator<T, [], [['zustand/immer', never]]>);
+    return create<T>()(enhancedStoreCreator);
   }
 
-  // When using persistence, wrap the enhanced store creator
+  if (!name) {
+    throw new Error(
+      'createStore: `config.name` is required when persistence is enabled to prevent storage key collisions.',
+    );
+  }
+
   return create<T>()(
-    persist(enhancedStoreCreator as StateCreator<T, [], [['zustand/immer', never]]>, {
-      name: name || 'zustand-store',
+    persist(enhancedStoreCreator, {
+      name: name,
       storage: createJSONStorage(() => {
         if (storage) return storage;
         return (typeof window !== 'undefined' ? localStorage : undefined) as Storage;

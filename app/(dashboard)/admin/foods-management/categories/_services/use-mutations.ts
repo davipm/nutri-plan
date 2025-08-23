@@ -38,7 +38,7 @@ export const useUpdateCategory = () => {
     mutationKey: ['categories', 'update'],
     mutationFn: async (data: CategorySchema) => {
       if (data.action !== 'update') {
-        return Promise.reject(new Error('Invalid action for update.'));
+        throw new Error('Invalid action for update.');
       }
       return updateCategory(data);
     },
@@ -55,13 +55,18 @@ export const useUpdateCategory = () => {
 export const useDeleteCategory = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (id: number) => {
-      await deleteCategory(id);
-    },
+  return useMutation<void, Error, number>({
+    mutationKey: ['categories', 'delete'],
+    // mutationFn: async (id: number) => {
+    //   await deleteCategory(id);
+    // },
+    mutationFn: deleteCategory,
     onSuccess: () => {
       toast.success('Category deleted successfully.');
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to deleted Category.');
     },
   });
 };

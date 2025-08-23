@@ -12,10 +12,15 @@ export const useCreateServingUnit = () => {
 
   return useMutation<void, Error, ServingUnitSchema>({
     mutationKey: ['servingUnits', 'create'],
-    mutationFn: async (data) => await createServingUnit(data),
-    onSuccess: () => {
+    mutationFn: async (data) => {
+      if (data.action !== 'create') {
+        throw new Error('Invalid action for create.');
+      }
+      await createServingUnit(data);
+    },
+    onSuccess: async () => {
       toast.success('Serving Unit created successfully.');
-      queryClient.invalidateQueries({ queryKey: ['servingUnits'] });
+      await queryClient.invalidateQueries({ queryKey: ['servingUnits'] });
     },
     onError: (error) => {
       toast.error(error.message || 'Failed to create Serving Unit.');
@@ -28,15 +33,15 @@ export const useUpdateServingUnit = () => {
 
   return useMutation<void, Error, ServingUnitSchema>({
     mutationKey: ['servingUnits', 'update'],
-    mutationFn: async (data: ServingUnitSchema) => {
+    mutationFn: async (data) => {
       if (data.action !== 'update') {
-        return Promise.reject(new Error('Invalid action for update.'));
+        throw new Error('Invalid action for update.');
       }
       return updateServingUnit(data);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Serving Unit updated successfully.');
-      queryClient.invalidateQueries({ queryKey: ['servingUnits'] });
+      await queryClient.invalidateQueries({ queryKey: ['servingUnits'] });
     },
     onError: (error) => {
       toast.error(error.message || 'Failed to update Serving Unit.');
@@ -47,8 +52,9 @@ export const useUpdateServingUnit = () => {
 export const useDeleteServingUnit = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (id: number) => {
+  return useMutation<void, Error, number>({
+    mutationKey: ['servingUnits', 'delete'],
+    mutationFn: async (id) => {
       await deleteServingUnit(id);
     },
     onSuccess: () => {
