@@ -3,7 +3,7 @@ import {
   ChevronRightIcon,
   MoreHorizontalIcon,
 } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { buttonVariants } from "@/components/ui/button";
@@ -16,18 +16,22 @@ type PaginationProps = {
   scrollToTopOnPaginate?: boolean;
 };
 
+const useScrollToTopOnPaginate = (currentPage: number, enabled: boolean) => {
+  const prevPageRef = useRef(currentPage);
+
+  useEffect(() => {
+    if (enabled && prevPageRef.current !== currentPage) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+    prevPageRef.current = currentPage;
+  }, [currentPage, enabled]);
+};
+
 /**
  * Renders a pagination component for navigating between pages.
- * Includes "Previous" and "Next" buttons, as well as individual page numbers and ellipses for larger paginations.
- * Automatically scrolls to the top of the page when navigating between pages if `scrollToTopOnPaginate` is enabled.
- *
- * @param {Object} props - The properties for the pagination component.
- * @param {number} props.currentPage - The current active page number.
- * @param {number} props.totalPages - The total number of pages available.
- * @param {function} props.updatePage - A callback function to update the current page. Accepts either a page number or the strings "prev" and "next".
- * @param {string} [props.className] - Optional additional class names to style the pagination component.
- * @param {boolean} [props.scrollToTopOnPaginate=true] - Whether to scroll to the top of the page when changing pages.
- * @return The rendered pagination component.
  */
 export function Pagination({
   currentPage,
@@ -36,18 +40,37 @@ export function Pagination({
   className,
   scrollToTopOnPaginate = true,
 }: PaginationProps) {
-  const prevPageRef = useRef(currentPage);
+  useScrollToTopOnPaginate(currentPage, scrollToTopOnPaginate);
 
-  useEffect(() => {
-    if (scrollToTopOnPaginate && prevPageRef.current !== currentPage) {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
+  const pages = useMemo(() => {
+    if (!totalPages) return [];
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
-
-    prevPageRef.current = currentPage;
-  }, [currentPage, scrollToTopOnPaginate]);
+    if (currentPage < 5) {
+      return [1, 2, 3, 4, 5, "ellipsis", totalPages];
+    }
+    if (currentPage > totalPages - 4) {
+      return [
+        1,
+        "ellipsis",
+        totalPages - 4,
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
+    }
+    return [
+      1,
+      "ellipsis",
+      currentPage - 1,
+      currentPage,
+      currentPage + 1,
+      "ellipsis",
+      totalPages,
+    ];
+  }, [currentPage, totalPages]);
 
   if (totalPages === undefined) {
     return (
@@ -62,55 +85,6 @@ export function Pagination({
       </div>
     );
   }
-
-  /**
-   * Generates an array representing pagination based on the total number of pages and the current page.
-   * The pagination includes logical ellipsis placeholders where appropriate for large numbers of pages.
-   *
-   * Rules for pagination generation:
-   * - If the total number of pages is less than or equal to 7, all pages are included without any ellipsis.
-   * - If the current page is within the first four pages, the output includes the first five pages, an ellipsis, and the last page.
-   * - If the current page is within the last four pages, the output includes the first page, an ellipsis, and the last five pages.
-   * - For all other cases, the output includes the first page, an ellipsis, the current page (with its adjacent pages), another ellipsis, and the last page.
-   *
-   * @function
-   * @param {number} totalPages - The total number of pages available.
-   * @param {number} currentPage - The current page number.
-   * @returns An array representing pagination. Page numbers are represented as numbers, while ellipsis placeholders are represented as the string "ellipsis".
-   */
-  const generatePagination = () => {
-    if (totalPages <= 7) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
-    }
-
-    if (currentPage < 5) {
-      return [1, 2, 3, 4, 5, "ellipsis", totalPages];
-    }
-
-    if (currentPage > totalPages - 4) {
-      return [
-        1,
-        "ellipsis",
-        totalPages - 4,
-        totalPages - 3,
-        totalPages - 2,
-        totalPages - 1,
-        totalPages,
-      ];
-    }
-
-    return [
-      1,
-      "ellipsis",
-      currentPage - 1,
-      currentPage,
-      currentPage + 1,
-      "ellipsis",
-      totalPages,
-    ];
-  };
-
-  const pages = generatePagination();
 
   return (
     <nav
