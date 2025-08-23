@@ -1,8 +1,9 @@
-import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { SingUpSchema } from "@/app/(auth)/sing-up/_types/sign-up-schema";
-import { singUp } from "@/app/(auth)/sing-up/_services/mutations";
+import { singUp } from '@/app/(auth)/sing-up/_services/mutations';
+import { SingUpSchema } from '@/app/(auth)/sing-up/_types/sign-up-schema';
+import { getErrorMessage } from '@/lib/get-error-message';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 /**
  * useSingUp is a custom hook that provides a mutation handler for signing up a user.
@@ -14,13 +15,16 @@ import { singUp } from "@/app/(auth)/sing-up/_services/mutations";
 export const useSingUp = () => {
   const router = useRouter();
 
-  return useMutation({
-    mutationFn: async (data: SingUpSchema) => {
+  return useMutation<void, Error, SingUpSchema>({
+    mutationFn: async (data) => {
       await singUp(data);
     },
     onSuccess: () => {
-      toast.success("Signed up successfully.");
-      router.replace("/sing-in");
+      toast.success('Signed up successfully.');
+      router.replace('/sing-in');
+    },
+    onError: (error) => {
+      toast.error(getErrorMessage(error));
     },
   });
 };

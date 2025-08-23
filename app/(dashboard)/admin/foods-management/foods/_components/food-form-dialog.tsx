@@ -5,10 +5,7 @@ import { useCategoriesStore } from '@/app/(dashboard)/admin/foods-management/cat
 import { useCategories } from '@/app/(dashboard)/admin/foods-management/categories/_services/use-queries';
 import { SpecifyFoodServingUnits } from '@/app/(dashboard)/admin/foods-management/foods/_components/specify-food-serving-units';
 import { useFoodsStore } from '@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store';
-import {
-  useCreateFood,
-  useUpdateFood,
-} from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-mutations';
+import { useSaveFood } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-mutations';
 import { useFood } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-queries';
 import {
   FoodSchema,
@@ -55,10 +52,9 @@ export default function FoodFormDialog() {
   const foodQuery = useFood();
   const categoriesQuery = useCategories();
 
-  const createFoodMutation = useCreateFood();
-  const updateFoodMutation = useUpdateFood();
+  const saveFoodMutation = useSaveFood();
 
-  const isPending = createFoodMutation.isPending || updateFoodMutation.isPending;
+  const isPending = saveFoodMutation.isPending;
 
   const { selectedFoodId, updateSelectedFoodId, foodDialogOpen, updateFoodDialogOpen } =
     useFoodsStore();
@@ -83,13 +79,9 @@ export default function FoodFormDialog() {
   const disableSubmit = servingUnitDialogOpen || categoryDialogOpen;
 
   const onSubmit: SubmitHandler<FoodSchema> = (data) => {
-    const onSuccess = () => handleDialogOpenChange(false);
-
-    if (data.action === 'create') {
-      createFoodMutation.mutate(data, { onSuccess });
-    } else {
-      updateFoodMutation.mutate(data, { onSuccess });
-    }
+    saveFoodMutation.mutate(data, {
+      onSuccess: () => handleDialogOpenChange(false),
+    });
   };
 
   return (
