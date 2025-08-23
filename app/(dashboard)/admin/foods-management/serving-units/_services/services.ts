@@ -5,6 +5,10 @@ import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
 
 export const createServingUnit = async (data: ServingUnitSchema) => {
+  if (data.action !== 'create') {
+    throw new Error('Invalid action for create.');
+  }
+
   await executeAction({
     actionFn: () =>
       prisma.servingUnit.create({
@@ -54,7 +58,7 @@ export const getServingUnit = async (id: number): Promise<ServingUnitSchema> => 
   const res = await prisma.servingUnit.findFirst({ where: { id } });
 
   if (!res) {
-    throw new Error('Serving unit not found');
+    throw new Error(`Serving unit with id ${id} not found`);
   }
 
   return {

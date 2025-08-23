@@ -14,7 +14,9 @@ export function CategoryCards() {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-4">
-        <CategoryCardsSkeleton />
+        {Array.from({ length: 12 }).map((_, index) => (
+          <CategoryCardsSkeleton key={index} />
+        ))}
       </div>
     );
   }

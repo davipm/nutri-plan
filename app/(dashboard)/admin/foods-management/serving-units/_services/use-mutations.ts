@@ -55,5 +55,8 @@ export const useDeleteServingUnit = () => {
       toast.success('Serving Unit deleted successfully.');
       queryClient.invalidateQueries({ queryKey: ['servingUnits'] });
     },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to delete Serving Unit.');
+    },
   });
 };

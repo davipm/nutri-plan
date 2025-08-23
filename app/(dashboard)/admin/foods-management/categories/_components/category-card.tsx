@@ -36,6 +36,7 @@ function CategoryCard({ category }: CategoryCardProps) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={handleEdit}
           aria-label={`Edit ${category.name}`}
         >
@@ -44,6 +45,7 @@ function CategoryCard({ category }: CategoryCardProps) {
         <Button
           variant="ghost"
           size="icon"
+          type="button"
           onClick={handleDelete}
           aria-label={`Delete ${category.name}`}
         >

@@ -10,12 +10,14 @@ import { Button } from '@/components/ui/button';
 export function ServingUnitCards() {
   const { updateServingUnitDialogOpen, updateSelectedServingUnitId } = useServingUnitsStore();
 
-  const { data, isError, isLoading, isRefetching, refetch } = useServingUnits();
+  const { data = [], isError, isLoading, isRefetching, refetch } = useServingUnits();
 
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-4">
-        <ServingUnitSkeleton />
+        {Array.from({ length: 12 }).map((_, index) => (
+          <ServingUnitSkeleton key={index} />
+        ))}
       </div>
     );
   }
@@ -31,7 +33,7 @@ export function ServingUnitCards() {
     );
   }
 
-  if (data?.length === 0) {
+  if (data.length === 0) {
     return (
       <NoItemFound
         onClick={() => {
@@ -44,7 +46,7 @@ export function ServingUnitCards() {
 
   return (
     <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-4">
-      {data?.map((servingUnit) => (
+      {data.map((servingUnit) => (
         <ServingUnitCard key={servingUnit.id} servingUnit={servingUnit} />
       ))}
     </div>
