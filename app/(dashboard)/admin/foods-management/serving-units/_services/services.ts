@@ -4,7 +4,6 @@ import {
   ServingUnitSchema,
   servingUnitSchema,
 } from '@/app/(dashboard)/admin/foods-management/serving-units/_types/schema';
-import type { ServingUnit } from '@/generated/prisma/client';
 import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
 
@@ -50,7 +49,7 @@ export const getServingUnits = async () => {
   return await prisma.servingUnit.findMany();
 };
 
-export const getServingUnit = async (id: number): Promise<ServingUnit> => {
+export const getServingUnit = async (id: number) => {
   const res = await prisma.servingUnit.findFirst({ where: { id } });
 
   if (!res) {

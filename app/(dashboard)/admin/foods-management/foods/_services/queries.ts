@@ -4,7 +4,6 @@ import {
   FoodFiltersSchema,
   foodFiltersSchema,
 } from '@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema';
-import { FoodSchema } from '@/app/(dashboard)/admin/foods-management/foods/_types/food-schema';
 import { Prisma } from '@/generated/prisma';
 import prisma from '@/lib/prisma';
 import { toStringSafe } from '@/lib/utils';
@@ -171,15 +170,13 @@ function parseNumericValue(value: string): number | null {
  * Fetches a food item and its associated serving units from the database by its unique identifier.
  *
  * @param {number} id - The unique identifier of the food item to retrieve.
- * @returns {Promise<FoodSchema | null>} - A promise that resolves to the food item object if found,
+ * @returns - A promise that resolves to the food item object if found,
  * or null if no food item with the given ID exists.
  */
-export const getFood = async (id: number): Promise<FoodSchema> => {
+export const getFood = async (id: number) => {
   const res = await prisma.food.findFirst({
     where: { id },
-    include: {
-      foodServingUnits: true,
-    },
+    include: { foodServingUnits: true },
   });
 
   if (!res) {
@@ -188,7 +185,6 @@ export const getFood = async (id: number): Promise<FoodSchema> => {
 
   return {
     id,
-    action: 'update',
     name: toStringSafe(res.name),
     calories: toStringSafe(res.calories),
     carbohydrates: toStringSafe(res.carbohydrates),
