@@ -44,6 +44,13 @@ const nutritionalFields = [
 ];
 
 export default function FoodFormDialog() {
+  const { selectedFoodId, updateSelectedFoodId, foodDialogOpen, updateFoodDialogOpen } =
+    useFoodsStore();
+  const { categoryDialogOpen } = useCategoriesStore();
+  const { servingUnitDialogOpen } = useServingUnitsStore();
+
+  const isEditMode = !!selectedFoodId;
+
   const form = useForm<FoodSchema>({
     defaultValues: foodDefaultValues,
     resolver: zodResolver(foodSchema),
@@ -51,22 +58,15 @@ export default function FoodFormDialog() {
 
   const foodQuery = useFood();
   const categoriesQuery = useCategories();
-
   const saveFoodMutation = useSaveFood();
 
   const isPending = saveFoodMutation.isPending;
 
-  const { selectedFoodId, updateSelectedFoodId, foodDialogOpen, updateFoodDialogOpen } =
-    useFoodsStore();
-
-  const { categoryDialogOpen } = useCategoriesStore();
-  const { servingUnitDialogOpen } = useServingUnitsStore();
-
   useEffect(() => {
-    if (selectedFoodId && foodQuery.data) {
-      form.reset(foodQuery.data);
+    if (isEditMode && foodQuery.data) {
+      form.reset({ ...foodQuery.data, action: 'update' });
     }
-  }, [foodQuery.data, form, selectedFoodId]);
+  }, [foodQuery.data, form, isEditMode]);
 
   const handleDialogOpenChange = (open: boolean) => {
     updateFoodDialogOpen(open);
@@ -94,14 +94,11 @@ export default function FoodFormDialog() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-2xl">
-            {selectedFoodId ? 'Edit Food' : 'Create a New Food'}
+            {isEditMode ? 'Edit Food' : 'Create a New Food'}
           </DialogTitle>
         </DialogHeader>
-        <form
-          onSubmit={!disableSubmit ? form.handleSubmit(onSubmit) : undefined}
-          className="space-y-6"
-        >
-          <FormProvider {...form}>
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-1 grid">
                 <ControlledInput name="name" label="Name" placeholder="Enter food name" />
@@ -134,14 +131,14 @@ export default function FoodFormDialog() {
                 <SpecifyFoodServingUnits />
               </div>
             </div>
-          </FormProvider>
-          <DialogFooter>
-            <Button type="submit">
-              {isPending && <Loader2Icon className="animate-spin" />}
-              {selectedFoodId ? 'Edit' : 'Create'} Food
-            </Button>
-          </DialogFooter>
-        </form>
+            <DialogFooter>
+              <Button type="submit" disabled={isPending || disableSubmit}>
+                {isPending && <Loader2Icon className="mr-2 size-4 animate-spin" />}
+                <span>{isEditMode ? 'Save Changes' : 'Create'}</span>
+              </Button>
+            </DialogFooter>
+          </form>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   );

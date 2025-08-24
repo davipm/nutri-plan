@@ -1,12 +1,12 @@
 'use server';
 
 import {
-  servingUnitSchema,
   ServingUnitSchema,
+  servingUnitSchema,
 } from '@/app/(dashboard)/admin/foods-management/serving-units/_types/schema';
+import type { ServingUnit } from '@/generated/prisma/client';
 import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
-import type { ServingUnit } from '@/generated/prisma/client';
 
 export const saveServingUnit = async (data: ServingUnitSchema) => {
   const input = servingUnitSchema.parse(data);

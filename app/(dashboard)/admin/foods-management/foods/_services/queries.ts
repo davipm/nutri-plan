@@ -174,7 +174,7 @@ function parseNumericValue(value: string): number | null {
  * @returns {Promise<FoodSchema | null>} - A promise that resolves to the food item object if found,
  * or null if no food item with the given ID exists.
  */
-export const getFood = async (id: number): Promise<FoodSchema | null> => {
+export const getFood = async (id: number): Promise<FoodSchema> => {
   const res = await prisma.food.findFirst({
     where: { id },
     include: {
@@ -182,11 +182,13 @@ export const getFood = async (id: number): Promise<FoodSchema | null> => {
     },
   });
 
-  if (!res) return null;
+  if (!res) {
+    throw new Error(`Serving unit with id ${id} not found`);
+  }
 
   return {
     id,
-    action: 'update' as const,
+    action: 'update',
     name: toStringSafe(res.name),
     calories: toStringSafe(res.calories),
     carbohydrates: toStringSafe(res.carbohydrates),
