@@ -1,19 +1,19 @@
-"use server";
+'use server';
 
 import {
-  foodSchema,
   FoodSchema,
-} from "@/app/(dashboard)/admin/foods-management/foods/_types/food-schema";
-import { executeAction } from "@/lib/execute-action";
-import prisma from "@/lib/prisma";
-import { toNumberSafe } from "@/lib/utils";
+  foodSchema,
+} from '@/app/(dashboard)/admin/foods-management/foods/_types/food-schema';
+import { executeAction } from '@/lib/execute-action';
+import prisma from '@/lib/prisma';
+import { toNumberSafe } from '@/lib/utils';
 
 export const saveFood = async (data: FoodSchema) => {
   return executeAction({
     actionFn: async () => {
       const validatedData = foodSchema.parse(data);
 
-      if (validatedData.action === "create") {
+      if (validatedData.action === 'create') {
         const { foodServingUnits, ...foodData } = validatedData;
         return prisma.$transaction(async (prisma) => {
           const food = await prisma.food.create({
@@ -23,7 +23,7 @@ export const saveFood = async (data: FoodSchema) => {
               carbohydrates: toNumberSafe(foodData.carbohydrates),
               fat: toNumberSafe(foodData.fat),
               protein: toNumberSafe(foodData.protein),
-              categoryId: toNumberSafe(foodData.categoryId),
+              categoryId: toNumberSafe(foodData.categoryId) || null,
               sugar: toNumberSafe(foodData.sugar),
               fiber: toNumberSafe(foodData.fiber),
             },

@@ -47,7 +47,9 @@ export function ControlledSlider<T extends FieldValues>({
           field.onChange(newValue);
         };
 
-        const value = field.value ?? [min, max];
+        const values: number[] = Array.isArray(field.value)
+          ? (field.value as number[])
+          : [min, max];
 
         return (
           <div className="grid w-full gap-4 rounded-md border border-[#14424C]/20 p-4">
@@ -58,7 +60,7 @@ export function ControlledSlider<T extends FieldValues>({
             )}
             <SliderPrimitive.Root
               {...props}
-              value={value}
+              value={values}
               onValueChange={handleValuesChange}
               min={min}
               max={max}
@@ -70,7 +72,7 @@ export function ControlledSlider<T extends FieldValues>({
               <SliderPrimitive.Track className="bg-muted relative h-1.5 w-full grow cursor-pointer overflow-hidden rounded-full">
                 <SliderPrimitive.Range className="bg-primary absolute h-full" />
               </SliderPrimitive.Track>
-              {value?.map((_, index) => (
+              {values?.map((_, index) => (
                 <SliderPrimitive.Thumb
                   key={index}
                   className="border-primary bg-background ring-offset-background focus-visible:ring-ring block size-4 cursor-pointer rounded-full border shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
@@ -80,7 +82,7 @@ export function ControlledSlider<T extends FieldValues>({
 
             <div className="flex flex-wrap gap-2">
               <ol className="flex w-full items-center gap-3">
-                {value?.map((singleValue, index) => (
+                {values?.map((singleValue, index) => (
                   <li
                     key={index}
                     className="flex h-10 w-full items-center justify-between rounded-md border px-3"

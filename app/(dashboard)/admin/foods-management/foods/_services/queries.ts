@@ -174,13 +174,13 @@ function parseNumericValue(value: string): number | null {
  * or null if no food item with the given ID exists.
  */
 export const getFood = async (id: number) => {
-  const res = await prisma.food.findFirst({
+  const res = await prisma.food.findUnique({
     where: { id },
     include: { foodServingUnits: true },
   });
 
   if (!res) {
-    throw new Error(`Serving unit with id ${id} not found`);
+    throw new Error(`Food with id ${id} not found`);
   }
 
   return {
