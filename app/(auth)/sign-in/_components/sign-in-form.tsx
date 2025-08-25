@@ -1,11 +1,11 @@
 'use client';
 
-import { useSingIn } from '@/app/(auth)/sing-in/_services/use-mutations';
+import { useSignIn } from '@/app/(auth)/sign-in/_services/use-mutations';
 import {
-  SingInSchema,
-  singInDefaultValues,
-  singInSchema,
-} from '@/app/(auth)/sing-in/_types/sing-in-schema';
+  SignInSchema,
+  signInDefaultValues,
+  signInSchema,
+} from '@/app/(auth)/sign-in/_types/sign-in-schema';
 import { ControlledInput } from '@/components/controlled-input';
 import { Button } from '@/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,16 +17,16 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
  * SingInForm is a React functional component that renders a sign-in form allowing users to authenticate with their email and password.
  * It integrates with a form state management library and performs form validation and submission using Zod schemas. Upon successful submission, it triggers a sign-in mutation to handle the authentication logic.
  */
-export function SingInForm() {
-  const singInMutation = useSingIn();
+export function SignInForm() {
+  const signInMutation = useSignIn();
 
-  const form = useForm<SingInSchema>({
-    defaultValues: singInDefaultValues,
-    resolver: zodResolver(singInSchema),
+  const form = useForm<SignInSchema>({
+    defaultValues: signInDefaultValues,
+    resolver: zodResolver(signInSchema),
   });
 
-  const onSubmit: SubmitHandler<SingInSchema> = (data: SingInSchema) => {
-    singInMutation.mutate(data);
+  const onSubmit: SubmitHandler<SignInSchema> = (data: SignInSchema) => {
+    signInMutation.mutate(data);
   };
 
   return (
@@ -41,18 +41,23 @@ export function SingInForm() {
         </div>
 
         <div className="space-y-3">
-          <ControlledInput<SingInSchema> name="email" label="Email" />
-          <ControlledInput<SingInSchema> name="password" label="Password" type="password" />
+          <ControlledInput<SignInSchema> name="email" label="Email" />
+          <ControlledInput<SignInSchema> name="password" label="Password" type="password" />
         </div>
 
-        <Button className="w-full" disabled={singInMutation.isPending}>
-          {singInMutation.isPending && <Loader2Icon className="animate-spin" />}
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={signInMutation.isPending}
+          aria-busy={signInMutation.isPending}
+        >
+          {signInMutation.isPending && <Loader2Icon className="animate-spin" aria-hidden="true" />}
           Sign in
         </Button>
 
         <div className="text-center text-sm">
           Don&apos;t have an account?
-          <Link href="/sing-up" className="text-primary ml-1 font-medium hover:underline">
+          <Link href="/sign-up" className="text-primary ml-1 font-medium hover:underline">
             Sign up
           </Link>
         </div>

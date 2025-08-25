@@ -1,5 +1,5 @@
-import { signUp } from '@/app/(auth)/sing-up/_services/mutations';
-import { SignUpSchema } from '@/app/(auth)/sing-up/_types/sign-up-schema';
+import { signUp } from '@/app/(auth)/sign-up/_services/mutations';
+import { SignUpSchema } from '@/app/(auth)/sign-up/_types/sign-up-schema';
 import { getErrorMessage } from '@/lib/get-error-message';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -21,7 +21,7 @@ export const useSignUp = () => {
     },
     onSuccess: () => {
       toast.success('Signed up successfully.');
-      router.replace('/sing-in');
+      router.replace('/sign-in');
     },
     onError: (error) => {
       toast.error(getErrorMessage(error));

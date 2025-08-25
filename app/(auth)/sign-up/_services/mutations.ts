@@ -1,12 +1,9 @@
-"use server";
+'use server';
 
-import {
-  signUpSchema,
-  SignUpSchema,
-} from "@/app/(auth)/sing-up/_types/sign-up-schema";
-import { executeAction } from "@/lib/execute-action";
-import { hashPassword } from "@/lib/utils";
-import prisma from "@/lib/prisma";
+import { SignUpSchema, signUpSchema } from '@/app/(auth)/sign-up/_types/sign-up-schema';
+import { executeAction } from '@/lib/execute-action';
+import prisma from '@/lib/prisma';
+import { hashPassword } from '@/lib/utils';
 
 /**
  * Handles user sign-up functionality by validating input data, hashing the user's password,

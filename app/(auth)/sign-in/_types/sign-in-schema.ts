@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 /**
  * `signInSchema` is a validation schema used for ensuring the correctness
@@ -8,16 +8,16 @@ import { z } from "zod";
  * - `email`: A string field that must not be empty.
  * - `password`: A string field that must not be empty.
  */
-const singInSchema = z.object({
-  email: z.string().min(1, "Email is required."),
-  password: z.string().min(1, "Password is required."),
+const signInSchema = z.object({
+  email: z.string().min(1, 'Email is required.'),
+  password: z.string().min(1, 'Password is required.'),
 });
 
-type SingInSchema = z.infer<typeof singInSchema>;
+type SignInSchema = z.infer<typeof signInSchema>;
 
-const singInDefaultValues: SingInSchema = {
-  email: "",
-  password: "",
+const signInDefaultValues: SignInSchema = {
+  email: '',
+  password: '',
 };
 
-export { singInSchema, singInDefaultValues, type SingInSchema };
+export { signInSchema, signInDefaultValues, type SignInSchema };

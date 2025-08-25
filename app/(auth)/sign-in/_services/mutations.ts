@@ -1,11 +1,8 @@
-"use server";
+'use server';
 
-import {
-  singInSchema,
-  SingInSchema,
-} from "@/app/(auth)/sing-in/_types/sing-in-schema";
-import { signIn as nextAuthSingIn, signOut as authSingOut } from "@/lib/auth";
-import { executeAction } from "@/lib/execute-action";
+import { SignInSchema, signInSchema } from '@/app/(auth)/sign-in/_types/sign-in-schema';
+import { signOut as authSignOut, signIn as nextAuthSignIn } from '@/lib/auth';
+import { executeAction } from '@/lib/execute-action';
 
 /**
  * An asynchronous function that handles the sign-in process for a user.
@@ -16,11 +13,11 @@ import { executeAction } from "@/lib/execute-action";
  *
  * To ensure execution safety, the function is wrapped inside an `executeAction` function.
  */
-export const singIn = async (data: SingInSchema) => {
+export const signIn = async (data: SignInSchema) => {
   await executeAction({
     actionFn: async () => {
-      const validateData = singInSchema.parse(data);
-      await nextAuthSingIn("credentials", validateData);
+      const validateData = signInSchema.parse(data);
+      await nextAuthSignIn('credentials', validateData);
     },
   });
 };
@@ -31,10 +28,10 @@ export const singIn = async (data: SingInSchema) => {
  * Executes the `authSingOut` action through a generic action executor utility.
  * This handles the user sign-out process and triggers any necessary authentication cleanup.
  *
- * @returns {Promise<void>} A promise that resolves when the sign-out process is complete.
+ * @returns A promise that resolves when the sign-out process is complete.
  */
-export const singOut = async (): Promise<void> => {
+export const signOut = async () => {
   return await executeAction({
-    actionFn: authSingOut,
+    actionFn: authSignOut,
   });
 };

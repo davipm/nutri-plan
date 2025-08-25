@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
-import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { Role } from "@/generated/prisma";
+import { Role } from '@/generated/prisma';
+import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import { ReactNode } from 'react';
 
 /**
  * The Layout component serves as a layout wrapper for child components.
@@ -13,7 +13,7 @@ import { Role } from "@/generated/prisma";
  */
 export default async function Layout({ children }: { children: ReactNode }) {
   const session = await auth();
-  if (!session) redirect("/sing-in");
-  if (session.user?.role === Role.USER) redirect("/client");
+  if (!session) redirect('/sign-in');
+  if (session.user?.role === Role.USER) redirect('/client');
   return <div className="mx-auto max-w-7xl p-6">{children}</div>;
 }

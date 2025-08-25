@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation";
-import { SignUpForm } from "@/app/(auth)/sing-up/_components/sing-up-form";
-import { auth } from "@/lib/auth";
-import { Role } from "@/generated/prisma";
+import { SignUpForm } from '@/app/(auth)/sign-up/_components/sign-up-form';
+import { Role } from '@/generated/prisma';
+import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 /**
  * Represents the Page component which handles user authentication and redirection
@@ -17,11 +17,11 @@ export default async function Page() {
   const session = await auth();
 
   if (session?.user?.role === Role.ADMIN) {
-    redirect("/admin/foods-management/foods");
+    redirect('/admin/foods-management/foods');
   }
 
   if (session?.user?.role === Role.USER) {
-    redirect("/client");
+    redirect('/client');
   }
 
   return (

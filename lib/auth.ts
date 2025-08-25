@@ -1,10 +1,10 @@
-import NextAuth, { User } from "next-auth";
-import { singInSchema } from "@/app/(auth)/sing-in/_types/sing-in-schema";
-import { comparePasswords, toNumberSafe, toStringSafe } from "@/lib/utils";
-import Credentials from "@auth/core/providers/credentials";
-import prisma from "@/lib/prisma";
+import { signInSchema } from '@/app/(auth)/sign-in/_types/sign-in-schema';
+import prisma from '@/lib/prisma';
+import { comparePasswords, toNumberSafe, toStringSafe } from '@/lib/utils';
+import Credentials from '@auth/core/providers/credentials';
+import NextAuth, { User } from 'next-auth';
 
-declare module "next-auth" {
+declare module 'next-auth' {
   interface User {
     name?: string | null;
     role?: string | null;
@@ -13,7 +13,7 @@ declare module "next-auth" {
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
-declare module "next-auth/jwt" {
+declare module 'next-auth/jwt' {
   interface JWT {
     name?: string | null;
     role?: string | null;
@@ -28,14 +28,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {},
       },
       authorize: async (
-        credentials: Partial<Record<"email" | "password", unknown>>,
+        credentials: Partial<Record<'email' | 'password', unknown>>,
       ): Promise<User | null> => {
         if (!credentials.email || !credentials.password) {
-          console.error("Missing credentials");
+          console.error('Missing credentials');
           return null;
         }
 
-        const parsedCredentials = singInSchema.safeParse(credentials);
+        const parsedCredentials = signInSchema.safeParse(credentials);
 
         if (!parsedCredentials.success) {
           return null;
@@ -49,18 +49,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           });
 
           if (!user?.password) {
-            await comparePasswords(password, "$2a$10$dummyHash");
-            console.error("Wrong password for user: ", email, "");
+            await comparePasswords(password, '$2a$10$dummyHash');
+            console.error('Wrong password for user: ', email, '');
             return null;
           }
 
-          const isPasswordValid = await comparePasswords(
-            password,
-            user.password,
-          );
+          const isPasswordValid = await comparePasswords(password, user.password);
 
           if (!isPasswordValid) {
-            console.error("Wrong password for user: ", email, "");
+            console.error('Wrong password for user: ', email, '');
             return null;
           }
 
@@ -71,7 +68,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             role: user.role,
           };
         } catch (error) {
-          console.error("Sign in error:", error);
+          console.error('Sign in error:', error);
           return null;
         }
       },
@@ -79,7 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
 
   pages: {
-    signIn: "/sing-in",
+    signIn: '/sign-in',
   },
 
   callbacks: {

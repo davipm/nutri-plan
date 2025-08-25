@@ -1,11 +1,11 @@
 'use client';
 
-import { useSignUp } from '@/app/(auth)/sing-up/_services/use-mutations';
+import { useSignUp } from '@/app/(auth)/sign-up/_services/use-mutations';
 import {
   SignUpSchema,
   signUpDefaultValues,
   signUpSchema,
-} from '@/app/(auth)/sing-up/_types/sign-up-schema';
+} from '@/app/(auth)/sign-up/_types/sign-up-schema';
 import { ControlledInput } from '@/components/controlled-input';
 import { Button } from '@/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -55,17 +55,13 @@ export function SignUpForm() {
         </div>
 
         <Button className="w-full" disabled={signUpMutation.isPending}>
-          {signUpMutation.isPending ? (
-            <Loader2Icon className="animate-spin" />
-          ) : (
-            'Sign up'
-          )}
+          {signUpMutation.isPending ? <Loader2Icon className="animate-spin" /> : 'Sign up'}
         </Button>
 
         <div className="text-center text-sm">
           Already have an account?
-          <Link href="/sing-in" className="text-primary ml-1 font-medium hover:underline">
-            Sing in
+          <Link href="/sign-in" className="text-primary ml-1 font-medium hover:underline">
+            Sign in
           </Link>
         </div>
       </form>

@@ -1,17 +1,10 @@
-"use client";
+'use client';
 
-import { ReactNode, useState } from "react";
-import * as Collapsible from "@radix-ui/react-collapsible";
-import { Session } from "next-auth";
-import { useSingOut } from "@/app/(auth)/sing-in/_services/use-mutations";
-import {
-  ROUTE_GROUPS,
-  Role,
-  RouterGroup,
-} from "@/app/(dashboard)/_components/router-group";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, LogOut, Menu } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { useSignOut } from '@/app/(auth)/sign-in/_services/use-mutations';
+import { ROUTE_GROUPS, Role, RouterGroup } from '@/app/(dashboard)/_components/router-group';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,10 +12,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
+} from '@/components/ui/dropdown-menu';
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+import * as Collapsible from '@radix-ui/react-collapsible';
+import { ChevronLeft, LogOut, Menu } from 'lucide-react';
+import { Session } from 'next-auth';
+import { ReactNode, useState } from 'react';
 
 type Props = {
   children: ReactNode;
@@ -36,13 +32,13 @@ type Props = {
  * @param {Object} props - The properties object.
  * @param {React.ReactNode} props.children - Child components to render within the layout.
  * @param {Object} props.session - The session object which contains user data.
- * @param {Object} [props.session.user] - The user information within the session.
- * @param {string} [props.session.user.name] - The name of the user.
- * @param {string} [props.session.user.email] - The email of the user.
+ * @param - The user information within the session.
+ * @param - The name of the user.
+ * @param - The email of the user.
  */
 export function DashboardLayout({ children, session }: Props) {
   const [open, setOpen] = useState(false);
-  const signOutMutation = useSingOut();
+  const signOutMutation = useSignOut();
   const userRole: Role = (session.user?.role as Role) || Role.USER;
 
   /**
@@ -77,10 +73,7 @@ export function DashboardLayout({ children, session }: Props) {
           {session && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="flex h-9 items-center gap-2 px-2"
-                >
+                <Button variant="ghost" className="flex h-9 items-center gap-2 px-2">
                   <Avatar className="size-8">
                     <AvatarFallback>{session.user?.name?.[0]}</AvatarFallback>
                   </Avatar>
@@ -96,9 +89,7 @@ export function DashboardLayout({ children, session }: Props) {
                   </Avatar>
                   <div>
                     <p className="text-sm font-medium">{session.user?.name}</p>
-                    <p className="text-muted-foreground text-sm">
-                      {session.user?.email}
-                    </p>
+                    <p className="text-muted-foreground text-sm">{session.user?.email}</p>
                   </div>
                 </div>
                 <DropdownMenuSeparator />
@@ -123,8 +114,8 @@ export function DashboardLayout({ children, session }: Props) {
         <Collapsible.Content forceMount>
           <div
             className={cn(
-              "bg-background fixed top-0 left-0 h-screen w-64 border p-4 transition-transform duration-300",
-              open ? "translate-x-0" : "-translate-x-full",
+              'bg-background fixed top-0 left-0 h-screen w-64 border p-4 transition-transform duration-300',
+              open ? 'translate-x-0' : '-translate-x-full',
             )}
           >
             <div className="flex items-center justify-between">
@@ -147,12 +138,7 @@ export function DashboardLayout({ children, session }: Props) {
         </Collapsible.Content>
       </Collapsible.Root>
 
-      <main
-        className={cn(
-          "mt-13 ml-0 flex-1 p-4 transition-all duration-300",
-          open && "ml-64",
-        )}
-      >
+      <main className={cn('mt-13 ml-0 flex-1 p-4 transition-all duration-300', open && 'ml-64')}>
         {children}
       </main>
     </div>

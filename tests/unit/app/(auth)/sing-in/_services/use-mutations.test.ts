@@ -1,22 +1,19 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import {
-  useSingIn,
-  useSingOut,
-} from "@/app/(auth)/sing-in/_services/use-mutations";
-import { singIn, singOut } from "@/app/(auth)/sing-in/_services/mutations";
-import { SingInSchema } from "@/app/(auth)/sing-in/_types/sing-in-schema";
+import { signIn, signOut } from '@/app/(auth)/sign-in/_services/mutations';
+import { useSignIn, useSignOut } from '@/app/(auth)/sign-in/_services/use-mutations';
+import { SignInSchema } from '@/app/(auth)/sign-in/_types/sign-in-schema';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock("@tanstack/react-query", () => ({
+vi.mock('@tanstack/react-query', () => ({
   useMutation: vi.fn(),
 }));
 
-vi.mock("next/navigation", () => ({
+vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
 }));
 
-vi.mock("@/app/(auth)/sing-in/_services/mutations", () => ({
+vi.mock('@/app/(auth)/sign-in/_services/mutations', () => ({
   singIn: vi.fn(),
   singOut: vi.fn(),
 }));
@@ -29,12 +26,12 @@ const useMutationMock = useMutation as vi.Mock;
 const useRouterMock = useRouter as vi.Mock;
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
-const singInMock = singIn as vi.Mock;
+const singInMock = signIn as vi.Mock;
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
-const singOutMock = singOut as vi.Mock;
+const singOutMock = signOut as vi.Mock;
 
-describe("use-mutations", () => {
+describe('use-mutations', () => {
   const mockRouterPush = vi.fn();
 
   beforeEach(() => {
@@ -42,13 +39,13 @@ describe("use-mutations", () => {
     useRouterMock.mockReturnValue({ push: mockRouterPush });
   });
 
-  describe("useSingIn", () => {
-    it("test_useSingIn_calls_singIn_on_mutate_with_valid_data", async () => {
-      useSingIn();
+  describe('useSingIn', () => {
+    it('test_useSingIn_calls_singIn_on_mutate_with_valid_data', async () => {
+      useSignIn();
       const mutationOptions = useMutationMock.mock.calls[0][0];
-      const validData: SingInSchema = {
-        email: "test@example.com",
-        password: "password123",
+      const validData: SignInSchema = {
+        email: 'test@example.com',
+        password: 'password123',
       };
       singInMock.mockResolvedValue(undefined);
 
@@ -57,39 +54,35 @@ describe("use-mutations", () => {
       expect(singInMock).toHaveBeenCalledWith(validData);
     });
 
-    it("test_useSingIn_handles_error_on_mutation_failure", async () => {
-      const error = new Error("Invalid credentials");
+    it('test_useSingIn_handles_error_on_mutation_failure', async () => {
+      const error = new Error('Invalid credentials');
       singInMock.mockRejectedValue(error);
-      useSingIn();
+      useSignIn();
       const mutationOptions = useMutationMock.mock.calls[0][0];
-      const data: SingInSchema = {
-        email: "test@example.com",
-        password: "wrongpassword",
+      const data: SignInSchema = {
+        email: 'test@example.com',
+        password: 'wrongpassword',
       };
 
-      await expect(mutationOptions.mutationFn(data)).rejects.toThrow(
-        "Invalid credentials",
-      );
+      await expect(mutationOptions.mutationFn(data)).rejects.toThrow('Invalid credentials');
       expect(singInMock).toHaveBeenCalledWith(data);
     });
 
-    it("test_useSingIn_fails_when_data_violates_schema", async () => {
-      const validationError = new Error("Validation failed");
+    it('test_useSingIn_fails_when_data_violates_schema', async () => {
+      const validationError = new Error('Validation failed');
       singInMock.mockRejectedValue(validationError);
-      useSingIn();
+      useSignIn();
       const mutationOptions = useMutationMock.mock.calls[0][0];
-      const invalidData = { email: "", password: "" } as SingInSchema;
+      const invalidData = { email: '', password: '' } as SignInSchema;
 
-      await expect(mutationOptions.mutationFn(invalidData)).rejects.toThrow(
-        "Validation failed",
-      );
+      await expect(mutationOptions.mutationFn(invalidData)).rejects.toThrow('Validation failed');
       expect(singInMock).toHaveBeenCalledWith(invalidData);
     });
   });
 
-  describe("useSingOut", () => {
-    it("test_useSingOut_calls_singOut_on_mutate", async () => {
-      useSingOut();
+  describe('useSingOut', () => {
+    it('test_useSingOut_calls_singOut_on_mutate', async () => {
+      useSignOut();
       const mutationOptions = useMutationMock.mock.calls[0][0];
       singOutMock.mockResolvedValue(undefined);
 
@@ -98,24 +91,22 @@ describe("use-mutations", () => {
       expect(singOutMock).toHaveBeenCalled();
     });
 
-    it("test_useSingOut_redirects_to_signIn_page_on_success", () => {
-      useSingOut();
+    it('test_useSingOut_redirects_to_signIn_page_on_success', () => {
+      useSignOut();
       const mutationOptions = useMutationMock.mock.calls[0][0];
 
       mutationOptions.onSuccess();
 
-      expect(mockRouterPush).toHaveBeenCalledWith("/sing-in");
+      expect(mockRouterPush).toHaveBeenCalledWith('/sign-in');
     });
 
-    it("test_useSingOut_does_not_redirect_on_mutation_failure", async () => {
-      const error = new Error("Sign out failed");
+    it('test_useSingOut_does_not_redirect_on_mutation_failure', async () => {
+      const error = new Error('Sign out failed');
       singOutMock.mockRejectedValue(error);
-      useSingOut();
+      useSignOut();
       const mutationOptions = useMutationMock.mock.calls[0][0];
 
-      await expect(mutationOptions.mutationFn()).rejects.toThrow(
-        "Sign out failed",
-      );
+      await expect(mutationOptions.mutationFn()).rejects.toThrow('Sign out failed');
       expect(singOutMock).toHaveBeenCalled();
       expect(mockRouterPush).not.toHaveBeenCalled();
     });
