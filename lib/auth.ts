@@ -2,42 +2,17 @@ import { signInSchema } from '@/app/(auth)/sign-in/_types/sign-in-schema';
 import prisma from '@/lib/prisma';
 import { comparePasswords, toNumberSafe, toStringSafe } from '@/lib/utils';
 import Credentials from '@auth/core/providers/credentials';
-import NextAuth, { User } from 'next-auth';
-
-declare module 'next-auth' {
-  interface User {
-    name?: string | null;
-    role?: string | null;
-  }
-}
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-declare module 'next-auth/jwt' {
-  interface JWT {
-    name?: string | null;
-    role?: string | null;
-  }
-}
+import NextAuth, { type User } from 'next-auth';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
-      credentials: {
-        email: {},
-        password: {},
-      },
-      authorize: async (
-        credentials: Partial<Record<'email' | 'password', unknown>>,
-      ): Promise<User | null> => {
-        if (!credentials.email || !credentials.password) {
-          console.error('Missing credentials');
-          return null;
-        }
-
+      credentials: {},
+      authorize: async (credentials): Promise<User | null> => {
         const parsedCredentials = signInSchema.safeParse(credentials);
 
         if (!parsedCredentials.success) {
+          console.error('Invalid credentials:', parsedCredentials.error);
           return null;
         }
 
@@ -49,15 +24,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           });
 
           if (!user?.password) {
-            await comparePasswords(password, '$2a$10$dummyHash');
-            console.error('Wrong password for user: ', email, '');
+            await comparePasswords(password, '$2a$10$invalid/hash/to/prevent/timing/attacks');
+            console.error(`Auth failed: User not found or has no password. Email: ${email}`);
             return null;
           }
 
           const isPasswordValid = await comparePasswords(password, user.password);
 
           if (!isPasswordValid) {
-            console.error('Wrong password for user: ', email, '');
+            console.error(`Auth failed: Invalid password for user. Email: ${email}`);
             return null;
           }
 
@@ -68,7 +43,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             role: user.role,
           };
         } catch (error) {
-          console.error('Sign in error:', error);
+          console.error('Sign-in error:', error);
           return null;
         }
       },
@@ -81,27 +56,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   callbacks: {
     jwt({ token, user }) {
-      const clonedToken = token;
-
       if (user) {
-        clonedToken.id = toNumberSafe(user.id);
-        clonedToken.name = user.name;
-        clonedToken.role = user.role;
+        token.id = toNumberSafe(user.id);
+        token.name = user.name;
+        token.role = user.role;
       }
-      return clonedToken;
+      return token;
     },
     session({ session, token }) {
-      const clonedSession = session;
-
-      if (clonedSession.user) {
-        clonedSession.user.id = toStringSafe(token.id);
-        clonedSession.user.name = token.name;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        clonedSession.user.role = token.role;
+      if (session.user) {
+        session.user.id = toStringSafe(token.id);
+        session.user.name = token.name;
+        session.user.role = token.role as string | null;
       }
 
-      return clonedSession;
+      return session;
     },
   },
 });
