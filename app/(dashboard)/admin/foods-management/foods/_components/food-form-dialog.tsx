@@ -50,6 +50,7 @@ export default function FoodFormDialog() {
   const isPending = saveFoodMutation.isPending;
 
   useEffect(() => {
+    // TODO: create a rest when is not edit mode
     if (isEditMode && foodQuery.data) {
       form.reset({ ...foodQuery.data, action: 'update' });
     }

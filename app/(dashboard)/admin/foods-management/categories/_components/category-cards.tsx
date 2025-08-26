@@ -8,7 +8,7 @@ import { HasError } from '@/components/has-error';
 import NoItemFound from '@/components/no-item-found';
 
 export function CategoryCards() {
-  const { updateCategoryDialogOpen } = useCategoriesStore();
+  const { setCategoryDialogOpen } = useCategoriesStore();
 
   const { data, isLoading, isError, refetch, isRefetching } = useCategories();
 
@@ -27,7 +27,7 @@ export function CategoryCards() {
   }
 
   if (!data?.length) {
-    return <NoItemFound onClick={() => updateCategoryDialogOpen(true)} />;
+    return <NoItemFound onClick={() => setCategoryDialogOpen(true)} />;
   }
 
   return (

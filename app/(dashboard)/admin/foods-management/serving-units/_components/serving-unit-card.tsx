@@ -16,6 +16,7 @@ function ServingUnitCard({ servingUnit }: ServingUnitCardProps) {
   const { updateSelectedServingUnitId, updateServingUnitDialogOpen } = useServingUnitsStore();
   const servingUnitsMutation = useDeleteServingUnit();
 
+  // TODO useCallback
   const handleEdit = () => {
     updateSelectedServingUnitId(servingUnit.id);
     updateServingUnitDialogOpen(true);

@@ -13,7 +13,7 @@ export const useSaveFood = () => {
 
   return useMutation<Food, Error, FoodSchema>({
     mutationKey: ['foods', 'save'],
-    mutationFn: (data) => saveFood(data),
+    mutationFn: async (data) => await saveFood(data),
     onSuccess: async (_, { action }) => {
       toast.success(`Food ${action === 'create' ? 'created' : 'updated'} successfully.`);
       await queryClient.invalidateQueries({ queryKey: ['foods'] });

@@ -56,7 +56,7 @@ export const ROUTE_GROUPS: RouteGroupType[] = [
   },
   {
     group: 'Meals Management',
-    allowedRoles: [Role.ADMIN, Role.CLIENT], // Admin can also access if needed
+    allowedRoles: [Role.ADMIN, Role.CLIENT, Role.USER], // Admin can also access if needed
     items: [
       {
         href: '/client',

@@ -1,4 +1,4 @@
-import { createStore } from "@/store/create-store";
+import { createStore } from '@/store/create-store';
 
 type State = {
   selectedServingUnitId: number | null;
@@ -6,8 +6,8 @@ type State = {
 };
 
 type Actions = {
-  updateSelectedServingUnitId: (id: State["selectedServingUnitId"]) => void;
-  updateServingUnitDialogOpen: (id: State["servingUnitDialogOpen"]) => void;
+  updateSelectedServingUnitId: (id: State['selectedServingUnitId']) => void;
+  updateServingUnitDialogOpen: (id: State['servingUnitDialogOpen']) => void;
 };
 
 type Store = State & Actions;
@@ -29,17 +29,18 @@ type Store = State & Actions;
 export const useServingUnitsStore = createStore<Store>(
   (set) => ({
     selectedServingUnitId: null,
+    servingUnitDialogOpen: false,
+
     updateSelectedServingUnitId: (id) => {
       set((state) => {
         state.selectedServingUnitId = id;
       });
     },
-    servingUnitDialogOpen: false,
     updateServingUnitDialogOpen: (id) => {
       set((state) => {
         state.servingUnitDialogOpen = id;
       });
     },
   }),
-  { name: "serving-units-store" },
+  { name: 'serving-units-store' },
 );

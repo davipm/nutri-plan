@@ -48,6 +48,7 @@ export function ServingUnitFormDialog({ smallTrigger }: Props) {
   const isPending = saveServingUnitMutation.isPending;
 
   useEffect(() => {
+    // TODO: create a rest when is not edit mode
     if (isEditMode && servingUnitQuery.data) {
       form.reset({ ...servingUnitQuery.data, action: 'update' });
     }

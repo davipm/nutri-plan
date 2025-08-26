@@ -7,6 +7,7 @@ import {
 import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
 
+// TODO improve this like saveCategory
 export const saveServingUnit = async (data: ServingUnitSchema) => {
   const input = servingUnitSchema.parse(data);
 
@@ -45,10 +46,12 @@ export const deleteServingUnit = async (id: number) => {
  * @function getServingUnits
  * @returns A promise that resolves to an array of serving unit objects.
  */
+// TODO use executeAction
 export const getServingUnits = async () => {
   return await prisma.servingUnit.findMany();
 };
 
+// TODO use executeAction
 export const getServingUnit = async (id: number) => {
   const res = await prisma.servingUnit.findFirst({ where: { id } });
 

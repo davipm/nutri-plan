@@ -28,12 +28,8 @@ type Props = {
 };
 
 export function CategoryFormDialog({ smallTrigger }: Props) {
-  const {
-    categoryDialogOpen,
-    selectedCategoryId,
-    updateCategoryDialogOpen,
-    updateSelectedCategoryId,
-  } = useCategoriesStore();
+  const { categoryDialogOpen, selectedCategoryId, setCategoryDialogOpen, setSelectedCategoryId } =
+    useCategoriesStore();
 
   const { data: categoryToEdit } = useCategory();
   const saveCategoryMutation = useSaveCategory();
@@ -49,13 +45,15 @@ export function CategoryFormDialog({ smallTrigger }: Props) {
   useEffect(() => {
     if (isEditMode && categoryToEdit) {
       form.reset({ ...categoryToEdit, action: 'update' });
+    } else if (!isEditMode) {
+      form.reset(categoryDefaultValues);
     }
   }, [categoryToEdit, form, isEditMode]);
 
   const handleDialogOpenChange = (open: boolean) => {
-    updateCategoryDialogOpen(open);
+    setCategoryDialogOpen(open);
     if (!open) {
-      updateSelectedCategoryId(null);
+      setSelectedCategoryId(null);
       form.reset(categoryDefaultValues);
     }
   };

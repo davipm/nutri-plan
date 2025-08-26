@@ -8,20 +8,16 @@ import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
 
 export const saveCategory = async (data: CategorySchema) => {
-  const input = categorySchema.parse(data);
+  return executeAction({
+    actionFn: async () => {
+      const input = categorySchema.parse(data);
 
-  if (input.action === 'create') {
-    return executeAction({
-      actionFn: async () => {
-        await prisma.category.create({
+      if (input.action === 'create') {
+        return prisma.category.create({
           data: { name: data.name },
         });
-      },
-    });
-  }
+      }
 
-  await executeAction({
-    actionFn: async () => {
       return prisma.category.update({
         where: { id: input.id },
         data: { name: input.name },
