@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { type ServingUnit } from '@/generated/prisma';
 import { alert } from '@/store/use-global-store';
 import { Edit, Trash } from 'lucide-react';
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 
 type ServingUnitCardProps = {
   servingUnit: ServingUnit;
@@ -16,11 +16,10 @@ function ServingUnitCard({ servingUnit }: ServingUnitCardProps) {
   const { updateSelectedServingUnitId, updateServingUnitDialogOpen } = useServingUnitsStore();
   const servingUnitsMutation = useDeleteServingUnit();
 
-  // TODO useCallback
-  const handleEdit = () => {
+  const handleEdit = useCallback(() => {
     updateSelectedServingUnitId(servingUnit.id);
     updateServingUnitDialogOpen(true);
-  };
+  }, [servingUnit.id, updateSelectedServingUnitId, updateServingUnitDialogOpen]);
 
   const handleDelete = () => {
     alert({

@@ -9,12 +9,9 @@ import { toast } from 'sonner';
 export const useSaveCategory = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<void, Error, CategorySchema>({
+  return useMutation<Awaited<ReturnType<typeof saveCategory>>, unknown, CategorySchema>({
     mutationKey: ['categories', 'save'],
-    // TODO fix type error
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    mutationFn: async (data) => await saveCategory(data),
+    mutationFn: (data) => saveCategory(data),
     onSuccess: async (_, { action }) => {
       toast.success(`Category ${action === 'create' ? 'created' : 'updated'} successfully.`);
       await queryClient.invalidateQueries({ queryKey: ['categories'] });
