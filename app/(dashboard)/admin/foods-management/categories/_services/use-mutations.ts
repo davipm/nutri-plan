@@ -3,13 +3,14 @@ import {
   saveCategory,
 } from '@/app/(dashboard)/admin/foods-management/categories/_services/services';
 import type { CategorySchema } from '@/app/(dashboard)/admin/foods-management/categories/_types/schema';
+import type { Category } from '@/generated/prisma';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 export const useSaveCategory = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<Awaited<ReturnType<typeof saveCategory>>, unknown, CategorySchema>({
+  return useMutation<Category, Error, CategorySchema>({
     mutationKey: ['categories', 'save'],
     mutationFn: (data) => saveCategory(data),
     onSuccess: async (_, { action }) => {

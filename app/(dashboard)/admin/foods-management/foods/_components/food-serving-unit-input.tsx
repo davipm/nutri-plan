@@ -1,9 +1,9 @@
-import { FoodSchema } from "@/app/(dashboard)/admin/foods-management/foods/_types/food-schema";
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
-import { ControlledSelect } from "@/components/controlled-select";
-import { ServingUnitFormDialog } from "@/app/(dashboard)/admin/foods-management/serving-units/_components/serving-unit-form-dialog";
-import { ControlledInput } from "@/components/controlled-input";
+import { FoodSchema } from '@/app/(dashboard)/admin/foods-management/foods/_types/food-schema';
+import { ServingUnitFormDialog } from '@/app/(dashboard)/admin/foods-management/serving-units/_components/serving-unit-form-dialog';
+import { ControlledInput } from '@/components/controlled-input';
+import { ControlledSelect } from '@/components/controlled-select';
+import { Button } from '@/components/ui/button';
+import { Trash2 } from 'lucide-react';
 
 type FoodServingUnitInputProps = {
   index: number;

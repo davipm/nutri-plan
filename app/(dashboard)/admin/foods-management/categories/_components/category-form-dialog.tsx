@@ -32,9 +32,8 @@ export function CategoryFormDialog({ smallTrigger }: Props) {
     useCategoriesStore();
 
   const { data: categoryToEdit } = useCategory();
-  const saveCategoryMutation = useSaveCategory();
+  const { mutate: saveCategoryMutation, isPending } = useSaveCategory();
 
-  const isPending = saveCategoryMutation.isPending;
   const isEditMode = !!selectedCategoryId;
 
   const form = useForm<CategorySchema>({
@@ -59,7 +58,7 @@ export function CategoryFormDialog({ smallTrigger }: Props) {
   };
 
   const onSubmit: SubmitHandler<CategorySchema> = (data) => {
-    saveCategoryMutation.mutate(data, {
+    saveCategoryMutation(data, {
       onSuccess: () => handleDialogOpenChange(false),
     });
   };

@@ -43,19 +43,17 @@ export default function FoodFormDialog() {
     resolver: zodResolver(foodSchema),
   });
 
-  const foodQuery = useFood();
-  const categoriesQuery = useCategories();
-  const saveFoodMutation = useSaveFood();
-
-  const isPending = saveFoodMutation.isPending;
+  const { data: foodToEdit } = useFood();
+  const { data: categoriesQuery } = useCategories();
+  const { mutate: saveFoodMutation, isPending } = useSaveFood();
 
   useEffect(() => {
-    if (isEditMode && foodQuery.data) {
-      form.reset({ ...foodQuery.data, action: 'update' });
+    if (isEditMode && foodToEdit) {
+      form.reset({ ...foodToEdit, action: 'update' });
     } else if (!isEditMode) {
       form.reset(foodDefaultValues);
     }
-  }, [foodQuery.data, form, isEditMode]);
+  }, [foodToEdit, form, isEditMode]);
 
   const handleDialogOpenChange = (open: boolean) => {
     updateFoodDialogOpen(open);
@@ -68,7 +66,7 @@ export default function FoodFormDialog() {
   const disableSubmit = servingUnitDialogOpen || categoryDialogOpen;
 
   const onSubmit: SubmitHandler<FoodSchema> = (data) => {
-    saveFoodMutation.mutate(data, {
+    saveFoodMutation(data, {
       onSuccess: () => handleDialogOpenChange(false),
     });
   };
@@ -97,7 +95,7 @@ export default function FoodFormDialog() {
                 <ControlledSelect<FoodSchema>
                   name="categoryId"
                   label="Category"
-                  options={categoriesQuery.data?.map((item) => ({
+                  options={categoriesQuery?.map((item) => ({
                     label: item.name,
                     value: item.id,
                   }))}

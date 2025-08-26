@@ -14,7 +14,7 @@ type CategoryCardProps = {
 
 function CategoryCard({ category }: CategoryCardProps) {
   const { setSelectedCategoryId, setCategoryDialogOpen } = useCategoriesStore();
-  const deleteCategoryMutation = useDeleteCategory();
+  const { mutate: deleteCategoryMutation } = useDeleteCategory();
 
   const handleEdit = useCallback(() => {
     setSelectedCategoryId(category.id);
@@ -25,7 +25,7 @@ function CategoryCard({ category }: CategoryCardProps) {
     alert({
       title: `Delete ${category.name}`,
       description: 'Are you sure you want to delete this category? This action cannot be undone.',
-      onConfirm: () => deleteCategoryMutation.mutate(category.id),
+      onConfirm: () => deleteCategoryMutation(category.id),
     });
   };
 

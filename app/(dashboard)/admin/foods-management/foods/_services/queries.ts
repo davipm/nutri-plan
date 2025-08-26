@@ -5,6 +5,7 @@ import {
   foodFiltersSchema,
 } from '@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema';
 import { Prisma } from '@/generated/prisma';
+import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
 import { toStringSafe } from '@/lib/utils';
 import { PaginateResult } from '@/types/paginate-result';
@@ -174,29 +175,31 @@ function parseNumericValue(value: string): number | null {
  * @throws Error if no food item with the given ID exists.
  */
 export const getFood = async (id: number) => {
-  const res = await prisma.food.findUnique({
-    where: { id },
-    include: { foodServingUnits: true },
+  return executeAction({
+    actionFn: async () => {
+      const response = await prisma.food.findUnique({
+        where: { id },
+        include: { foodServingUnits: true },
+      });
+
+      if (!response) throw new Error(`Food with id ${id} not found`);
+
+      return {
+        id,
+        name: toStringSafe(response.name),
+        calories: toStringSafe(response.calories),
+        carbohydrates: toStringSafe(response.carbohydrates),
+        fat: toStringSafe(response.fat),
+        fiber: toStringSafe(response.fiber),
+        protein: toStringSafe(response.protein),
+        sugar: toStringSafe(response.sugar),
+        categoryId: toStringSafe(response.categoryId),
+        foodServingUnits:
+          response.foodServingUnits.map((unit) => ({
+            foodServingUnitId: toStringSafe(unit.servingUnitId),
+            grams: toStringSafe(unit.grams),
+          })) ?? [],
+      };
+    },
   });
-
-  if (!res) {
-    throw new Error(`Food with id ${id} not found`);
-  }
-
-  return {
-    id,
-    name: toStringSafe(res.name),
-    calories: toStringSafe(res.calories),
-    carbohydrates: toStringSafe(res.carbohydrates),
-    fat: toStringSafe(res.fat),
-    fiber: toStringSafe(res.fiber),
-    protein: toStringSafe(res.protein),
-    sugar: toStringSafe(res.sugar),
-    categoryId: toStringSafe(res.categoryId),
-    foodServingUnits:
-      res.foodServingUnits.map((unit) => ({
-        foodServingUnitId: toStringSafe(unit.servingUnitId),
-        grams: toStringSafe(unit.grams),
-      })) ?? [],
-  };
 };
