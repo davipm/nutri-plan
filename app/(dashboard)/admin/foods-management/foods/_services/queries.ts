@@ -170,8 +170,8 @@ function parseNumericValue(value: string): number | null {
  * Fetches a food item and its associated serving units from the database by its unique identifier.
  *
  * @param {number} id - The unique identifier of the food item to retrieve.
- * @returns - A promise that resolves to the food item object if found,
- * or null if no food item with the given ID exists.
+ * @returns The mapped food item object to be consumed by the form.
+ * @throws Error if no food item with the given ID exists.
  */
 export const getFood = async (id: number) => {
   const res = await prisma.food.findUnique({

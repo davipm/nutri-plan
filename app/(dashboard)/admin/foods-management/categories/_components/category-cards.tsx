@@ -25,7 +25,7 @@ export function CategoryCards() {
     return <p className="text-center text-red-500">Failed to load categories.</p>;
   }
 
-  if (data?.length === 0) {
+  if (!data?.length) {
     return <NoItemFound onClick={() => updateCategoryDialogOpen(true)} />;
   }
 

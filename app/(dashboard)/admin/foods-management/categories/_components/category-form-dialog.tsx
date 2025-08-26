@@ -1,10 +1,7 @@
 'use client';
 
 import { useCategoriesStore } from '@/app/(dashboard)/admin/foods-management/categories/_libs/use-categories-store';
-import {
-  useCreateCategory,
-  useUpdateCategory,
-} from '@/app/(dashboard)/admin/foods-management/categories/_services/use-mutations';
+import { useSaveCategory } from '@/app/(dashboard)/admin/foods-management/categories/_services/use-mutations';
 import { useCategory } from '@/app/(dashboard)/admin/foods-management/categories/_services/use-queries';
 import {
   CategorySchema,
@@ -39,10 +36,9 @@ export function CategoryFormDialog({ smallTrigger }: Props) {
   } = useCategoriesStore();
 
   const { data: categoryToEdit } = useCategory();
-  const createCategoryMutation = useCreateCategory();
-  const updateCategoryMutation = useUpdateCategory();
+  const saveCategoryMutation = useSaveCategory();
 
-  const isPending = createCategoryMutation.isPending || updateCategoryMutation.isPending;
+  const isPending = saveCategoryMutation.isPending;
   const isEditMode = !!selectedCategoryId;
 
   const form = useForm<CategorySchema>({
@@ -51,26 +47,21 @@ export function CategoryFormDialog({ smallTrigger }: Props) {
   });
 
   useEffect(() => {
-    if (categoryDialogOpen) {
-      if (isEditMode && categoryToEdit) {
-        form.reset(categoryToEdit);
-      } else {
-        form.reset(categoryDefaultValues);
-      }
+    if (isEditMode && categoryToEdit) {
+      form.reset({ ...categoryToEdit, action: 'update' });
     }
-  }, [categoryDialogOpen, isEditMode, categoryToEdit, form]);
+  }, [categoryToEdit, form, isEditMode]);
 
   const handleDialogOpenChange = (open: boolean) => {
     updateCategoryDialogOpen(open);
     if (!open) {
       updateSelectedCategoryId(null);
+      form.reset(categoryDefaultValues);
     }
   };
 
   const onSubmit: SubmitHandler<CategorySchema> = (data) => {
-    const mutation = data.action === 'create' ? createCategoryMutation : updateCategoryMutation;
-
-    mutation.mutate(data, {
+    saveCategoryMutation.mutate(data, {
       onSuccess: () => handleDialogOpenChange(false),
     });
   };

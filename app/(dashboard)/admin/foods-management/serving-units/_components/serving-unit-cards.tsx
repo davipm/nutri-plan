@@ -33,7 +33,7 @@ export function ServingUnitCards() {
     );
   }
 
-  if (data.length === 0) {
+  if (!data.length) {
     return (
       <NoItemFound
         onClick={() => {

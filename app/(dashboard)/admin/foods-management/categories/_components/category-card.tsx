@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Category } from '@/generated/prisma';
 import { alert } from '@/store/use-global-store';
 import { Edit, Trash } from 'lucide-react';
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 
 type CategoryCardProps = {
   category: Category;
@@ -16,10 +16,10 @@ function CategoryCard({ category }: CategoryCardProps) {
   const { updateSelectedCategoryId, updateCategoryDialogOpen } = useCategoriesStore();
   const deleteCategoryMutation = useDeleteCategory();
 
-  const handleEdit = () => {
+  const handleEdit = useCallback(() => {
     updateSelectedCategoryId(category.id);
     updateCategoryDialogOpen(true);
-  };
+  }, [category.id, updateCategoryDialogOpen, updateSelectedCategoryId]);
 
   const handleDelete = () => {
     alert({

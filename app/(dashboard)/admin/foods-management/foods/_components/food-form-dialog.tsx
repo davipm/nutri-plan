@@ -24,24 +24,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { nutritionalFields } from '@/lib/constants';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2Icon, Plus } from 'lucide-react';
 import { useEffect } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-
-const nutritionalFields = [
-  { name: 'calories', label: 'Calories', placeholder: 'kcal', type: 'text' },
-  { name: 'protein', label: 'Protein', placeholder: 'grams', type: 'number' },
-  {
-    name: 'carbohydrates',
-    label: 'Carbohydrates',
-    placeholder: 'grams',
-    type: 'number',
-  },
-  { name: 'fat', label: 'Fat', placeholder: 'grams', type: 'number' },
-  { name: 'fiber', label: 'Fiber', placeholder: 'grams', type: 'number' },
-  { name: 'sugar', label: 'Sugar', placeholder: 'grams', type: 'number' },
-];
 
 export default function FoodFormDialog() {
   const { selectedFoodId, updateSelectedFoodId, foodDialogOpen, updateFoodDialogOpen } =
