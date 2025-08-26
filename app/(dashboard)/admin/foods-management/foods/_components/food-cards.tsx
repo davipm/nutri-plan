@@ -5,6 +5,7 @@ import { FoodCardsSkeleton } from '@/app/(dashboard)/admin/foods-management/food
 import { useFoodsStore } from '@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store';
 import { useDeleteFood } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-mutations';
 import { useFoods } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-queries';
+import { HasError } from '@/components/has-error';
 import NoItemFound from '@/components/no-item-found';
 import { Pagination } from '@/components/pagination';
 import { Button } from '@/components/ui/button';
@@ -45,14 +46,7 @@ export function FoodCards() {
   }
 
   if (isError) {
-    return (
-      <div className="flex flex-col items-center justify-center space-y-4 py-12">
-        <p className="text-destructive text-sm">Failed to load food items</p>
-        <Button variant="outline" onClick={() => refetch()} disabled={isRefetching}>
-          {isRefetching ? 'Retrying...' : 'Try Again'}
-        </Button>
-      </div>
-    );
+    return <HasError refetch={refetch} isRefetching={isRefetching} />;
   }
 
   if (!data?.data.length) {
