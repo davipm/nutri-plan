@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { ControlledSelect } from "@/components/controlled-select";
-import { useCategories } from "@/app/(dashboard)/admin/foods-management/categories/_services/use-queries";
-import { ControlledSlider } from "@/components/controlled-slider";
-import { FoodFiltersSchema } from "@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema";
+import { useCategories } from '@/app/(dashboard)/admin/foods-management/categories/_services/use-queries';
+import { FoodFiltersSchema } from '@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema';
+import { ControlledSelect } from '@/components/controlled-select';
+import { ControlledSlider } from '@/components/controlled-slider';
 
 const sortByOptions = [
-  { label: "Name", value: "name" },
-  { label: "Calories", value: "calories" },
-  { label: "Carbohydrates", value: "carbohydrates" },
-  { label: "Fat", value: "fat" },
-  { label: "Protein", value: "protein" },
+  { label: 'Name', value: 'name' },
+  { label: 'Calories', value: 'calories' },
+  { label: 'Carbohydrates', value: 'carbohydrates' },
+  { label: 'Fat', value: 'fat' },
+  { label: 'Protein', value: 'protein' },
 ];
 
 const sortOrderOptions = [
-  { label: "Ascending", value: "asc" },
-  { label: "Descending", value: "desc" },
+  { label: 'Ascending', value: 'asc' },
+  { label: 'Descending', value: 'desc' },
 ];
 
 export function FoodFilterForm() {

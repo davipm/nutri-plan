@@ -1,54 +1,29 @@
-"use server";
+'use server';
 
-import prisma from "@/lib/prisma";
-import { executeAction } from "@/lib/execute-action";
-import { CategorySchema } from "@/app/(dashboard)/admin/foods-management/categories/_types/schema";
+import {
+  CategorySchema,
+  categorySchema,
+} from '@/app/(dashboard)/admin/foods-management/categories/_types/schema';
+import { executeAction } from '@/lib/execute-action';
+import prisma from '@/lib/prisma';
 
-/**
- * An asynchronous function used for creating a new category in the database.
- *
- * @param {CategorySchema} data - The schema object containing the necessary information
- *                                required to create a category.
- *                                It must include a `name` property representing the
- *                                name of the category to be created.
- * @returns A promise that resolves once the category has been successfully
- *          created using the provided data.
- */
-export const createCategory = async (data: CategorySchema) => {
-  await executeAction({
+export const saveCategory = async (data: CategorySchema) => {
+  return executeAction({
     actionFn: async () => {
-      await prisma.category.create({
-        data: {
-          name: data.name,
-        },
+      const input = categorySchema.parse(data);
+
+      if (input.action === 'create') {
+        return prisma.category.create({
+          data: { name: data.name },
+        });
+      }
+
+      return prisma.category.update({
+        where: { id: input.id },
+        data: { name: input.name },
       });
     },
   });
-};
-
-/**
- * Asynchronous function to update a category in the database.
- *
- * @function
- * @async
- * @param {CategorySchema} data - Object containing the category details for the update.
- * @param {string} data.action - Specifies the action to perform; should be "update" for this function to execute.
- * @param {string} data.id - The unique identifier of the category to be updated.
- * @param {string} data.name - The new name of the category to update.
- * @returns A promise that resolves when the category update is complete.
- * @throws Will throw an error if the database update operation fails.
- */
-export const updateCategory = async (data: CategorySchema) => {
-  if (data.action === "update") {
-    await executeAction({
-      actionFn: async () => {
-        await prisma.category.update({
-          where: { id: data.id },
-          data: { name: data.name },
-        });
-      },
-    });
-  }
 };
 
 /**
@@ -78,7 +53,9 @@ export const deleteCategory = async (id: number) => {
  *          If no categories exist, an empty array is returned.
  */
 export const getCategories = async () => {
-  return await prisma.category.findMany();
+  return await executeAction({
+    actionFn: () => prisma.category.findMany(),
+  });
 };
 
 /**
@@ -95,15 +72,12 @@ export const getCategories = async () => {
  * @param {number} id - The unique identifier of the category to retrieve.
  * @returns A promise that resolves to an object representing the category.
  */
-export const getCategory = async (id: number): Promise<CategorySchema> => {
-  const response = await prisma.category.findFirst({
-    where: { id },
+export const getCategory = async (id: number) => {
+  return await executeAction({
+    actionFn: async () => {
+      const response = await prisma.category.findUnique({ where: { id } });
+      if (!response) throw new Error(`Category with id ${id} not found`);
+      return response;
+    },
   });
-
-  return {
-    ...response,
-    id,
-    action: "update",
-    name: response?.name ?? "",
-  };
 };

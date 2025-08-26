@@ -1,50 +1,25 @@
 import {
-  createServingUnit,
   deleteServingUnit,
-  updateServingUnit,
+  saveServingUnit,
 } from '@/app/(dashboard)/admin/foods-management/serving-units/_services/services';
 import type { ServingUnitSchema } from '@/app/(dashboard)/admin/foods-management/serving-units/_types/schema';
+import type { ServingUnit } from '@/generated/prisma/client';
+import { getErrorMessage } from '@/lib/get-error-message';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-export const useCreateServingUnit = () => {
+export const useSaveServingUnit = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<void, Error, ServingUnitSchema>({
-    mutationKey: ['servingUnits', 'create'],
-    mutationFn: async (data) => {
-      if (data.action !== 'create') {
-        throw new Error('Invalid action for create.');
-      }
-      await createServingUnit(data);
-    },
-    onSuccess: async () => {
-      toast.success('Serving Unit created successfully.');
+  return useMutation<ServingUnit, Error, ServingUnitSchema>({
+    mutationKey: ['servingUnits', 'save'],
+    mutationFn: (data) => saveServingUnit(data),
+    onSuccess: async (_, { action }) => {
+      toast.success(`Serving unit ${action === 'create' ? 'created' : 'updated'} successfully.`);
       await queryClient.invalidateQueries({ queryKey: ['servingUnits'] });
     },
     onError: (error) => {
-      toast.error(error.message || 'Failed to create Serving Unit.');
-    },
-  });
-};
-
-export const useUpdateServingUnit = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation<void, Error, ServingUnitSchema>({
-    mutationKey: ['servingUnits', 'update'],
-    mutationFn: async (data) => {
-      if (data.action !== 'update') {
-        throw new Error('Invalid action for update.');
-      }
-      return updateServingUnit(data);
-    },
-    onSuccess: async () => {
-      toast.success('Serving Unit updated successfully.');
-      await queryClient.invalidateQueries({ queryKey: ['servingUnits'] });
-    },
-    onError: (error) => {
-      toast.error(error.message || 'Failed to update Serving Unit.');
+      toast.error(getErrorMessage(error));
     },
   });
 };
@@ -54,15 +29,13 @@ export const useDeleteServingUnit = () => {
 
   return useMutation<void, Error, number>({
     mutationKey: ['servingUnits', 'delete'],
-    mutationFn: async (id) => {
-      await deleteServingUnit(id);
-    },
+    mutationFn: (id) => deleteServingUnit(id),
     onSuccess: async () => {
-      toast.success('Serving Unit deleted successfully.');
+      toast.success('Serving unit deleted successfully.');
       await queryClient.invalidateQueries({ queryKey: ['servingUnits'] });
     },
     onError: (error) => {
-      toast.error(error.message || 'Failed to delete Serving Unit.');
+      toast.error(getErrorMessage(error));
     },
   });
 };

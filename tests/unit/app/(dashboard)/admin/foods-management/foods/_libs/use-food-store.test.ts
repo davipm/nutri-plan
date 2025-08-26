@@ -247,13 +247,13 @@ describe("useFoodsStore", () => {
 
     initialState.updateFoodFilters(customFilters);
 
-    // Update search term
+    // Update search term - this should reset page to 1 (common UX pattern)
     initialState.updateFoodFiltersSearchTerm("new search");
 
     const updatedState = useFoodsStore.getState();
     expect(updatedState.foodFilters.searchTerm).toBe("new search");
     expect(updatedState.foodFilters.caloriesRange).toEqual(["100", "600"]);
-    expect(updatedState.foodFilters.page).toBe(3);
+    expect(updatedState.foodFilters.page).toBe(1); // Page should reset to 1 when search term changes
   });
 
   it("should be created with correct store configuration", () => {

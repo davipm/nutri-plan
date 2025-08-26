@@ -1,7 +1,7 @@
-import { auth } from "@/lib/auth";
-import { Role } from "@/generated/prisma";
-import { redirect } from "next/navigation";
-import { SingInForm } from "@/app/(auth)/sing-in/_components/sing-in-form";
+import { SignInForm } from '@/app/(auth)/sign-in/_components/sign-in-form';
+import { Role } from '@/generated/prisma';
+import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 /**
  * Represents a page component that performs user authentication and role-based redirection.
@@ -13,16 +13,16 @@ export default async function Page() {
   const session = await auth();
 
   if (session?.user?.role === Role.ADMIN) {
-    redirect("/admin/foods-management/foods");
+    redirect('/admin/foods-management/foods');
   }
 
   if (session?.user?.role === Role.USER) {
-    redirect("/client");
+    redirect('/client');
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <SingInForm />
+      <SignInForm />
     </div>
   );
 }

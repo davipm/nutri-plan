@@ -4,8 +4,8 @@ import ServingUnitCard from '@/app/(dashboard)/admin/foods-management/serving-un
 import ServingUnitSkeleton from '@/app/(dashboard)/admin/foods-management/serving-units/_components/serving-unit-skeleton';
 import { useServingUnitsStore } from '@/app/(dashboard)/admin/foods-management/serving-units/_libs/use-serving-units-store';
 import { useServingUnits } from '@/app/(dashboard)/admin/foods-management/serving-units/_services/use-queries';
+import { HasError } from '@/components/has-error';
 import NoItemFound from '@/components/no-item-found';
-import { Button } from '@/components/ui/button';
 
 export function ServingUnitCards() {
   const { updateServingUnitDialogOpen, updateSelectedServingUnitId } = useServingUnitsStore();
@@ -23,17 +23,10 @@ export function ServingUnitCards() {
   }
 
   if (isError) {
-    return (
-      <div role="alert" className="flex flex-col items-center justify-center space-y-4 py-12">
-        <p>Failed to load serving units</p>
-        <Button variant="outline" onClick={() => refetch()} disabled={isRefetching}>
-          {isRefetching ? 'Retrying...' : 'Try Again'}
-        </Button>
-      </div>
-    );
+    return <HasError refetchAction={refetch} isRefetching={isRefetching} />;
   }
 
-  if (data.length === 0) {
+  if (!data.length) {
     return (
       <NoItemFound
         onClick={() => {

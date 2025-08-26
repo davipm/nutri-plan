@@ -1,7 +1,7 @@
-import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import { SingInSchema } from "@/app/(auth)/sing-in/_types/sing-in-schema";
-import { singIn, singOut } from "@/app/(auth)/sing-in/_services/mutations";
+import { signIn, signOut } from '@/app/(auth)/sign-in/_services/mutations';
+import { SignInSchema } from '@/app/(auth)/sign-in/_types/sign-in-schema';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 /**
  * useSingIn is a custom hook that provides a mutation for the sign-in process.
@@ -14,27 +14,27 @@ import { singIn, singOut } from "@/app/(auth)/sing-in/_services/mutations";
  * allowing control over the sign-in process, including methods to trigger
  * the mutation and access its status and results.
  */
-export const useSingIn = () => {
+export const useSignIn = () => {
   return useMutation({
-    mutationFn: async (data: SingInSchema) => {
-      await singIn(data);
+    mutationFn: async (data: SignInSchema) => {
+      await signIn(data);
     },
   });
 };
 
 /**
  * A custom hook that encapsulates the sign-out functionality using a mutation.
- * It triggers the `singOut` function and redirects the user to the "/sing-in" route upon success.
+ * It triggers the `singOut` function and redirects the user to the "/sign-in" route upon success.
  *
- * @function useSingOut
+ * @function useSignOut
  */
-export const useSingOut = () => {
+export const useSignOut = () => {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: singOut,
+    mutationFn: signOut,
     onSuccess: () => {
-      router.push("/sing-in");
+      router.push('/sign-in');
     },
   });
 };

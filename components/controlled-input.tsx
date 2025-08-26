@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { ComponentProps } from "react";
-import { Controller, FieldValues, Path, useFormContext } from "react-hook-form";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
+import { ComponentProps } from 'react';
+import { Controller, FieldValues, Path, useFormContext } from 'react-hook-form';
 
 type InputProps<T extends FieldValues> = {
   name: Path<T>;
   label?: string;
   required?: boolean;
   containerClassName?: string;
-} & ComponentProps<"input">;
+} & ComponentProps<'input'>;
 
 /**
  * A controlled input component that integrates with React Hook Form.
@@ -35,7 +35,7 @@ export function ControlledInput<T extends FieldValues>({
   const { control } = useFormContext<T>();
 
   return (
-    <div className={cn("w-full", containerClassName)}>
+    <div className={cn('w-full', containerClassName)}>
       {label && (
         <Label className="mb-2" htmlFor={name}>
           {label}
@@ -56,9 +56,7 @@ export function ControlledInput<T extends FieldValues>({
               {...field}
               {...props}
             />
-            {error && (
-              <p className="text-destructive text-sm">{error.message}</p>
-            )}
+            {error && <p className="text-destructive text-sm">{error.message}</p>}
           </>
         )}
       />

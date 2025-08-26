@@ -15,8 +15,8 @@ type State = {
 };
 
 type Actions = {
-  updateAlertOpen: (is: State['alertOpen']) => void;
   showAlert: (config: AlertConfig) => void;
+  closeAlert: () => void;
 };
 
 type Store = State & Actions;
@@ -28,8 +28,8 @@ type Store = State & Actions;
  * and `alertConfig`, which contains the configuration details for the alert.
  *
  * It also provides methods for updating these states:
- * - `updateAlertOpen`: Toggles the alert's visibility and clears any configuration if the alert is closed.
  * - `showAlert`: Opens the alert and sets its configuration.
+ * - `closeAlert`: Closes the alert and clears its configuration.
  *
  * Configuration options for this store include:
  * - `name`: A custom name for the store, set to "global-store".
@@ -40,16 +40,16 @@ export const useGlobalStore = createStore<Store>(
     alertOpen: false,
     alertConfig: null,
 
-    updateAlertOpen: (is) =>
-      set((state) => {
-        state.alertOpen = is;
-        if (!is) state.alertConfig = null;
-      }),
-
     showAlert: (config) =>
       set((state) => {
         state.alertOpen = true;
         state.alertConfig = config;
+      }),
+
+    closeAlert: () =>
+      set((state) => {
+        state.alertOpen = false;
+        state.alertConfig = null;
       }),
   }),
   { name: 'global-store', excludeFromPersist: ['alertOpen'] },

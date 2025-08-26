@@ -1,22 +1,22 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   getFoods,
   getFood,
-} from "@/app/(dashboard)/admin/foods-management/foods/_services/queries";
-import prisma from "@/lib/prisma";
+} from '@/app/(dashboard)/admin/foods-management/foods/_services/queries';
+import prisma from '@/lib/prisma';
 import {
   foodFiltersDefaultValues,
   FoodFiltersSchema,
-} from "@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema";
-import { ZodError } from "zod";
-import { Prisma } from "@/generated/prisma";
+} from '@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema';
+import { ZodError } from 'zod';
+import { Prisma } from '@/generated/prisma';
 
-vi.mock("@/lib/prisma", () => ({
+vi.mock('@/lib/prisma', () => ({
   default: {
     food: {
       findMany: vi.fn(),
       count: vi.fn(),
-      findFirst: vi.fn(),
+      findUnique: vi.fn(),
     },
   },
 }));
@@ -29,7 +29,7 @@ type FoodWithServingUnits = Prisma.FoodGetPayload<{
 
 const mockFoodDbResult: FoodWithServingUnits = {
   id: 1,
-  name: "Apple",
+  name: 'Apple',
   calories: 52,
   protein: 0.3,
   fat: 0.2,
@@ -53,21 +53,21 @@ const mockFoodDbResult: FoodWithServingUnits = {
   ],
 };
 
-describe("Food Queries", () => {
+describe('Food Queries', () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
-  describe("getFoods", () => {
-    it("testGetFoodsWithAllFiltersAndPagination", async () => {
+  describe('getFoods', () => {
+    it('testGetFoodsWithAllFiltersAndPagination', async () => {
       const filters: FoodFiltersSchema = {
         ...foodFiltersDefaultValues,
-        searchTerm: "Apple",
-        caloriesRange: ["50", "100"],
-        proteinRange: ["0", "1"],
-        categoryId: "1",
-        sortBy: "calories",
-        sortOrder: "desc",
+        searchTerm: 'Apple',
+        caloriesRange: ['50', '100'],
+        proteinRange: ['0', '1'],
+        categoryId: '1',
+        sortBy: 'calories',
+        sortOrder: 'desc',
         page: 2,
         pageSize: 5,
       };
@@ -84,7 +84,7 @@ describe("Food Queries", () => {
       const result = await getFoods(filters);
 
       const expectedWhere: Prisma.FoodWhereInput = {
-        name: { contains: "Apple" },
+        name: { contains: 'Apple' },
         calories: { gte: 50, lte: 100 },
         protein: { gte: 0, lte: 1 },
         category: { id: 1 },
@@ -95,7 +95,7 @@ describe("Food Queries", () => {
         include: { foodServingUnits: true },
         skip: 5,
         take: 5,
-        orderBy: { calories: "desc" },
+        orderBy: { calories: 'desc' },
       });
 
       expect(result).toEqual({
@@ -107,7 +107,7 @@ describe("Food Queries", () => {
       });
     });
 
-    it("testGetFoodsWithDefaultParameters", async () => {
+    it('testGetFoodsWithDefaultParameters', async () => {
       const filters = foodFiltersDefaultValues;
       const mockFoods = [mockFoodDbResult];
       const mockTotal = 1;
@@ -131,7 +131,7 @@ describe("Food Queries", () => {
         include: { foodServingUnits: true },
         skip: 0,
         take: 12,
-        orderBy: { name: "desc" },
+        orderBy: { name: 'desc' },
       });
 
       expect(result).toEqual({
@@ -143,7 +143,7 @@ describe("Food Queries", () => {
       });
     });
 
-    it("testGetFoodsThrowsErrorForInvalidFilters", async () => {
+    it('testGetFoodsThrowsErrorForInvalidFilters', async () => {
       const invalidFilters = {
         ...foodFiltersDefaultValues,
         pageSize: 200, // max is 100
@@ -152,10 +152,10 @@ describe("Food Queries", () => {
       await expect(getFoods(invalidFilters)).rejects.toThrow(ZodError);
     });
 
-    it("testGetFoodsReturnsEmptyResultForNoMatches", async () => {
+    it('testGetFoodsReturnsEmptyResultForNoMatches', async () => {
       const filters: FoodFiltersSchema = {
         ...foodFiltersDefaultValues,
-        searchTerm: "NonExistentFood",
+        searchTerm: 'NonExistentFood',
       };
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
@@ -176,53 +176,49 @@ describe("Food Queries", () => {
     });
   });
 
-  describe("getFood", () => {
-    it("testGetFoodForExistingId", async () => {
+  describe('getFood', () => {
+    it('testGetFoodForExistingId', async () => {
       const foodId = 1;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      (prisma.food.findFirst as vi.Mock).mockResolvedValue(mockFoodDbResult);
+      (prisma.food.findUnique as vi.Mock).mockResolvedValue(mockFoodDbResult);
 
       const result = await getFood(foodId);
 
-      expect(prisma.food.findFirst).toHaveBeenCalledWith({
+      expect(prisma.food.findUnique).toHaveBeenCalledWith({
         where: { id: foodId },
         include: { foodServingUnits: true },
       });
 
       expect(result).toEqual({
         id: 1,
-        action: "update",
-        name: "Apple",
-        calories: "52",
-        carbohydrates: "14",
-        fat: "0.2",
-        fiber: "2.4",
-        protein: "0.3",
-        sugar: "10",
-        categoryId: "1",
+        name: 'Apple',
+        calories: '52',
+        carbohydrates: '14',
+        fat: '0.2',
+        fiber: '2.4',
+        protein: '0.3',
+        sugar: '10',
+        categoryId: '1',
         foodServingUnits: [
           {
-            foodServingUnitId: "1",
-            grams: "100",
+            foodServingUnitId: '1',
+            grams: '100',
           },
         ],
       });
     });
 
-    it("testGetFoodReturnsNullForNonExistentId", async () => {
+    it('testGetFoodThrowsErrorForNonExistentId', async () => {
       const foodId = 999;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      (prisma.food.findFirst as vi.Mock).mockResolvedValue(null);
+      (prisma.food.findUnique as vi.Mock).mockResolvedValue(null);
 
-      const result = await getFood(foodId);
+      await expect(getFood(foodId)).rejects.toThrow(
+        `Food with id ${foodId} not found`,
+      );
 
-      expect(prisma.food.findFirst).toHaveBeenCalledWith({
+      expect(prisma.food.findUnique).toHaveBeenCalledWith({
         where: { id: foodId },
         include: { foodServingUnits: true },
       });
-      expect(result).toBeNull();
     });
   });
 });

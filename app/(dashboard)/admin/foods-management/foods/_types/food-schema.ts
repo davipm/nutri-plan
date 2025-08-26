@@ -44,7 +44,7 @@ export const foodSchema = z.intersection(
   }),
   z.discriminatedUnion('action', [
     z.object({ action: z.literal('create') }),
-    z.object({ action: z.literal('update'), id: z.number() }),
+    z.object({ action: z.literal('update'), id: z.number().min(1) }),
   ]),
 );
 
@@ -62,14 +62,3 @@ export const foodDefaultValues: FoodSchema = {
   protein: '',
   sugar: '',
 };
-
-export const servingUnitSchema = z.intersection(
-  z.object({
-    name: requiredStringSchema,
-    id: z.number().optional(),
-  }),
-  z.discriminatedUnion('action', [
-    z.object({ action: z.literal('create') }),
-    z.object({ action: z.literal('update'), id: z.number() }),
-  ]),
-);

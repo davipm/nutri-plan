@@ -81,7 +81,7 @@ describe("Alert", () => {
     expect(useGlobalStore.getState().alertOpen).toBe(true);
     expect(useGlobalStore.getState().alertConfig).toEqual(config);
 
-    useGlobalStore.getState().updateAlertOpen(false);
+    useGlobalStore.getState().closeAlert();
 
     const state = useGlobalStore.getState();
     expect(state.alertOpen).toBe(false);

@@ -1,5 +1,15 @@
-"use client";
+'use client';
 
+import { FoodFilterForm } from '@/app/(dashboard)/admin/foods-management/foods/_components/food-filter-form';
+import { useFoodsStore } from '@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store';
+import {
+  FoodFiltersSchema,
+  foodFiltersDefaultValues,
+  foodFiltersSchema,
+} from '@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema';
+import { ControlledInput } from '@/components/controlled-input';
+import { badgeVariants } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Drawer,
   DrawerClose,
@@ -9,29 +19,14 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
-import {
-  FormProvider,
-  SubmitHandler,
-  useForm,
-  useWatch,
-} from "react-hook-form";
-import { ControlledInput } from "@/components/controlled-input";
-import {
-  foodFiltersDefaultValues,
-  foodFiltersSchema,
-  FoodFiltersSchema,
-} from "@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema";
-import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-import equal from "fast-deep-equal";
-import { useFoodsStore } from "@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store";
-import { useEffect, useMemo } from "react";
-import { FilterIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { badgeVariants } from "@/components/ui/badge";
-import { useDebounce } from "@/lib/use-debounce";
-import { FoodFilterForm } from "@/app/(dashboard)/admin/foods-management/foods/_components/food-filter-form";
+} from '@/components/ui/drawer';
+import { useDebounce } from '@/lib/use-debounce';
+import { cn } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import equal from 'fast-deep-equal';
+import { FilterIcon } from 'lucide-react';
+import { useEffect, useMemo } from 'react';
+import { FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 
 /**
  * A drawer component for filtering foods. It includes a quick search input and a drawer
@@ -56,7 +51,7 @@ export function FoodFilterDrawer() {
     [foodFilters],
   );
 
-  const searchTerm = useWatch({ control: form.control, name: "searchTerm" });
+  const searchTerm = useWatch({ control: form.control, name: 'searchTerm' });
   const debouncedSearchTerm = useDebounce(searchTerm, 400);
 
   useEffect(() => {
@@ -83,6 +78,7 @@ export function FoodFilterDrawer() {
       open={foodFiltersDrawerOpen}
       onOpenChange={updateFoodFiltersDrawerOpen}
       direction="right"
+      handleOnly
     >
       <FormProvider {...form}>
         <div className="flex gap-2">
@@ -95,20 +91,16 @@ export function FoodFilterDrawer() {
             <Button variant="outline">
               <FilterIcon />
               Filters
-              {areFiltersApplied && (
-                <span className={cn(badgeVariants({ variant: "default" }))} />
-              )}
+              {areFiltersApplied && <span className={cn(badgeVariants({ variant: 'default' }))} />}
             </Button>
           </DrawerTrigger>
         </div>
 
         <DrawerContent>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="h-full flex flex-col">
             <DrawerHeader className="text-left">
               <DrawerTitle>Filters</DrawerTitle>
-              <DrawerDescription>
-                Customize your food search criteria.
-              </DrawerDescription>
+              <DrawerDescription>Customize your food search criteria.</DrawerDescription>
             </DrawerHeader>
 
             <FoodFilterForm />

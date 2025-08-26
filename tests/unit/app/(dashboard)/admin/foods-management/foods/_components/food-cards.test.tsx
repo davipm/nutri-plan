@@ -20,6 +20,23 @@ vi.mock("@/components/no-item-found", () => ({
   ),
 }));
 
+vi.mock("@/components/has-error", () => ({
+  HasError: ({
+    refetchAction,
+    isRefetching,
+  }: {
+    refetchAction: () => void;
+    isRefetching: boolean;
+  }) => (
+    <div role="alert">
+      <p>Something went wrong</p>
+      <button onClick={refetchAction} disabled={isRefetching}>
+        {isRefetching ? "Retrying..." : "Try Again"}
+      </button>
+    </div>
+  ),
+}));
+
 vi.mock("@/components/pagination", () => ({
   Pagination: ({ currentPage, totalPages, updatePage }: any) => (
     <div data-testid="pagination">
@@ -183,7 +200,7 @@ describe("FoodCards", () => {
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should render loading skeleton when data is loading", () => {
@@ -195,8 +212,7 @@ describe("FoodCards", () => {
 
     render(<FoodCards />);
 
-    expect(screen.getByTestId("food-cards-skeleton")).toBeInTheDocument();
-    expect(screen.getByText("Loading...")).toBeInTheDocument();
+    expect(screen.getAllByTestId("food-cards-skeleton")).toHaveLength(12);
   });
 
   it("should display error message with retry button when query fails", () => {
@@ -210,7 +226,7 @@ describe("FoodCards", () => {
 
     render(<FoodCards />);
 
-    expect(screen.getByText("Failed to load food items")).toBeInTheDocument();
+    expect(screen.getByText("Something went wrong")).toBeInTheDocument();
     expect(screen.getByText("Try Again")).toBeInTheDocument();
 
     fireEvent.click(screen.getByText("Try Again"));

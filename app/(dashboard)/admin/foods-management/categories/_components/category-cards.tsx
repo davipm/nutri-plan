@@ -4,12 +4,13 @@ import CategoryCard from '@/app/(dashboard)/admin/foods-management/categories/_c
 import { CategoryCardsSkeleton } from '@/app/(dashboard)/admin/foods-management/categories/_components/category-cards-skeleton';
 import { useCategoriesStore } from '@/app/(dashboard)/admin/foods-management/categories/_libs/use-categories-store';
 import { useCategories } from '@/app/(dashboard)/admin/foods-management/categories/_services/use-queries';
+import { HasError } from '@/components/has-error';
 import NoItemFound from '@/components/no-item-found';
 
 export function CategoryCards() {
-  const { updateCategoryDialogOpen } = useCategoriesStore();
+  const { setCategoryDialogOpen } = useCategoriesStore();
 
-  const { data, isLoading, isError } = useCategories();
+  const { data, isLoading, isError, refetch, isRefetching } = useCategories();
 
   if (isLoading) {
     return (
@@ -22,11 +23,11 @@ export function CategoryCards() {
   }
 
   if (isError) {
-    return <p className="text-center text-red-500">Failed to load categories.</p>;
+    return <HasError refetchAction={refetch} isRefetching={isRefetching} />;
   }
 
-  if (data?.length === 0) {
-    return <NoItemFound onClick={() => updateCategoryDialogOpen(true)} />;
+  if (!data?.length) {
+    return <NoItemFound onClick={() => setCategoryDialogOpen(true)} />;
   }
 
   return (

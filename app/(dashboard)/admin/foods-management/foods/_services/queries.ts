@@ -4,8 +4,8 @@ import {
   FoodFiltersSchema,
   foodFiltersSchema,
 } from '@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema';
-import { FoodSchema } from '@/app/(dashboard)/admin/foods-management/foods/_types/food-schema';
 import { Prisma } from '@/generated/prisma';
+import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
 import { toStringSafe } from '@/lib/utils';
 import { PaginateResult } from '@/types/paginate-result';
@@ -171,34 +171,35 @@ function parseNumericValue(value: string): number | null {
  * Fetches a food item and its associated serving units from the database by its unique identifier.
  *
  * @param {number} id - The unique identifier of the food item to retrieve.
- * @returns {Promise<FoodSchema | null>} - A promise that resolves to the food item object if found,
- * or null if no food item with the given ID exists.
+ * @returns The mapped food item object to be consumed by the form.
+ * @throws Error if no food item with the given ID exists.
  */
-export const getFood = async (id: number): Promise<FoodSchema | null> => {
-  const res = await prisma.food.findFirst({
-    where: { id },
-    include: {
-      foodServingUnits: true,
+export const getFood = async (id: number) => {
+  return executeAction({
+    actionFn: async () => {
+      const response = await prisma.food.findUnique({
+        where: { id },
+        include: { foodServingUnits: true },
+      });
+
+      if (!response) throw new Error(`Food with id ${id} not found`);
+
+      return {
+        id,
+        name: toStringSafe(response.name),
+        calories: toStringSafe(response.calories),
+        carbohydrates: toStringSafe(response.carbohydrates),
+        fat: toStringSafe(response.fat),
+        fiber: toStringSafe(response.fiber),
+        protein: toStringSafe(response.protein),
+        sugar: toStringSafe(response.sugar),
+        categoryId: toStringSafe(response.categoryId),
+        foodServingUnits:
+          response.foodServingUnits.map((unit) => ({
+            foodServingUnitId: toStringSafe(unit.servingUnitId),
+            grams: toStringSafe(unit.grams),
+          })) ?? [],
+      };
     },
   });
-
-  if (!res) return null;
-
-  return {
-    id,
-    action: 'update' as const,
-    name: toStringSafe(res.name),
-    calories: toStringSafe(res.calories),
-    carbohydrates: toStringSafe(res.carbohydrates),
-    fat: toStringSafe(res.fat),
-    fiber: toStringSafe(res.fiber),
-    protein: toStringSafe(res.protein),
-    sugar: toStringSafe(res.sugar),
-    categoryId: toStringSafe(res.categoryId),
-    foodServingUnits:
-      res.foodServingUnits.map((unit) => ({
-        foodServingUnitId: toStringSafe(unit.servingUnitId),
-        grams: toStringSafe(unit.grams),
-      })) ?? [],
-  };
 };

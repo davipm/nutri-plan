@@ -1,9 +1,8 @@
-import { createStore } from "@/store/create-store";
-
 import {
+  type FoodFiltersSchema,
   foodFiltersDefaultValues,
-  FoodFiltersSchema,
-} from "@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema";
+} from '@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema';
+import { createStore } from '@/store/create-store';
 
 type State = {
   selectedFoodId: number | null;
@@ -13,88 +12,79 @@ type State = {
 };
 
 type Actions = {
-  updateSelectedFoodId: (id: State["selectedFoodId"]) => void;
-  updateFoodDialogOpen: (is: State["foodDialogOpen"]) => void;
-  updateFoodFilters: (filters: State["foodFilters"]) => void;
-  updateFoodFiltersDrawerOpen: (is: State["foodFiltersDrawerOpen"]) => void;
-  updateFoodFilterPage: (action: "next" | "prev" | number) => void;
-  updateFoodFiltersSearchTerm: (
-    term: State["foodFilters"]["searchTerm"],
-  ) => void;
+  updateSelectedFoodId: (id: State['selectedFoodId']) => void;
+  updateFoodDialogOpen: (isOpen: State['foodDialogOpen']) => void;
+  updateFoodFilters: (filters: State['foodFilters']) => void;
+  resetFoodFilters: () => void;
+  updateFoodFiltersDrawerOpen: (isOpen: State['foodFiltersDrawerOpen']) => void;
+  updateFoodFilterPage: (action: 'next' | 'prev' | number) => void;
+  updateFoodFiltersSearchTerm: (term: State['foodFilters']['searchTerm']) => void;
 };
 
 type Store = State & Actions;
 
 /**
- * A store instance for managing the state of food-related functionality in the application.
+ * A Zustand store for managing the state of the foods management page.
  *
- * The `useFoodsStore` manages various properties and methods, including:
- * - `selectedFoodId`: Tracks the currently selected food item's ID.
- * - `updateSelectedFoodId`: Updates the `selectedFoodId` property with a new value.
- * - `foodDialogOpen`: A boolean to manage the open/close state of the food dialog.
- * - `updateFoodDialogOpen`: Updates the `foodDialogOpen` state.
- * - `foodFilters`: Contains the filtering criteria for foods, initialized with default values.
- * - `updateFoodFilters`: Updates the `foodFilters` property with a new set of filters.
- * - `foodFiltersDrawerOpen`: A boolean managing the open/close state of the filters' drawer.
- * - `updateFoodFiltersDrawerOpen`: Updates the `foodFiltersDrawerOpen` state.
- * - `updateFoodFilterPage`: A function for navigating pages in the food filters, which handles "next," "prev," or specific page numbers.
- *
- * Configuration options:
- * - `name`: Specifies the name of the store as "foods-store".
- * - `excludeFromPersist`: Avoids persisting specific properties, such as `foodFilters` in this case.
- *
- * This store provides reactive functionality to simplify food-related state management in the application.
+ * It includes state and actions for:
+ * - Selecting a food.
+ * - Managing the food form dialog.
+ * - Managing the food filters drawer.
+ * - Handling food filters, including pagination and search.
  */
 export const useFoodsStore = createStore<Store>(
   (set) => ({
     selectedFoodId: null,
+    foodDialogOpen: false,
+    foodFilters: foodFiltersDefaultValues,
+    foodFiltersDrawerOpen: false,
+
     updateSelectedFoodId: (id) =>
       set((state) => {
         state.selectedFoodId = id;
       }),
-    foodDialogOpen: false,
-    updateFoodDialogOpen: (is) =>
+
+    updateFoodDialogOpen: (isOpen) =>
       set((state) => {
-        state.foodDialogOpen = is;
+        state.foodDialogOpen = isOpen;
       }),
-    foodFilters: foodFiltersDefaultValues,
+
     updateFoodFilters: (filters) =>
       set((state) => {
         state.foodFilters = filters;
       }),
-    foodFiltersDrawerOpen: false,
-    updateFoodFiltersDrawerOpen: (is) =>
+
+    resetFoodFilters: () =>
       set((state) => {
-        state.foodFiltersDrawerOpen = is;
+        state.foodFilters = foodFiltersDefaultValues;
       }),
+
+    updateFoodFiltersDrawerOpen: (isOpen) =>
+      set((state) => {
+        state.foodFiltersDrawerOpen = isOpen;
+      }),
+
     updateFoodFilterPage: (action) =>
       set((state) => {
-        const currentPage = state.foodFilters.page;
-        let newPage = currentPage;
+        const { page } = state.foodFilters;
 
-        if (action === "next") {
-          newPage = currentPage + 1;
-        } else if (action === "prev") {
-          newPage = Math.max(currentPage - 1, 1);
+        if (action === 'next') {
+          state.foodFilters.page = page + 1;
+        } else if (action === 'prev') {
+          state.foodFilters.page = Math.max(1, page - 1);
         } else {
-          newPage = action;
+          state.foodFilters.page = action;
         }
-
-        return {
-          foodFilters: {
-            ...state.foodFilters,
-            page: newPage,
-          },
-        };
       }),
-    updateFoodFiltersSearchTerm: (searchTerm) => {
+
+    updateFoodFiltersSearchTerm: (searchTerm) =>
       set((state) => {
         state.foodFilters.searchTerm = searchTerm;
-      });
-    },
+        state.foodFilters.page = 1;
+      }),
   }),
   {
-    name: "foods-store",
-    excludeFromPersist: ["foodFilters"],
+    name: 'foods-store',
+    excludeFromPersist: ['foodFilters'],
   },
 );

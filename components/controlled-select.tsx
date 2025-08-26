@@ -1,7 +1,6 @@
-"use client";
+'use client';
 
-import { ValueLabel } from "@/types/value-labels";
-import { FieldValues, Path, useFormContext, Controller } from "react-hook-form";
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -10,9 +9,10 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+} from '@/components/ui/select';
+import { ValueLabel } from '@/types/value-labels';
+import { X } from 'lucide-react';
+import { Controller, FieldValues, Path, useFormContext } from 'react-hook-form';
 
 type SelectProps<T extends FieldValues> = {
   name: Path<T>;
@@ -23,17 +23,7 @@ type SelectProps<T extends FieldValues> = {
 };
 
 /**
- * ControlledSelect is a component used to render a controlled select input field within a form managed by react-hook-form.
- * It uses the Controller component to integrate the select input with the form context and manage its state.
- *
- * @template T - The type of the form's field values.
- *
- * @param {Object} props - The props for the ControlledSelect component.
- * @param {string} [props.label] - The label text for the select input field. When provided, it is displayed above the input.
- * @param {string} props.name - The name of the select input field, used to register it within the form context.
- * @param {Array<{ value: string | number, label: string }>} [props.options=[]] - The options for the select input field, where each option has a `value` and a `label`.
- * @param {string} [props.placeholder] - The placeholder text displayed inside the select input when no option is selected.
- * @param {boolean} [props.clearable] - Determines whether a clear button is shown, allowing the user to clear the selected value.
+ * A controlled Select component for react-hook-form.
  */
 export const ControlledSelect = <T extends FieldValues>({
   label,
@@ -45,55 +35,43 @@ export const ControlledSelect = <T extends FieldValues>({
   const { control } = useFormContext<T>();
 
   return (
-    <div className="w-full">
-      {label && (
-        <label htmlFor={name} className="mb-2">
-          {label}
-        </label>
+    <Controller
+      name={name}
+      control={control}
+      render={({ field: { onChange, value, ...restField }, fieldState: { error } }) => (
+        <div className="grid w-full items-center gap-1.5">
+          {label && <label htmlFor={name}>{label}</label>}
+          <Select onValueChange={onChange} value={value} {...restField}>
+            <div className="relative">
+              <SelectTrigger id={name} className="w-full">
+                <SelectValue placeholder={placeholder} />
+              </SelectTrigger>
+              {clearable && value && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-foreground/40 hover:bg-accent/0 absolute right-8 top-1/2 h-4 w-4 -translate-y-1/2"
+                  onClick={() => onChange('')}
+                  aria-label="Clear selection"
+                >
+                  <X className="size-4" />
+                </Button>
+              )}
+            </div>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>{label}</SelectLabel>
+                {options?.map((item) => (
+                  <SelectItem key={item.value} value={item.value.toString()}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          {error && <p className="text-sm text-destructive">{error.message}</p>}
+        </div>
       )}
-      <Controller
-        render={({
-          field: { onChange, ...restField },
-          fieldState: { error },
-        }) => (
-          <>
-            <Select onValueChange={onChange} {...restField}>
-              <div className="relative flex">
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder={placeholder} />
-                </SelectTrigger>
-                {clearable && !!restField.value && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-foreground/40 hover:bg-accent/0 absolute top-1/2 right-8 size-4 -translate-y-1/2"
-                    onClick={() => {
-                      onChange("");
-                    }}
-                  >
-                    <X />
-                  </Button>
-                )}
-              </div>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>{label}</SelectLabel>
-                  {options?.map((item) => (
-                    <SelectItem key={item.value} value={item.value.toString()}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            {error && (
-              <p className="text-destructive text-sm">{error.message}</p>
-            )}
-          </>
-        )}
-        name={name}
-        control={control}
-      />
-    </div>
+    />
   );
 };

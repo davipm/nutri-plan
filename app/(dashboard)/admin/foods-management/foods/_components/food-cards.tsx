@@ -5,9 +5,10 @@ import { FoodCardsSkeleton } from '@/app/(dashboard)/admin/foods-management/food
 import { useFoodsStore } from '@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store';
 import { useDeleteFood } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-mutations';
 import { useFoods } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-queries';
+import { HasError } from '@/components/has-error';
 import NoItemFound from '@/components/no-item-found';
 import { Pagination } from '@/components/pagination';
-import { Button } from '@/components/ui/button';
+import { useCallback } from 'react';
 
 /**
  * FoodCards component displays a grid of food items with CRUD operations
@@ -24,52 +25,53 @@ export function FoodCards() {
 
   const { data, isError, refetch, isRefetching, isLoading } = useFoods();
   const deleteFoodMutation = useDeleteFood();
-  const totalPages = data?.totalPages;
 
-  const handleEdit = (id: number) => {
-    updateSelectedFoodId(id);
-    updateFoodDialogOpen(true);
-  };
+  const handleEdit = useCallback(
+    (id: number) => {
+      updateSelectedFoodId(id);
+      updateFoodDialogOpen(true);
+    },
+    [updateSelectedFoodId, updateFoodDialogOpen],
+  );
 
-  if (isError) {
+  if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center space-y-4 py-12">
-        <p className="text-destructive text-sm">Failed to load food items</p>
-        <Button variant="outline" onClick={() => refetch()} disabled={isRefetching}>
-          {isRefetching ? 'Retrying...' : 'Try Again'}
-        </Button>
+      <div className="grid grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-4">
+        {Array.from({ length: 12 }).map((_, index) => (
+          <FoodCardsSkeleton key={index} />
+        ))}
       </div>
     );
   }
 
-  if (totalPages === 0) {
+  if (isError) {
+    return <HasError refetchAction={refetch} isRefetching={isRefetching} />;
+  }
+
+  if (!data?.data.length) {
     return <NoItemFound onClick={() => updateFoodDialogOpen(true)} />;
   }
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-2 lg:grid-cols-2 xl:grid-cols-4">
-        {isLoading ? (
-          <FoodCardsSkeleton />
-        ) : (
-          <>
-            {data?.data.map((item) => (
-              <FoodCard
-                key={item.id}
-                item={item}
-                onEdit={() => handleEdit(item.id)}
-                deleteFoodMutation={deleteFoodMutation}
-              />
-            ))}
-          </>
-        )}
+        {data.data.map((item) => (
+          <FoodCard
+            key={item.id}
+            item={item}
+            onEdit={() => handleEdit(item.id)}
+            deleteFoodMutation={deleteFoodMutation}
+          />
+        ))}
       </div>
 
-      <Pagination
-        currentPage={foodFilters.page}
-        totalPages={totalPages}
-        updatePage={updateFoodFilterPage}
-      />
+      {data.totalPages > 1 && (
+        <Pagination
+          currentPage={foodFilters.page}
+          totalPages={data.totalPages}
+          updatePage={updateFoodFilterPage}
+        />
+      )}
     </div>
   );
 }

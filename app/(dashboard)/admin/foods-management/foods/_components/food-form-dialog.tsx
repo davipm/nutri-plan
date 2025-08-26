@@ -5,10 +5,7 @@ import { useCategoriesStore } from '@/app/(dashboard)/admin/foods-management/cat
 import { useCategories } from '@/app/(dashboard)/admin/foods-management/categories/_services/use-queries';
 import { SpecifyFoodServingUnits } from '@/app/(dashboard)/admin/foods-management/foods/_components/specify-food-serving-units';
 import { useFoodsStore } from '@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store';
-import {
-  useCreateFood,
-  useUpdateFood,
-} from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-mutations';
+import { useSaveFood } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-mutations';
 import { useFood } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-queries';
 import {
   FoodSchema,
@@ -27,50 +24,36 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { nutritionalFields } from '@/lib/constants';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2Icon, Plus } from 'lucide-react';
 import { useEffect } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
-const nutritionalFields = [
-  { name: 'calories', label: 'Calories', placeholder: 'kcal', type: 'text' },
-  { name: 'protein', label: 'Protein', placeholder: 'grams', type: 'number' },
-  {
-    name: 'carbohydrates',
-    label: 'Carbohydrates',
-    placeholder: 'grams',
-    type: 'number',
-  },
-  { name: 'fat', label: 'Fat', placeholder: 'grams', type: 'number' },
-  { name: 'fiber', label: 'Fiber', placeholder: 'grams', type: 'number' },
-  { name: 'sugar', label: 'Sugar', placeholder: 'grams', type: 'number' },
-];
-
 export default function FoodFormDialog() {
+  const { selectedFoodId, updateSelectedFoodId, foodDialogOpen, updateFoodDialogOpen } =
+    useFoodsStore();
+  const { categoryDialogOpen } = useCategoriesStore();
+  const { servingUnitDialogOpen } = useServingUnitsStore();
+
+  const isEditMode = !!selectedFoodId;
+
   const form = useForm<FoodSchema>({
     defaultValues: foodDefaultValues,
     resolver: zodResolver(foodSchema),
   });
 
-  const foodQuery = useFood();
-  const categoriesQuery = useCategories();
-
-  const createFoodMutation = useCreateFood();
-  const updateFoodMutation = useUpdateFood();
-
-  const isPending = createFoodMutation.isPending || updateFoodMutation.isPending;
-
-  const { selectedFoodId, updateSelectedFoodId, foodDialogOpen, updateFoodDialogOpen } =
-    useFoodsStore();
-
-  const { categoryDialogOpen } = useCategoriesStore();
-  const { servingUnitDialogOpen } = useServingUnitsStore();
+  const { data: foodToEdit } = useFood();
+  const { data: categoriesQuery } = useCategories();
+  const { mutate: saveFoodMutation, isPending } = useSaveFood();
 
   useEffect(() => {
-    if (selectedFoodId && foodQuery.data) {
-      form.reset(foodQuery.data);
+    if (isEditMode && foodToEdit) {
+      form.reset({ ...foodToEdit, action: 'update' });
+    } else if (!isEditMode) {
+      form.reset(foodDefaultValues);
     }
-  }, [foodQuery.data, form, selectedFoodId]);
+  }, [foodToEdit, form, isEditMode]);
 
   const handleDialogOpenChange = (open: boolean) => {
     updateFoodDialogOpen(open);
@@ -83,13 +66,9 @@ export default function FoodFormDialog() {
   const disableSubmit = servingUnitDialogOpen || categoryDialogOpen;
 
   const onSubmit: SubmitHandler<FoodSchema> = (data) => {
-    const onSuccess = () => handleDialogOpenChange(false);
-
-    if (data.action === 'create') {
-      createFoodMutation.mutate(data, { onSuccess });
-    } else {
-      updateFoodMutation.mutate(data, { onSuccess });
-    }
+    saveFoodMutation(data, {
+      onSuccess: () => handleDialogOpenChange(false),
+    });
   };
 
   return (
@@ -102,14 +81,11 @@ export default function FoodFormDialog() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-2xl">
-            {selectedFoodId ? 'Edit Food' : 'Create a New Food'}
+            {isEditMode ? 'Edit Food' : 'Create a New Food'}
           </DialogTitle>
         </DialogHeader>
-        <form
-          onSubmit={!disableSubmit ? form.handleSubmit(onSubmit) : undefined}
-          className="space-y-6"
-        >
-          <FormProvider {...form}>
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-1 grid">
                 <ControlledInput name="name" label="Name" placeholder="Enter food name" />
@@ -119,7 +95,7 @@ export default function FoodFormDialog() {
                 <ControlledSelect<FoodSchema>
                   name="categoryId"
                   label="Category"
-                  options={categoriesQuery.data?.map((item) => ({
+                  options={categoriesQuery?.map((item) => ({
                     label: item.name,
                     value: item.id,
                   }))}
@@ -142,14 +118,14 @@ export default function FoodFormDialog() {
                 <SpecifyFoodServingUnits />
               </div>
             </div>
-          </FormProvider>
-          <DialogFooter>
-            <Button type="submit">
-              {isPending && <Loader2Icon className="animate-spin" />}
-              {selectedFoodId ? 'Edit' : 'Create'} Food
-            </Button>
-          </DialogFooter>
-        </form>
+            <DialogFooter>
+              <Button type="submit" disabled={isPending || disableSubmit}>
+                {isPending && <Loader2Icon className="mr-2 size-4 animate-spin" />}
+                <span>{isEditMode ? 'Save Changes' : 'Create'}</span>
+              </Button>
+            </DialogFooter>
+          </form>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   );
