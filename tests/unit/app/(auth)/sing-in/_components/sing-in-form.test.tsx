@@ -5,7 +5,15 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
 
-vi.mock('@/app/(auth)/sign-in/_services/use-mutations');
+vi.mock('@/app/(auth)/sign-in/_services/use-mutations', async () => {
+  const { useSignIn } = await vi.importActual<typeof import('@/app/(auth)/sign-in/_services/use-mutations')>('@/app/(auth)/sign-in/_services/use-mutations');
+  return {
+    useSignIn: vi.fn(() => ({
+      mutate: vi.fn(),
+      isPending: false,
+    })),
+  };
+});
 
 vi.mock('lucide-react', async (importOriginal) => {
   const original = await importOriginal<typeof import('lucide-react')>();
@@ -16,8 +24,8 @@ vi.mock('lucide-react', async (importOriginal) => {
 });
 
 vi.mock('@/app/(auth)/sign-in/_types/sign-in-schema', () => ({
-  singInDefaultValues: { email: '', password: '' },
-  singInSchema: z.object({
+  signInDefaultValues: { email: '', password: '' },
+  signInSchema: z.object({
     email: z.string().min(1, 'Email is required').email('Invalid email format'),
     password: z
       .string()
@@ -26,13 +34,13 @@ vi.mock('@/app/(auth)/sign-in/_types/sign-in-schema', () => ({
   }),
 }));
 
-const mockUseSingIn = vi.mocked(useMutations.useSignIn);
+const mockUseSignIn = vi.mocked(useMutations.useSignIn);
 const mockMutate = vi.fn();
 
-describe('SingInForm', () => {
+describe('SignInForm', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUseSingIn.mockReturnValue({
+    mockUseSignIn.mockReturnValue({
       mutate: mockMutate,
       isPending: false,
     } as unknown as ReturnType<typeof useMutations.useSignIn>);
@@ -82,12 +90,14 @@ describe('SingInForm', () => {
     await user.click(screen.getByRole('button', { name: /sign in/i }));
 
     expect(await screen.findByText('Invalid email format')).toBeInTheDocument();
-    expect(await screen.findByText('Password must be at least 8 characters')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Password must be at least 8 characters'),
+    ).toBeInTheDocument();
     expect(mockMutate).not.toHaveBeenCalled();
   });
 
   it('test_disables_button_and_shows_loader_during_submission', () => {
-    mockUseSingIn.mockReturnValue({
+    mockUseSignIn.mockReturnValue({
       mutate: mockMutate,
       isPending: true,
     } as unknown as ReturnType<typeof useMutations.useSignIn>);

@@ -14,7 +14,7 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('@/app/(auth)/sign-in/_components/sign-in-form', () => ({
-  SingInForm: () => <div data-testid="sign-in-form">Sign In Form</div>,
+  SignInForm: () => <div data-testid="sign-in-form">Sign In Form</div>,
 }));
 
 const mockAuth = vi.mocked(auth);
