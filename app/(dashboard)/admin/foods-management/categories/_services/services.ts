@@ -57,7 +57,9 @@ export const deleteCategory = async (id: number) => {
  *          If no categories exist, an empty array is returned.
  */
 export const getCategories = async () => {
-  return await prisma.category.findMany();
+  return await executeAction({
+    actionFn: () => prisma.category.findMany(),
+  });
 };
 
 /**
@@ -75,11 +77,11 @@ export const getCategories = async () => {
  * @returns A promise that resolves to an object representing the category.
  */
 export const getCategory = async (id: number) => {
-  const response = await prisma.category.findFirst({ where: { id } });
-
-  if (!response) {
-    throw new Error(`Category with id ${id} not found`);
-  }
-
-  return response;
+  return await executeAction({
+    actionFn: async () => {
+      const response = await prisma.category.findUnique({ where: { id } });
+      if (!response) throw new Error(`Category with id ${id} not found`);
+      return response;
+    },
+  });
 };

@@ -45,7 +45,7 @@ export function FoodCards() {
   }
 
   if (isError) {
-    return <HasError refetch={refetch} isRefetching={isRefetching} />;
+    return <HasError refetchAction={refetch} isRefetching={isRefetching} />;
   }
 
   if (!data?.data.length) {

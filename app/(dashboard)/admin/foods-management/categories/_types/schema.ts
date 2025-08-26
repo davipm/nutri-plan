@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const categorySchema = z.intersection(
   z.object({
-    name: z.string().min(1, { message: 'More than one characters' }).max(255),
+    name: z.string().min(1).max(255),
   }),
   z.discriminatedUnion('action', [
     z.object({ action: z.literal('create') }),

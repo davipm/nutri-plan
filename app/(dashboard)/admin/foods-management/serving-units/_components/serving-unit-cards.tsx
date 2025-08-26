@@ -23,7 +23,7 @@ export function ServingUnitCards() {
   }
 
   if (isError) {
-    return <HasError refetch={refetch} isRefetching={isRefetching} />;
+    return <HasError refetchAction={refetch} isRefetching={isRefetching} />;
   }
 
   if (!data.length) {

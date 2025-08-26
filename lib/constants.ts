@@ -1,4 +1,4 @@
-import { Role, RouteGroupType } from '@/app/(dashboard)/_components/router-group';
+import { Role, RouteGroupType } from '@/types/nav-types';
 import { Apple, Boxes, Ruler, Utensils } from 'lucide-react';
 
 export const patterns = {
@@ -12,7 +12,7 @@ export const patterns = {
 };
 
 export const nutritionalFields = [
-  { name: 'calories', label: 'Calories', placeholder: 'kcal', type: 'text' },
+  { name: 'calories', label: 'Calories', placeholder: 'kcal', type: 'number' },
   { name: 'protein', label: 'Protein', placeholder: 'grams', type: 'number' },
   {
     name: 'carbohydrates',

@@ -13,13 +13,13 @@ type CategoryCardProps = {
 };
 
 function CategoryCard({ category }: CategoryCardProps) {
-  const { updateSelectedCategoryId, updateCategoryDialogOpen } = useCategoriesStore();
+  const { setSelectedCategoryId, setCategoryDialogOpen } = useCategoriesStore();
   const deleteCategoryMutation = useDeleteCategory();
 
   const handleEdit = useCallback(() => {
-    updateSelectedCategoryId(category.id);
-    updateCategoryDialogOpen(true);
-  }, [category.id, updateCategoryDialogOpen, updateSelectedCategoryId]);
+    setSelectedCategoryId(category.id);
+    setCategoryDialogOpen(true);
+  }, [category.id, setSelectedCategoryId, setCategoryDialogOpen]);
 
   const handleDelete = () => {
     alert({

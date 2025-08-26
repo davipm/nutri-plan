@@ -2,31 +2,13 @@
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { RouteGroupType } from '@/types/nav-types';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ComponentType, useState } from 'react';
-
-export enum Role {
-  ADMIN = 'ADMIN',
-  CLIENT = 'CLIENT',
-  USER = 'USER',
-}
-
-interface RouteItemType {
-  href: string;
-  label: string;
-  icon: ComponentType<{ className?: string }>;
-  value: string;
-}
-
-export interface RouteGroupType {
-  group: string;
-  items: RouteItemType[];
-  allowedRoles: Role[];
-}
+import { useState } from 'react';
 
 /**
  * Renders a collapsible navigation group.
