@@ -8,7 +8,6 @@ import { useFoods } from '@/app/(dashboard)/admin/foods-management/foods/_servic
 import { HasError } from '@/components/has-error';
 import NoItemFound from '@/components/no-item-found';
 import { Pagination } from '@/components/pagination';
-import { Button } from '@/components/ui/button';
 import { useCallback } from 'react';
 
 /**
