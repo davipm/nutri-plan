@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import * as Collapsible from "@radix-ui/react-collapsible";
-import { motion } from "framer-motion";
-import { ComponentType, useState } from "react";
-import { Apple, Boxes, ChevronDown, Ruler, Utensils } from "lucide-react";
-import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import * as Collapsible from '@radix-ui/react-collapsible';
+import { motion } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { ComponentType, useState } from 'react';
 
 export enum Role {
-  ADMIN = "ADMIN",
-  CLIENT = "CLIENT",
-  USER = "USER",
+  ADMIN = 'ADMIN',
+  CLIENT = 'CLIENT',
+  USER = 'USER',
 }
 
 interface RouteItemType {
@@ -29,73 +29,15 @@ export interface RouteGroupType {
 }
 
 /**
- * Represents a collection of route groups for navigation in the application.
+ * Renders a collapsible navigation group.
+ * The group is expanded by default if the current route is part of the group.
  *
- * Each route group specifies a categorization of related routes and includes:
- * - A group name
- * - Specific roles that are allowed access
- * - A collection of items (individual routes) within that group
- *
- * Each route item contains:
- * - The navigation path (`href`) of the route
- * - The display label for the route
- * - An optional icon associated with the route
- *
- * The `ROUTE_GROUPS` variable is used to define navigation structures and access restrictions based on user roles.
- */
-export const ROUTE_GROUPS: RouteGroupType[] = [
-  {
-    group: "Foods Management",
-    allowedRoles: [Role.ADMIN],
-    items: [
-      {
-        href: "/admin/foods-management/foods",
-        label: "Foods",
-        value: "foods",
-        icon: Apple,
-      },
-      {
-        href: "/admin/foods-management/categories",
-        label: "Categories",
-        value: "categories",
-        icon: Boxes,
-      },
-      {
-        href: "/admin/foods-management/serving-units",
-        label: "Serving Units",
-        value: "serving-units",
-        icon: Ruler,
-      },
-    ],
-  },
-  {
-    group: "Meals Management",
-    allowedRoles: [Role.ADMIN, Role.CLIENT], // Admin can also access if needed
-    items: [
-      {
-        href: "/client",
-        label: "Meals",
-        value: "meals",
-        icon: Utensils,
-      },
-    ],
-  },
-];
-
-/**
- * Creates a collapsible router group with a trigger button and a list of items.
- * Toggles visibility when the trigger is activated.
- *
- * @param {Object} props - The input parameters for the RouterGroup component.
- * @param {string} props.group - The name or label of the group to be displayed.
- * @param {Array<Object>} props.items - Array of items representing the links in the group.
- * @param {string} props.items[].href - The URL for the individual route.
- * @param {string} props.items[].label - The text label for the individual route.
- * @param {React.ReactNode} props.items[].icon - The optional icon element to display alongside the route label.
+ * @param {RouteGroupType} props - The route group configuration, containing group name and items.
+ * @returns A collapsible UI component for a navigation group.
  */
 export function RouterGroup({ group, items }: RouteGroupType) {
-  const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const [open, setOpen] = useState(() => items.some((item) => pathname.startsWith(item.href)));
 
   return (
     <Collapsible.Root open={open} onOpenChange={setOpen}>
@@ -114,8 +56,8 @@ export function RouterGroup({ group, items }: RouteGroupType) {
       <Collapsible.Content forceMount>
         <motion.div
           initial={{ opacity: 0, height: 0 }}
-          animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
-          className={cn("flex flex-col gap-2", !open && "pointer-events-none")}
+          animate={{ height: open ? 'auto' : 0, opacity: open ? 1 : 0 }}
+          className={cn('flex flex-col gap-2', !open && 'pointer-events-none')}
         >
           {items.map((item) => {
             const Icon = item.icon;
@@ -129,10 +71,10 @@ export function RouterGroup({ group, items }: RouteGroupType) {
                 <Link
                   href={item.href}
                   className={cn(
-                    "flex items-center rounded-md px-5 py-1 transition-all",
+                    'flex items-center rounded-md px-5 py-1 transition-all',
                     pathname === item.href
-                      ? "bg-foreground/10 hover:bg-foreground/5"
-                      : "hover:bg-foreground/10",
+                      ? 'bg-foreground/10 hover:bg-foreground/5'
+                      : 'hover:bg-foreground/10',
                   )}
                 >
                   <Icon className="mr-2 size-3" />

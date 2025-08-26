@@ -1,7 +1,7 @@
 'use client';
 
 import { useSignOut } from '@/app/(auth)/sign-in/_services/use-mutations';
-import { ROUTE_GROUPS, Role, RouterGroup } from '@/app/(dashboard)/_components/router-group';
+import { Role, RouterGroup } from '@/app/(dashboard)/_components/router-group';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
+import { ROUTE_GROUPS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { ChevronLeft, LogOut, Menu } from 'lucide-react';

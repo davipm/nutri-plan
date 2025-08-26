@@ -1,4 +1,3 @@
-import { useGlobalStore } from "@/store/use-global-store";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,7 +7,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
+import { useGlobalStore } from '@/store/use-global-store';
 
 /**
  * A provider that renders an alert dialog based on the global state. The dialog
@@ -19,43 +19,39 @@ import {
  * otherwise, returns null to indicate no dialog is displayed.
  */
 export function AlertDialogProvider() {
-  const { alertOpen, updateAlertOpen, alertConfig } = useGlobalStore();
+  const { alertOpen, closeAlert, alertConfig } = useGlobalStore();
 
   const {
-    title = "Confirmation Required",
-    description = "Are you sure you want to perform this action?",
-    confirmLabel = "Continue",
-    cancelLabel = "Cancel",
+    title = 'Confirmation Required',
+    description = 'Are you sure you want to perform this action?',
+    confirmLabel = 'Continue',
+    cancelLabel = 'Cancel',
     onConfirm,
     onCancel,
   } = alertConfig || {};
 
   const handleConfirm = () => {
     onConfirm?.();
-    updateAlertOpen(false);
+    closeAlert();
   };
 
   const handleCancel = () => {
     onCancel?.();
-    updateAlertOpen(false);
+    closeAlert();
   };
 
   if (!alertOpen) return null;
 
   return (
-    <AlertDialog open={alertOpen} onOpenChange={updateAlertOpen}>
+    <AlertDialog open={alertOpen} onOpenChange={closeAlert}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogAction onClick={handleConfirm}>
-            {confirmLabel}
-          </AlertDialogAction>
-          <AlertDialogCancel onClick={handleCancel}>
-            {cancelLabel}
-          </AlertDialogCancel>
+          <AlertDialogAction onClick={handleConfirm}>{confirmLabel}</AlertDialogAction>
+          <AlertDialogCancel onClick={handleCancel}>{cancelLabel}</AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
