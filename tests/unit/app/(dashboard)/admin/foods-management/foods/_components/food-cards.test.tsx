@@ -20,6 +20,23 @@ vi.mock("@/components/no-item-found", () => ({
   ),
 }));
 
+vi.mock("@/components/has-error", () => ({
+  HasError: ({
+    refetchAction,
+    isRefetching,
+  }: {
+    refetchAction: () => void;
+    isRefetching: boolean;
+  }) => (
+    <div role="alert">
+      <p>Something went wrong</p>
+      <button onClick={refetchAction} disabled={isRefetching}>
+        {isRefetching ? "Retrying..." : "Try Again"}
+      </button>
+    </div>
+  ),
+}));
+
 vi.mock("@/components/pagination", () => ({
   Pagination: ({ currentPage, totalPages, updatePage }: any) => (
     <div data-testid="pagination">
@@ -328,20 +345,3 @@ describe("FoodCards", () => {
     expect(mockUpdateFoodFilterPage).toHaveBeenCalledWith(2);
   });
 });
-
-vi.mock("@/components/has-error", () => ({
-  HasError: ({
-    refetch,
-    isRefetching,
-  }: {
-    refetch: () => void;
-    isRefetching: boolean;
-  }) => (
-    <div role="alert">
-      <p>Something went wrong</p>
-      <button onClick={refetch} disabled={isRefetching}>
-        {isRefetching ? "Retrying..." : "Try Again"}
-      </button>
-    </div>
-  ),
-}));
