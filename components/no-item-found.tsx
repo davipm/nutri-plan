@@ -5,15 +5,7 @@ type NoItemsFoundProps = {
   onClick: () => void;
 };
 
-/**
- * Renders a message indicating that no items were found along with an option to add new items.
- *
- * @param {Object} props - The property object.
- * @param {function} props.onClick - The callback function to be executed when the "Add new item" button is clicked.
- *
- * @return A React component displaying a "No items found" message and a button to add new items.
- */
-export default function NoItemFound({ onClick }: NoItemsFoundProps) {
+export function NoItemFound({ onClick }: NoItemsFoundProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
       <CircleOff className="text-primary mb-2" />

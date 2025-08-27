@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
 export const mealFilterSchema = z.object({
-  deleteTime: z.coerce.date(),
+  dateTime: z.coerce.date(),
 });
 
-type MealFilterSchema = z.infer<typeof mealFilterSchema>;
+export type MealFilterSchema = z.infer<typeof mealFilterSchema>;
 
 export const mealFilterDefaultValues: MealFilterSchema = {
-  deleteTime: new Date(),
+  dateTime: new Date(),
 };

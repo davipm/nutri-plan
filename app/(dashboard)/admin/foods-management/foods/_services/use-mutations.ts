@@ -1,7 +1,7 @@
 import {
   deleteFood,
   saveFood,
-} from '@/app/(dashboard)/admin/foods-management/foods/_services/mutations';
+} from '@/app/(dashboard)/admin/foods-management/foods/_services/services';
 import type { FoodSchema } from '@/app/(dashboard)/admin/foods-management/foods/_types/food-schema';
 import type { Food } from '@/generated/prisma/client';
 import { getErrorMessage } from '@/lib/get-error-message';

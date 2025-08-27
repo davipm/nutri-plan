@@ -5,7 +5,7 @@ import ServingUnitSkeleton from '@/app/(dashboard)/admin/foods-management/servin
 import { useServingUnitsStore } from '@/app/(dashboard)/admin/foods-management/serving-units/_libs/use-serving-units-store';
 import { useServingUnits } from '@/app/(dashboard)/admin/foods-management/serving-units/_services/use-queries';
 import { HasError } from '@/components/has-error';
-import NoItemFound from '@/components/no-item-found';
+import { NoItemFound } from '@/components/no-item-found';
 
 export function ServingUnitCards() {
   const { updateServingUnitDialogOpen, updateSelectedServingUnitId } = useServingUnitsStore();

@@ -1,15 +1,15 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
-  getFoods,
   getFood,
-} from '@/app/(dashboard)/admin/foods-management/foods/_services/queries';
-import prisma from '@/lib/prisma';
+  getFoods,
+} from '@/app/(dashboard)/admin/foods-management/foods/_services/services';
 import {
-  foodFiltersDefaultValues,
   FoodFiltersSchema,
+  foodFiltersDefaultValues,
 } from '@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema';
-import { ZodError } from 'zod';
 import { Prisma } from '@/generated/prisma';
+import prisma from '@/lib/prisma';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ZodError } from 'zod';
 
 vi.mock('@/lib/prisma', () => ({
   default: {
@@ -211,9 +211,7 @@ describe('Food Queries', () => {
       const foodId = 999;
       (prisma.food.findUnique as vi.Mock).mockResolvedValue(null);
 
-      await expect(getFood(foodId)).rejects.toThrow(
-        `Food with id ${foodId} not found`,
-      );
+      await expect(getFood(foodId)).rejects.toThrow(`Food with id ${foodId} not found`);
 
       expect(prisma.food.findUnique).toHaveBeenCalledWith({
         where: { id: foodId },
