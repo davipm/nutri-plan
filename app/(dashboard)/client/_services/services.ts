@@ -14,11 +14,18 @@ export const getMeals = (filters: MealFilterSchema) => {
   return executeAction({
     actionFn: async () => {
       const session = await auth();
+
+      if (!session?.user.id) {
+        throw new Error('User not authenticated');
+      }
+
       const validatedFilters = mealFilterSchema.parse(filters);
       const { dateTime } = validatedFilters || {};
-      const where: Prisma.MealWhereInput = {};
+      const where: Prisma.MealWhereInput = {
+        userId: +session.user.id,
+      };
 
-      if (dateTime !== undefined) {
+      if (dateTime) {
         const startDate = new Date(dateTime);
         startDate.setHours(0, 0, 0, 0);
         const endDate = new Date(dateTime);
@@ -26,11 +33,7 @@ export const getMeals = (filters: MealFilterSchema) => {
         where.dateTime = { gte: startDate, lte: endDate };
       }
 
-      if (session?.user.id) {
-        where.userId = { equals: +session.user.id };
-      }
-
-      return await prisma.meal.findMany({
+      const meals = await prisma.meal.findMany({
         where,
         orderBy: { dateTime: 'desc' },
         include: {
@@ -42,6 +45,16 @@ export const getMeals = (filters: MealFilterSchema) => {
           },
         },
       });
+
+      return meals.map((meal) => ({
+        ...meal,
+        userId: toStringSafe(meal.userId),
+        mealFoods: meal.mealFoods.map((mealFood) => ({
+          ...mealFood,
+          foodId: toStringSafe(mealFood.foodId),
+          servingUnitId: toStringSafe(mealFood.servingUnitId),
+        })),
+      }));
     },
   });
 };
@@ -49,10 +62,21 @@ export const getMeals = (filters: MealFilterSchema) => {
 export const getMeal = (id: number) => {
   return executeAction({
     actionFn: async () => {
-      const response = await prisma.meal.findUnique({
-        where: { id },
+      const session = await auth();
+
+      if (!session?.user.id) {
+        throw new Error('User not authenticated');
+      }
+
+      const response = await prisma.meal.findFirst({
+        where: { id, userId: +session.user.id },
         include: {
-          mealFoods: true,
+          mealFoods: {
+            include: {
+              food: true,
+              servingUnit: true,
+            },
+          },
         },
       });
 

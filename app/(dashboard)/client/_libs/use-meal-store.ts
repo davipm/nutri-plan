@@ -11,9 +11,9 @@ type State = {
 };
 
 type Actions = {
-  updateSelectedMealId: (id: State['selectedMealId']) => void;
-  updateMealDialogOpen: (id: State['mealDialogOpen']) => void;
-  updateMealFilters: (filters: State['mealFilters']) => void;
+  setSelectedMealId: (id: State['selectedMealId']) => void;
+  setMealDialogOpen: (isOpen: State['mealDialogOpen']) => void;
+  setMealFilters: (filters: State['mealFilters']) => void;
 };
 
 type Store = State & Actions;
@@ -23,17 +23,17 @@ export const useMealStore = createStore<Store>(
     selectedMealId: null,
     mealDialogOpen: false,
     mealFilters: mealFilterDefaultValues,
-    updateSelectedMealId: (id) => {
+    setSelectedMealId: (id) => {
       set((state) => {
         state.selectedMealId = id;
       });
     },
-    updateMealDialogOpen: (is) => {
+    setMealDialogOpen: (isOpen) => {
       set((state) => {
-        state.mealDialogOpen = is;
+        state.mealDialogOpen = isOpen;
       });
     },
-    updateMealFilters: (filters) => {
+    setMealFilters: (filters) => {
       set((state) => {
         state.mealFilters = filters;
       });
