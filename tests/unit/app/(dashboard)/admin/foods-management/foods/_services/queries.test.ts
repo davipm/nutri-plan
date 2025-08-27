@@ -21,6 +21,21 @@ vi.mock('@/lib/prisma', () => ({
   },
 }));
 
+// Mock next-auth to avoid AuthError issues
+vi.mock('next-auth', () => ({
+  AuthError: class AuthError extends Error {
+    constructor(message: string) {
+      super(message);
+      this.name = 'AuthError';
+    }
+  },
+}));
+
+// Mock next/dist/client/components/redirect-error
+vi.mock('next/dist/client/components/redirect-error', () => ({
+  isRedirectError: vi.fn(() => false),
+}));
+
 type FoodWithServingUnits = Prisma.FoodGetPayload<{
   include: {
     foodServingUnits: true;
@@ -179,6 +194,8 @@ describe('Food Queries', () => {
   describe('getFood', () => {
     it('testGetFoodForExistingId', async () => {
       const foodId = 1;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       (prisma.food.findUnique as vi.Mock).mockResolvedValue(mockFoodDbResult);
 
       const result = await getFood(foodId);
@@ -209,6 +226,8 @@ describe('Food Queries', () => {
 
     it('testGetFoodThrowsErrorForNonExistentId', async () => {
       const foodId = 999;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       (prisma.food.findUnique as vi.Mock).mockResolvedValue(null);
 
       await expect(getFood(foodId)).rejects.toThrow(`Food with id ${foodId} not found`);

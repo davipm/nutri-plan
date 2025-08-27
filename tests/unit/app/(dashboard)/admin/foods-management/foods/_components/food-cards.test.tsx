@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
+import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { FoodCards } from "@/app/(dashboard)/admin/foods-management/foods/_components/food-cards";
 
@@ -9,11 +11,15 @@ import { FoodCards } from "@/app/(dashboard)/admin/foods-management/foods/_compo
 vi.mock("lucide-react", () => ({
   Edit: () => <div data-testid="edit-icon" />,
   Trash: () => <div data-testid="trash-icon" />,
+  Apple: () => <div data-testid="apple-icon" />,
+  Boxes: () => <div data-testid="boxes-icon" />,
+  Ruler: () => <div data-testid="ruler-icon" />,
+  Utensils: () => <div data-testid="utensils-icon" />,
 }));
 
 // Mock UI components that aren't the focus of testing
 vi.mock("@/components/no-item-found", () => ({
-  default: ({ onClick }: { onClick: () => void }) => (
+  NoItemFound: ({ onClick }: { onClick: () => void }) => (
     <div data-testid="no-item-found" onClick={onClick}>
       No items found
     </div>
@@ -55,6 +61,47 @@ vi.mock(
   () => ({
     FoodCardsSkeleton: () => (
       <div data-testid="food-cards-skeleton">Loading...</div>
+    ),
+  }),
+);
+
+vi.mock(
+  "@/app/(dashboard)/admin/foods-management/foods/_components/food-card",
+  () => ({
+    FoodCard: ({ item, onEdit, deleteFoodMutation }: any) => (
+      <div data-testid="food-card">
+        <h3>{item.name}</h3>
+        <div>Calories: {item.calories} kcal</div>
+        <div>Carbohydrates: {item.carbohydrates} g</div>
+        <div>Protein: {item.protein} g</div>
+        <div>Fat: {item.fat} g</div>
+        <hr data-testid="separator" />
+        <button onClick={onEdit}>
+          <div data-testid="edit-icon" />
+        </button>
+        <div data-testid="alert-dialog">
+          <div data-testid="alert-dialog-trigger">
+            <div data-testid="trash-icon" />
+          </div>
+          <div data-testid="alert-dialog-content">
+            <div data-testid="alert-dialog-header">
+              <h2 data-testid="alert-dialog-title">Delete Food Item</h2>
+              <p data-testid="alert-dialog-description">
+                Are you sure you want to delete this food item?
+              </p>
+            </div>
+            <div data-testid="alert-dialog-footer">
+              <button data-testid="alert-dialog-cancel">Cancel</button>
+              <button
+                data-testid="alert-dialog-action"
+                onClick={() => deleteFoodMutation.mutate(item.id)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     ),
   }),
 );
@@ -131,14 +178,14 @@ vi.mock(
 );
 
 vi.mock(
-  "@/app/(dashboard)/admin/foods-management/foods/_services/use-food-queries",
+  "@/app/(dashboard)/admin/foods-management/foods/_services/use-queries",
   () => ({
     useFoods: () => mockUseFoods(),
   }),
 );
 
 vi.mock(
-  "@/app/(dashboard)/admin/foods-management/foods/_services/use-food-mutations",
+  "@/app/(dashboard)/admin/foods-management/foods/_services/use-mutations",
   () => ({
     useDeleteFood: () => mockUseDeleteFood(),
   }),
@@ -171,6 +218,21 @@ describe("FoodCards", () => {
       },
     ],
     totalPages: 2,
+  };
+
+  // Helper function to render component with QueryClient
+  const renderWithQueryClient = (component: React.ReactElement) => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    });
+    return render(
+      <QueryClientProvider client={queryClient}>
+        {component}
+      </QueryClientProvider>
+    );
   };
 
   beforeEach(() => {
@@ -210,7 +272,7 @@ describe("FoodCards", () => {
       data: undefined,
     });
 
-    render(<FoodCards />);
+    renderWithQueryClient(<FoodCards />);
 
     expect(screen.getAllByTestId("food-cards-skeleton")).toHaveLength(12);
   });
@@ -224,7 +286,7 @@ describe("FoodCards", () => {
       data: undefined,
     });
 
-    render(<FoodCards />);
+    renderWithQueryClient(<FoodCards />);
 
     expect(screen.getByText("Something went wrong")).toBeInTheDocument();
     expect(screen.getByText("Try Again")).toBeInTheDocument();
@@ -242,7 +304,7 @@ describe("FoodCards", () => {
       data: undefined,
     });
 
-    render(<FoodCards />);
+    renderWithQueryClient(<FoodCards />);
 
     const retryButton = screen.getByText("Retrying...");
     expect(retryButton).toBeInTheDocument();
@@ -256,7 +318,7 @@ describe("FoodCards", () => {
       data: { data: [], totalPages: 0 },
     });
 
-    render(<FoodCards />);
+    renderWithQueryClient(<FoodCards />);
 
     const noItemsComponent = screen.getByTestId("no-item-found");
     expect(noItemsComponent).toBeInTheDocument();
@@ -266,7 +328,7 @@ describe("FoodCards", () => {
   });
 
   it("should render food cards with correct nutritional information", () => {
-    render(<FoodCards />);
+    renderWithQueryClient(<FoodCards />);
 
     // Check if food names are rendered
     expect(screen.getByText("Apple")).toBeInTheDocument();
@@ -285,7 +347,7 @@ describe("FoodCards", () => {
   it("should handle edit button click and update store state", async () => {
     const user = userEvent.setup();
 
-    render(<FoodCards />);
+    renderWithQueryClient(<FoodCards />);
 
     const editButtons = screen.getAllByTestId("edit-icon");
     await user.click(editButtons[0]);
@@ -295,7 +357,7 @@ describe("FoodCards", () => {
   });
 
   it("should open delete confirmation dialog when delete button is clicked", () => {
-    render(<FoodCards />);
+    renderWithQueryClient(<FoodCards />);
 
     // Check that delete dialogs are rendered
     expect(screen.getAllByTestId("alert-dialog")).toHaveLength(2);
@@ -311,7 +373,7 @@ describe("FoodCards", () => {
   it("should call delete mutation when delete is confirmed", async () => {
     const user = userEvent.setup();
 
-    render(<FoodCards />);
+    renderWithQueryClient(<FoodCards />);
 
     const deleteActions = screen.getAllByTestId("alert-dialog-action");
     await user.click(deleteActions[0]);
@@ -320,7 +382,7 @@ describe("FoodCards", () => {
   });
 
   it("should render pagination component with correct props", () => {
-    render(<FoodCards />);
+    renderWithQueryClient(<FoodCards />);
 
     const pagination = screen.getByTestId("pagination");
     expect(pagination).toBeInTheDocument();
@@ -330,7 +392,7 @@ describe("FoodCards", () => {
   it("should handle pagination page updates correctly", async () => {
     const user = userEvent.setup();
 
-    render(<FoodCards />);
+    renderWithQueryClient(<FoodCards />);
 
     // Test next page
     await user.click(screen.getByText("Next"));
