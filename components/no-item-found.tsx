@@ -1,5 +1,5 @@
-import { CircleOff } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
+import { CircleOff } from 'lucide-react';
 
 type NoItemsFoundProps = {
   onClick: () => void;
@@ -8,7 +8,7 @@ type NoItemsFoundProps = {
 /**
  * Renders a message indicating that no items were found along with an option to add new items.
  *
- * @param {Object} props - The properties object.
+ * @param {Object} props - The property object.
  * @param {function} props.onClick - The callback function to be executed when the "Add new item" button is clicked.
  *
  * @return A React component displaying a "No items found" message and a button to add new items.

@@ -18,7 +18,7 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
  * It integrates with a form state management library and performs form validation and submission using Zod schemas. Upon successful submission, it triggers a sign-in mutation to handle the authentication logic.
  */
 export function SignInForm() {
-  const signInMutation = useSignIn();
+  const { mutate: signInMutation, isPending } = useSignIn();
 
   const form = useForm<SignInSchema>({
     defaultValues: signInDefaultValues,
@@ -26,7 +26,7 @@ export function SignInForm() {
   });
 
   const onSubmit: SubmitHandler<SignInSchema> = (data: SignInSchema) => {
-    signInMutation.mutate(data);
+    signInMutation(data);
   };
 
   return (
@@ -45,13 +45,8 @@ export function SignInForm() {
           <ControlledInput<SignInSchema> name="password" label="Password" type="password" />
         </div>
 
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={signInMutation.isPending}
-          aria-busy={signInMutation.isPending}
-        >
-          {signInMutation.isPending && <Loader2Icon className="animate-spin" aria-hidden="true" />}
+        <Button type="submit" className="w-full" disabled={isPending} aria-busy={isPending}>
+          {isPending && <Loader2Icon className="animate-spin" aria-hidden="true" />}
           Sign in
         </Button>
 
