@@ -22,6 +22,29 @@ export const useServingUnits = () => {
   });
 };
 
+/**
+ * A custom hook that retrieves data for a specific serving unit based on the selected serving unit ID from the store.
+ *
+ * The `useServingUnit` hook utilizes React Query to fetch the serving unit details. It automatically tracks and
+ * optimizes updates to the serving unit data. The hook only performs the query if a valid `selectedServingUnitId`
+ * exists in the store state.
+ *
+ * Query Key:
+ * - An array consisting of the string 'servingUnits' and an object with the `selectedServingUnitId`.
+ *
+ * Query Function:
+ * - Fetches the serving unit details using the `getServingUnit` method for the given `selectedServingUnitId`.
+ *
+ * Enabled:
+ * - The query is enabled only if the `selectedServingUnitId` is truthy.
+ *
+ * Returns:
+ * - The query object containing the state and methods provided by React Query for managing the data fetching lifecycle.
+ *
+ * Dependencies:
+ * - Requires `useServingUnitsStore` to access the `selectedServingUnitId`.
+ * - Utilizes the `useQuery` hook from React Query for managing the data fetching logic.
+ */
 export const useServingUnit = () => {
   const { selectedServingUnitId } = useServingUnitsStore();
 

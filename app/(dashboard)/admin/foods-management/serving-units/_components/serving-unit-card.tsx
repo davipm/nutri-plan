@@ -12,9 +12,18 @@ type ServingUnitCardProps = {
   servingUnit: ServingUnit;
 };
 
+/**
+ * Renders a card component representing a serving unit, including options to edit or delete the unit.
+ *
+ * @param {object} props - The properties passed to the component.
+ * @param {object} props.servingUnit - The serving unit to be displayed within the card.
+ * @param {string} props.servingUnit.id - The unique identifier for the serving unit.
+ * @param {string} props.servingUnit.name - The name of the serving unit.
+ * @returns A card component displaying the serving unit details and associated actions.
+ */
 function ServingUnitCard({ servingUnit }: ServingUnitCardProps) {
   const { updateSelectedServingUnitId, updateServingUnitDialogOpen } = useServingUnitsStore();
-  const servingUnitsMutation = useDeleteServingUnit();
+  const { mutate: servingUnitsMutation, isPending } = useDeleteServingUnit();
 
   const handleEdit = useCallback(() => {
     updateSelectedServingUnitId(servingUnit.id);
@@ -26,7 +35,7 @@ function ServingUnitCard({ servingUnit }: ServingUnitCardProps) {
       title: `Delete ${servingUnit.name}`,
       description:
         'Are you sure you want to delete this serving unit? This action cannot be undone.',
-      onConfirm: () => servingUnitsMutation.mutate(servingUnit.id),
+      onConfirm: () => servingUnitsMutation(servingUnit.id),
     });
   };
 
@@ -51,8 +60,8 @@ function ServingUnitCard({ servingUnit }: ServingUnitCardProps) {
           onClick={handleDelete}
           aria-label={`Delete ${servingUnit.name}`}
           title={`Delete ${servingUnit.name}`}
-          disabled={servingUnitsMutation.isPending}
-          aria-disabled={servingUnitsMutation.isPending}
+          disabled={isPending}
+          aria-disabled={isPending}
         >
           <Trash />
         </Button>

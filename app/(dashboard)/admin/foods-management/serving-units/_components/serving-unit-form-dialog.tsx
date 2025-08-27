@@ -42,18 +42,16 @@ export function ServingUnitFormDialog({ smallTrigger }: Props) {
     defaultValues: servingUnitDefaultValues,
   });
 
-  const servingUnitQuery = useServingUnit();
-  const saveServingUnitMutation = useSaveServingUnit();
-
-  const isPending = saveServingUnitMutation.isPending;
+  const { data: servingUnitQuery } = useServingUnit();
+  const { mutate: saveServingUnitMutation, isPending } = useSaveServingUnit();
 
   useEffect(() => {
-    if (isEditMode && servingUnitQuery.data) {
-      form.reset({ ...servingUnitQuery.data, action: 'update' });
+    if (isEditMode && servingUnitQuery) {
+      form.reset({ ...servingUnitQuery, action: 'update' });
     } else if (!isEditMode) {
       form.reset(servingUnitDefaultValues);
     }
-  }, [servingUnitQuery.data, form, isEditMode]);
+  }, [servingUnitQuery, form, isEditMode]);
 
   const handleDialogOpenChange = (open: boolean) => {
     updateServingUnitDialogOpen(open);
@@ -64,7 +62,7 @@ export function ServingUnitFormDialog({ smallTrigger }: Props) {
   };
 
   const onSubmit: SubmitHandler<ServingUnitSchema> = (data) => {
-    saveServingUnitMutation.mutate(data, {
+    saveServingUnitMutation(data, {
       onSuccess: () => handleDialogOpenChange(false),
     });
   };
