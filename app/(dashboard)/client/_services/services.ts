@@ -129,28 +129,75 @@ export const saveMeal = async (data: MealSchema) => {
 
       const input = mealSchema.parse(data);
 
-      // TODO use transaction
       if (input.action === 'create') {
-        const meal = await prisma.meal.create({
-          data: {
-            userId: toNumberSafe(input.userId),
-            dateTime: input.dateTime,
-          },
-        });
+        return prisma.$transaction(async (prisma) => {
+          const meal = await prisma.meal.create({
+            data: {
+              userId: toNumberSafe(input.userId),
+              dateTime: input.dateTime,
+            },
+          });
 
-        return Promise.all(
-          input.mealFoods.map(async (food) => {
-            await prisma.mealFood.create({
-              data: {
+          if (input.mealFoods && input.mealFoods.length > 0) {
+            await prisma.mealFood.createMany({
+              data: input.mealFoods.map((food) => ({
                 mealId: meal.id,
                 foodId: toNumberSafe(food.foodId),
                 amount: toNumberSafe(food.amount),
                 servingUnitId: toNumberSafe(food.servingUnitId),
-              },
+              })),
             });
-          }),
-        );
+          }
+
+          return meal;
+        });
       }
+
+      return prisma.$transaction(async (prisma) => {
+        const meal = await prisma.meal.update({
+          where: { id: toNumberSafe(input.id) },
+          data: { dateTime: input.dateTime },
+        });
+
+        await prisma.mealFood.deleteMany({
+          where: { mealId: toNumberSafe(input.id) },
+        });
+
+        if (input.mealFoods && input.mealFoods.length > 0) {
+          await prisma.mealFood.createMany({
+            data: input.mealFoods.map((food) => ({
+              mealId: meal.id,
+              foodId: toNumberSafe(food.foodId),
+              amount: toNumberSafe(food.amount),
+              servingUnitId: toNumberSafe(food.servingUnitId),
+            })),
+          });
+        }
+
+        return meal;
+      });
+    },
+  });
+};
+
+export const deleteMeal = async (id: number) => {
+  return await executeAction({
+    actionFn: async () => {
+      const session = await auth();
+
+      if (!session?.user.id) {
+        throw new Error('User not authenticated');
+      }
+
+      return prisma.$transaction(async (prisma) => {
+        await prisma.mealFood.deleteMany({
+          where: { mealId: toNumberSafe(id) },
+        });
+
+        return prisma.meal.delete({
+          where: { id: toNumberSafe(id) },
+        });
+      });
     },
   });
 };

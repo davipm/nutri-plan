@@ -49,7 +49,7 @@ export const useSaveServingUnit = () => {
 export const useDeleteServingUnit = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<void, Error, number>({
+  return useMutation<ServingUnit, Error, number>({
     mutationKey: ['servingUnits', 'delete'],
     mutationFn: (id) => deleteServingUnit(id),
     onSuccess: async () => {
