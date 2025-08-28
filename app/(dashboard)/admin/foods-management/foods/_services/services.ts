@@ -179,7 +179,7 @@ function parseNumericValue(value: string): number | null {
  * @throws Error if no food item with the given ID exists.
  */
 export const getFood = async (id: number) => {
-  return executeAction({
+  return await executeAction({
     actionFn: async () => {
       const response = await prisma.food.findUnique({
         where: { id },
@@ -209,76 +209,76 @@ export const getFood = async (id: number) => {
 };
 
 export const saveFood = async (data: FoodSchema) => {
-  return executeAction({
+  return await executeAction({
     actionFn: async () => {
-      const validatedData = foodSchema.parse(data);
+      const input = foodSchema.parse(data);
 
-      if (validatedData.action === 'create') {
-        const { foodServingUnits, ...foodData } = validatedData;
+      if (input.action === 'create') {
         return prisma.$transaction(async (prisma) => {
           const food = await prisma.food.create({
             data: {
-              name: foodData.name,
-              calories: toNumberSafe(foodData.calories),
-              carbohydrates: toNumberSafe(foodData.carbohydrates),
-              fat: toNumberSafe(foodData.fat),
-              protein: toNumberSafe(foodData.protein),
-              categoryId: toNumberSafe(foodData.categoryId) || null,
-              sugar: toNumberSafe(foodData.sugar),
-              fiber: toNumberSafe(foodData.fiber),
+              name: input.name,
+              calories: toNumberSafe(input.calories),
+              carbohydrates: toNumberSafe(input.carbohydrates),
+              fat: toNumberSafe(input.fat),
+              protein: toNumberSafe(input.protein),
+              categoryId: toNumberSafe(input.categoryId) || null,
+              sugar: toNumberSafe(input.sugar),
+              fiber: toNumberSafe(input.fiber),
             },
           });
 
-          if (foodServingUnits && foodServingUnits.length > 0) {
+          if (input.foodServingUnits && input.foodServingUnits.length > 0) {
             await prisma.foodServingUnit.createMany({
-              data: foodServingUnits.map((unit) => ({
+              data: input.foodServingUnits.map((unit) => ({
                 foodId: food.id,
                 servingUnitId: toNumberSafe(unit.foodServingUnitId),
                 grams: toNumberSafe(unit.grams),
               })),
             });
           }
-          return food;
-        });
-      } else {
-        const { id, foodServingUnits, ...restOfFoodData } = validatedData;
-        return prisma.$transaction(async (prisma) => {
-          const food = await prisma.food.update({
-            where: { id },
-            data: {
-              name: restOfFoodData.name,
-              calories: toNumberSafe(restOfFoodData.calories),
-              carbohydrates: toNumberSafe(restOfFoodData.carbohydrates),
-              fat: toNumberSafe(restOfFoodData.fat),
-              protein: toNumberSafe(restOfFoodData.protein),
-              categoryId: toNumberSafe(restOfFoodData.categoryId) || null,
-              sugar: toNumberSafe(restOfFoodData.sugar),
-              fiber: toNumberSafe(restOfFoodData.fiber),
-            },
-          });
 
-          await prisma.foodServingUnit.deleteMany({
-            where: { foodId: id },
-          });
-
-          if (foodServingUnits && foodServingUnits.length > 0) {
-            await prisma.foodServingUnit.createMany({
-              data: foodServingUnits.map((unit) => ({
-                foodId: food.id,
-                servingUnitId: toNumberSafe(unit.foodServingUnitId),
-                grams: toNumberSafe(unit.grams),
-              })),
-            });
-          }
           return food;
         });
       }
+
+      return prisma.$transaction(async (prisma) => {
+        const food = await prisma.food.update({
+          where: { id: input.id },
+          data: {
+            name: input.name,
+            calories: toNumberSafe(input.calories),
+            carbohydrates: toNumberSafe(input.carbohydrates),
+            fat: toNumberSafe(input.fat),
+            protein: toNumberSafe(input.protein),
+            categoryId: toNumberSafe(input.categoryId) || null,
+            sugar: toNumberSafe(input.sugar),
+            fiber: toNumberSafe(input.fiber),
+          },
+        });
+
+        await prisma.foodServingUnit.deleteMany({
+          where: { foodId: input.id },
+        });
+
+        if (input.foodServingUnits && input.foodServingUnits.length > 0) {
+          await prisma.foodServingUnit.createMany({
+            data: input.foodServingUnits.map((unit) => ({
+              foodId: food.id,
+              servingUnitId: toNumberSafe(unit.foodServingUnitId),
+              grams: toNumberSafe(unit.grams),
+            })),
+          });
+        }
+
+        return food;
+      });
     },
   });
 };
 
 export const deleteFood = async (id: number) => {
-  return executeAction({
+  return await executeAction({
     actionFn: () => {
       return prisma.$transaction(async (prisma) => {
         await prisma.foodServingUnit.deleteMany({

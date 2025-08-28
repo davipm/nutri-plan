@@ -4,11 +4,12 @@ import {
   MealFilterSchema,
   mealFilterSchema,
 } from '@/app/(dashboard)/client/_types/meal-filter-schema';
+import { MealSchema, mealSchema } from '@/app/(dashboard)/client/_types/meal-schema';
 import { Prisma } from '@/generated/prisma';
 import { auth } from '@/lib/auth';
 import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
-import { toStringSafe } from '@/lib/utils';
+import { toNumberSafe, toStringSafe } from '@/lib/utils';
 
 /**
  * Fetches a list of meals for the authenticated user based on the provided filters.
@@ -19,8 +20,8 @@ import { toStringSafe } from '@/lib/utils';
  *         information about the meal itself and its associated food items.
  * @throws {Error} Throws an error if the user is not authenticated or if the filters are invalid.
  */
-export const getMeals = (filters: MealFilterSchema) => {
-  return executeAction({
+export const getMeals = async (filters: MealFilterSchema) => {
+  return await executeAction({
     actionFn: async () => {
       const session = await auth();
 
@@ -79,8 +80,8 @@ export const getMeals = (filters: MealFilterSchema) => {
  * Each numeric property in the response is converted to a string for uniform handling.
  * @throws {Error} Throws an error if the user is not authenticated or if no meal is found with the specified ID.
  */
-export const getMeal = (id: number) => {
-  return executeAction({
+export const getMeal = async (id: number) => {
+  return await executeAction({
     actionFn: async () => {
       const session = await auth();
 
@@ -113,6 +114,43 @@ export const getMeal = (id: number) => {
             amount: toStringSafe(mealFood.amount),
           })) ?? [],
       };
+    },
+  });
+};
+
+export const saveMeal = async (data: MealSchema) => {
+  return await executeAction({
+    actionFn: async () => {
+      const session = await auth();
+
+      if (!session?.user.id) {
+        throw new Error('User not authenticated');
+      }
+
+      const input = mealSchema.parse(data);
+
+      // TODO use transaction
+      if (input.action === 'create') {
+        const meal = await prisma.meal.create({
+          data: {
+            userId: toNumberSafe(input.userId),
+            dateTime: input.dateTime,
+          },
+        });
+
+        return Promise.all(
+          input.mealFoods.map(async (food) => {
+            await prisma.mealFood.create({
+              data: {
+                mealId: meal.id,
+                foodId: toNumberSafe(food.foodId),
+                amount: toNumberSafe(food.amount),
+                servingUnitId: toNumberSafe(food.servingUnitId),
+              },
+            });
+          }),
+        );
+      }
     },
   });
 };

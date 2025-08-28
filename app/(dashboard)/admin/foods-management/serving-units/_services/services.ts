@@ -16,7 +16,7 @@ import prisma from '@/lib/prisma';
  * @returns A promise resolving to the result of the database operation.
  */
 export const saveServingUnit = async (data: ServingUnitSchema) => {
-  return executeAction({
+  return await executeAction({
     actionFn: async () => {
       const input = servingUnitSchema.parse(data);
 
@@ -42,11 +42,11 @@ export const saveServingUnit = async (data: ServingUnitSchema) => {
  * corresponding to the specified ID is removed.
  *
  * @param {number} id - The unique identifier of the serving unit to be deleted.
- * @returns {Promise<void>} A promise that resolves once the deletion operation is complete.
+ * @returns A promise that resolves once the deletion operation is complete.
  * @throws {Error} Throws an error if the operation fails or the specified ID does not exist.
  */
 export const deleteServingUnit = async (id: number) => {
-  await executeAction({
+  return await executeAction({
     actionFn: () => prisma.servingUnit.delete({ where: { id } }),
   });
 };
@@ -72,7 +72,7 @@ export const getServingUnits = async () => {
  * Function to retrieve a serving unit by its unique identifier.
  *
  * @param {number} id - The unique identifier of the serving unit to be retrieved.
- * @returns {Promise<Object>} A promise that resolves to the details of the serving unit if found.
+ * @returns A promise that resolves to the details of the serving unit if found.
  * @throws {Error} If the serving unit with the given id is not found.
  */
 export const getServingUnit = async (id: number) => {
