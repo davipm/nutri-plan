@@ -8,7 +8,7 @@ type Props = {
   session: Session;
 };
 
-export default function MealFormDialog({ smallTrigger, session }: Props) {
+export function MealFormDialog({ smallTrigger, session }: Props) {
   const [item, setItem] = useState(null);
 
   return (

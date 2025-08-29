@@ -1,6 +1,6 @@
-import MealCards from '@/app/(dashboard)/client/_components/meal-cards';
-import MealFilters from '@/app/(dashboard)/client/_components/meal-filters';
-import MealFormDialog from '@/app/(dashboard)/client/_components/meal-form-dialog';
+import { MealCards } from '@/app/(dashboard)/client/_components/meal-cards';
+import { MealFilters } from '@/app/(dashboard)/client/_components/meal-filters';
+import { MealFormDialog } from '@/app/(dashboard)/client/_components/meal-form-dialog';
 import { auth } from '@/lib/auth';
 
 export default async function Page() {

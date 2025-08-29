@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 // import { Container } from "./styles";
 
-export default function MealFilters() {
+export function MealFilters() {
   const [item, setItem] = useState(null);
 
   return (
