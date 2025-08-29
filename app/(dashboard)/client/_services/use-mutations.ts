@@ -27,13 +27,13 @@ export const useDeleteMeal = () => {
   const queryClient = useQueryClient();
 
   return useMutation<Meal, Error, number>({
-    mutationKey: ['foods', 'delete'],
+    mutationKey: ['meals', 'delete'],
     mutationFn: (id) => {
       return deleteMeal(id);
     },
     onSuccess: async () => {
-      toast.success('Food deleted successfully.');
-      await queryClient.invalidateQueries({ queryKey: ['foods'] });
+      toast.success('Meal deleted successfully.');
+      await queryClient.invalidateQueries({ queryKey: ['meals'] });
     },
     onError: (error: Error) => {
       toast.error(getErrorMessage(error));

@@ -39,5 +39,5 @@ export const useMealStore = createStore<Store>(
       });
     },
   }),
-  { name: 'meal-store' },
+  { name: 'meal-store', excludeFromPersist: ['mealFilters'] },
 );

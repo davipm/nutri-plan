@@ -118,6 +118,14 @@ export const getMeal = async (id: number) => {
   });
 };
 
+/**
+ * Creates or updates a meal for the authenticated user.
+ *
+ * @param {MealSchema} data - The meal data containing action type ('create' or 'update'),
+ *                            userId, dateTime, and optional mealFoods array
+ * @returns A promise that resolves to the created or updated meal object
+ * @throws {Error} Throws an error if the user is not authenticated or if validation fails
+ */
 export const saveMeal = async (data: MealSchema) => {
   return await executeAction({
     actionFn: async () => {

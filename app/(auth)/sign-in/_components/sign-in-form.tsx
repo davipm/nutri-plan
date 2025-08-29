@@ -46,7 +46,9 @@ export function SignInForm() {
         </div>
 
         <Button type="submit" className="w-full" disabled={isPending} aria-busy={isPending}>
-          {isPending && <Loader2Icon className="animate-spin" aria-hidden="true" />}
+          {isPending && (
+            <Loader2Icon className="animate-spin" aria-hidden="true" data-testid="loader-icon" />
+          )}
           Sign in
         </Button>
 

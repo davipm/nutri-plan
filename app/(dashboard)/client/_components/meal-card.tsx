@@ -87,9 +87,9 @@ export default function MealCard({ meal }: Props) {
                   </div>
 
                   <div className="space-x-1 text-xs">
-                    <span>P: {mealFood.food.protein}g</span>
-                    <span>C: {mealFood.food.carbohydrates}g</span>
-                    <span>F: {mealFood.food.fat}g</span>
+                    <span>P: {mealFood.food.protein ?? 0}g</span>
+                    <span>C: {mealFood.food.carbohydrates ?? 0}g</span>
+                    <span>F: {mealFood.food.fat ?? 0}g</span>
                   </div>
                 </div>
               </div>
