@@ -2,6 +2,7 @@
 
 import { useSignOut } from '@/app/(auth)/sign-in/_services/use-mutations';
 import { RouterGroup } from '@/app/(dashboard)/_components/router-group';
+import { Role } from '@/app/(dashboard)/_types/nav';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,6 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { ROUTE_GROUPS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-import { Role } from '@/types/nav-types';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { ChevronLeft, LogOut, Menu } from 'lucide-react';
 import { Session } from 'next-auth';

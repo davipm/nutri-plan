@@ -1,8 +1,8 @@
 'use client';
 
+import { RouteGroupType } from '@/app/(dashboard)/_types/nav';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { RouteGroupType } from '@/types/nav-types';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';

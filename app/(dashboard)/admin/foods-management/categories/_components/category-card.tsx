@@ -1,5 +1,3 @@
-'use client';
-
 import { useCategoriesStore } from '@/app/(dashboard)/admin/foods-management/categories/_libs/use-categories-store';
 import { useDeleteCategory } from '@/app/(dashboard)/admin/foods-management/categories/_services/use-mutations';
 import { Button } from '@/components/ui/button';
@@ -12,7 +10,7 @@ type CategoryCardProps = {
   category: Category;
 };
 
-function CategoryCard({ category }: CategoryCardProps) {
+export const CategoryCard = memo(({ category }: CategoryCardProps) => {
   const { setSelectedCategoryId, setCategoryDialogOpen } = useCategoriesStore();
   const { mutate: deleteCategoryMutation } = useDeleteCategory();
 
@@ -54,6 +52,6 @@ function CategoryCard({ category }: CategoryCardProps) {
       </div>
     </div>
   );
-}
+});
 
-export default memo(CategoryCard);
+CategoryCard.displayName = 'CategoryCard';

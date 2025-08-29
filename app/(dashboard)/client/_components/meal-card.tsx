@@ -1,7 +1,7 @@
 import type {
   MealFoodWithFood,
   MealWithFoods,
-} from '@/app/(dashboard)/client/_components/meal-cards';
+} from '@/app/(dashboard)/client/_types/meals';
 import { useMealStore } from '@/app/(dashboard)/client/_libs/use-meal-store';
 import { useDeleteMeal } from '@/app/(dashboard)/client/_services/use-mutations';
 import { Badge } from '@/components/ui/badge';

@@ -1,4 +1,4 @@
-import { Role, RouteGroupType } from '@/types/nav-types';
+import { Role, RouteGroupType } from '@/app/(dashboard)/_types/nav';
 import { Apple, Boxes, Ruler, Utensils } from 'lucide-react';
 
 export const patterns = {
