@@ -5,40 +5,25 @@ import MealCardsSkeleton from '@/app/(dashboard)/client/_components/meal-cards-s
 import { useMealStore } from '@/app/(dashboard)/client/_libs/use-meal-store';
 import { useMeals } from '@/app/(dashboard)/client/_services/use-queries';
 import { MealWithFoods } from '@/app/(dashboard)/client/_types/meals';
+import { calculateNutritionTotal } from '@/app/(dashboard)/client/_utils/calculations';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { format } from 'date-fns';
 import { CalendarX, Flame, LineChart, PieChart, Utensils } from 'lucide-react';
 import { useMemo } from 'react';
 
-const calculateNutritionTotal = (meals: MealWithFoods[]) => {
-  return (
-    meals.reduce(
-      (total, meal) => {
-        meal.mealFoods.forEach((mealFood) => {
-          const multiplier = mealFood.amount || 1;
-          total.calories += (mealFood.food.calories || 0) * multiplier;
-          total.protein += (mealFood.food.protein || 0) * multiplier;
-          total.carbs += (mealFood.food.carbohydrates || 0) * multiplier;
-          total.fat += (mealFood.food.fat || 0) * multiplier;
-          total.sugar += (mealFood.food.sugar || 0) * multiplier;
-          total.fiber += (mealFood.food.fiber || 0) * multiplier;
-        });
-        return total;
-      },
-      { calories: 0, protein: 0, carbs: 0, fat: 0, sugar: 0, fiber: 0 },
-    ) || { calories: 0, protein: 0, carbs: 0, fat: 0, sugar: 0, fiber: 0 }
-  );
-};
-
 export function MealCards() {
   const { mealFilters, setMealDialogOpen } = useMealStore();
 
   const { data: mealsQuery = [], isLoading } = useMeals();
 
-  const meals = useMemo(() => mealsQuery as MealWithFoods[], [mealsQuery]);
+  const meals = useMemo(() => {
+    return mealsQuery as MealWithFoods[];
+  }, [mealsQuery]);
 
-  const nutritionTotal = useMemo(() => calculateNutritionTotal(meals), [meals]);
+  const nutritionTotal = useMemo(() => {
+    return calculateNutritionTotal(meals);
+  }, [meals]);
 
   const displayDate = mealFilters.dateTime
     ? format(mealFilters.dateTime, 'MMMM dd, yyyy')
@@ -57,9 +42,7 @@ export function MealCards() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
-                {nutritionTotal.calories} kcal
-              </div>
+              <div className="text-2xl font-bold">{nutritionTotal.calories} kcal</div>
             </CardContent>
           </Card>
 
@@ -104,18 +87,13 @@ export function MealCards() {
                 <div className="flex justify-between">
                   <span className="text-sm">Total Food Items</span>
                   <span className="font-medium">
-                    {meals.reduce(
-                      (total, meal) => total + meal.mealFoods.length,
-                      0,
-                    ) || 0}
+                    {meals.reduce((total, meal) => total + meal.mealFoods.length, 0) || 0}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm">Last Meal</span>
                   <span className="font-medium">
-                    {meals.length
-                      ? format(new Date(meals[0].dateTime), 'h:mm a')
-                      : 'N/A'}
+                    {meals.length ? format(new Date(meals[0].dateTime), 'h:mm a') : 'N/A'}
                   </span>
                 </div>
               </div>
@@ -155,11 +133,7 @@ export function MealCards() {
             <p className="text-foreground/60 mt-1 text-sm">
               Try adjusting your filters or add new meals
             </p>
-            <Button
-              variant="outline"
-              className="mt-4"
-              onClick={() => setMealDialogOpen(true)}
-            >
+            <Button variant="outline" className="mt-4" onClick={() => setMealDialogOpen(true)}>
               Add new meal
             </Button>
           </div>
@@ -167,9 +141,7 @@ export function MealCards() {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {isLoading &&
-            Array.from({ length: 8 }).map((_, index) => (
-              <MealCardsSkeleton key={index} />
-            ))}
+            Array.from({ length: 8 }).map((_, index) => <MealCardsSkeleton key={index} />)}
 
           {meals.map((meal) => (
             <MealCard key={meal.id} meal={meal} />

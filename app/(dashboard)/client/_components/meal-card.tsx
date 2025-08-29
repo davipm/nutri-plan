@@ -1,16 +1,14 @@
-import type {
-  MealFoodWithFood,
-  MealWithFoods,
-} from '@/app/(dashboard)/client/_types/meals';
 import { useMealStore } from '@/app/(dashboard)/client/_libs/use-meal-store';
 import { useDeleteMeal } from '@/app/(dashboard)/client/_services/use-mutations';
+import type { MealWithFoods } from '@/app/(dashboard)/client/_types/meals';
+import { calculateTotalCalories } from '@/app/(dashboard)/client/_utils/calculations';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { alert } from '@/store/use-global-store';
 import { format } from 'date-fns';
 import { Edit, Trash, Utensils } from 'lucide-react';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 type Props = {
   meal: MealWithFoods;
@@ -21,13 +19,9 @@ export default function MealCard({ meal }: Props) {
 
   const { mutate: deleteMealMutation } = useDeleteMeal();
 
-  const calculateTotalCalories = (mealFoods: MealFoodWithFood[]) => {
-    return mealFoods.reduce((total, mealFood) => {
-      return total + (mealFood.food.calories || 0) * (mealFood.amount || 1);
-    }, 0);
-  };
-
-  const totalCalories = calculateTotalCalories(meal.mealFoods);
+  const totalCalories = useMemo(() => {
+    return calculateTotalCalories(meal.mealFoods);
+  }, [meal.mealFoods]);
 
   const handleEdit = useCallback(() => {
     setSelectedMealId(meal.id);
