@@ -59,8 +59,7 @@ export const mealSchema = mealSchemaWithoutRefinement.superRefine((data, ctx) =>
 //   ]),
 // );
 
-export type MealSchema = z.infer<typeof mealSchemaWithoutRefinement>;
-// export type MealSchema = z.infer<typeof mealSchema>;
+export type MealSchema = z.infer<typeof mealSchema>;
 
 export const mealDefaultValues: MealSchema = {
   action: 'create',

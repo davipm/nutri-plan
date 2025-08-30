@@ -171,7 +171,7 @@ export const saveMeal = async (data: MealSchema) => {
         }
 
         const meal = await prisma.meal.update({
-          where: { id: toNumberSafe(input.id), userId: +session.user.id },
+          where: { id: toNumberSafe(input.id) },
           data: { dateTime: input.dateTime },
         });
 
@@ -232,7 +232,7 @@ export const deleteMeal = async (id: number) => {
         });
 
         return prisma.meal.delete({
-          where: { id: toNumberSafe(id), userId: +session.user.id },
+          where: { id: toNumberSafe(id) },
         });
       });
     },
