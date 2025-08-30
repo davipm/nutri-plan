@@ -33,7 +33,13 @@ export function FoodCard({ item, onEdit, deleteFoodMutation }: FoodCardProps) {
       <div className="flex justify-between">
         <p className="truncate">{item.name}</p>
         <div className="flex gap-1">
-          <Button className="size-6" variant="ghost" size="icon" onClick={onEdit}>
+          <Button
+            className="size-6"
+            variant="ghost"
+            size="icon"
+            aria-label="Edit Food"
+            onClick={onEdit}
+          >
             <Edit />
           </Button>
 
@@ -54,6 +60,7 @@ export function FoodCard({ item, onEdit, deleteFoodMutation }: FoodCardProps) {
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
+                  aria-label="Confirm delete food"
                   onClick={() => mutate(item.id)}
                   disabled={isDeleting}
                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"

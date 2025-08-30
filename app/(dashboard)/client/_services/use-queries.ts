@@ -42,7 +42,7 @@ export const useMeal = () => {
   const { selectedMealId } = useMealStore();
 
   return useQuery({
-    queryKey: ['meals', { selectedMealId }],
+    queryKey: ['meal', { id: selectedMealId }],
     queryFn: () => getMeal(selectedMealId!),
     enabled: !!selectedMealId,
   });

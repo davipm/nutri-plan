@@ -17,7 +17,7 @@ type Props = {
 export default function MealCard({ meal }: Props) {
   const { setSelectedMealId, setMealDialogOpen } = useMealStore();
 
-  const { mutate: deleteMealMutation } = useDeleteMeal();
+  const { mutate: deleteMealMutation, isPending: isDeleting } = useDeleteMeal();
 
   const totalCalories = useMemo(() => {
     return calculateTotalCalories(meal.mealFoods);
@@ -49,7 +49,14 @@ export default function MealCard({ meal }: Props) {
           <Button className="size-8" variant="ghost" size="icon" onClick={handleEdit}>
             <Edit className="size-4" />
           </Button>
-          <Button className="size-8" variant="ghost" size="icon" onClick={handleDelete}>
+          <Button
+            className="size-8"
+            variant="ghost"
+            size="icon"
+            onClick={handleDelete}
+            disabled={isDeleting}
+            aria-disabled={isDeleting}
+          >
             <Trash className="size-4" />
           </Button>
         </div>

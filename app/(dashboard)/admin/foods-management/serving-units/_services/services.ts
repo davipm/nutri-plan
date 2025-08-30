@@ -4,6 +4,7 @@ import {
   ServingUnitSchema,
   servingUnitSchema,
 } from '@/app/(dashboard)/admin/foods-management/serving-units/_types/schema';
+import { auth } from '@/lib/auth';
 import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
 
@@ -18,6 +19,12 @@ import prisma from '@/lib/prisma';
 export const saveServingUnit = async (data: ServingUnitSchema) => {
   return executeAction({
     actionFn: async () => {
+      const session = await auth();
+
+      if (!session?.user.id) {
+        throw new Error('User not authenticated');
+      }
+
       const input = servingUnitSchema.parse(data);
 
       if (input.action === 'create') {
@@ -47,7 +54,18 @@ export const saveServingUnit = async (data: ServingUnitSchema) => {
  */
 export const deleteServingUnit = async (id: number) => {
   return executeAction({
-    actionFn: () => prisma.servingUnit.delete({ where: { id } }),
+    actionFn: async () => {
+      const session = await auth();
+
+      if (!session?.user.id) {
+        throw new Error('User not authenticated');
+      }
+
+      if (!Number.isInteger(id) || id <= 0) {
+        throw new Error('Invalid serving unit ID');
+      }
+      return prisma.servingUnit.delete({ where: { id } });
+    },
   });
 };
 
@@ -64,7 +82,15 @@ export const deleteServingUnit = async (id: number) => {
  */
 export const getServingUnits = async () => {
   return executeAction({
-    actionFn: () => prisma.servingUnit.findMany(),
+    actionFn: async () => {
+      const session = await auth();
+
+      if (!session?.user.id) {
+        throw new Error('User not authenticated');
+      }
+
+      return prisma.servingUnit.findMany();
+    },
   });
 };
 
@@ -78,6 +104,12 @@ export const getServingUnits = async () => {
 export const getServingUnit = async (id: number) => {
   return executeAction({
     actionFn: async () => {
+      const session = await auth();
+
+      if (!session?.user.id) {
+        throw new Error('User not authenticated');
+      }
+
       const response = await prisma.servingUnit.findUnique({ where: { id } });
       if (!response) throw new Error(`Serving unit with id ${id} not found`);
       return response;

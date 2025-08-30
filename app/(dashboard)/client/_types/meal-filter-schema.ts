@@ -11,3 +11,7 @@ export const getMealFilterDefaultValues = (): MealFilterSchema => ({
 });
 
 export const mealFilterDefaultValues: MealFilterSchema = getMealFilterDefaultValues();
+
+// export const mealFilterDefaultValues: MealFilterSchema = {
+//   dateTime: new Date(),
+// };

@@ -30,7 +30,7 @@ export const getMeals = async (filters: MealFilterSchema) => {
       }
 
       const validatedFilters = mealFilterSchema.parse(filters);
-      const { dateTime } = validatedFilters || {};
+      const { dateTime } = validatedFilters;
       const where: Prisma.MealWhereInput = {
         userId: +session.user.id,
       };
