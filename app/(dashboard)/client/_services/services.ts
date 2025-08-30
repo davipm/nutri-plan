@@ -188,6 +188,19 @@ export const saveMeal = async (data: MealSchema) => {
   });
 };
 
+/**
+ * Deletes a meal and its associated foods from the database.
+ *
+ * This function executes a transactional operation to delete all food entries
+ * linked to the specified meal and then deletes the meal itself. It ensures
+ * that the action is performed only for authenticated users.
+ *
+ * @param {number} id - The unique identifier of the meal to be deleted.
+ * @throws {Error} Throws an error if the user is not authenticated or if any
+ * operation in the transaction fails.
+ * @returns A promise that resolves to the result of the meal
+ * deletion operation.
+ */
 export const deleteMeal = async (id: number) => {
   return await executeAction({
     actionFn: async () => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { RouteGroupType } from '@/app/(dashboard)/_types/nav';
+import type { RouteGroupType } from '@/app/(dashboard)/_types/nav';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import * as Collapsible from '@radix-ui/react-collapsible';
@@ -8,18 +8,25 @@ import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 /**
- * Renders a collapsible navigation group.
- * The group is expanded by default if the current route is part of the group.
+ * Renders a `RouterGroup` component that groups a set of navigational items under a collapsible
+ * section, with the ability to expand or collapse the group based on the current route.
  *
- * @param {RouteGroupType} props - The route group configuration, containing group name and items.
- * @returns A collapsible UI component for a navigation group.
+ * @param props - The props for the RouterGroup component.
+ * @param props.group - The name of the route group to be displayed.
+ * @param {Array} props.items - An array of route items, where each item represents a navigation link.
+ * Each item should include `href`, `icon`, and `label` properties.
+ * @return A collapsible component containing route items for navigation.
  */
 export function RouterGroup({ group, items }: RouteGroupType) {
   const pathname = usePathname();
   const [open, setOpen] = useState(() => items.some((item) => pathname.startsWith(item.href)));
+
+  useEffect(() => {
+    setOpen(items.some((item) => pathname.startsWith(item.href)));
+  }, [items, pathname]);
 
   return (
     <Collapsible.Root open={open} onOpenChange={setOpen}>

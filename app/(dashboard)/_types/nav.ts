@@ -1,10 +1,5 @@
+import { Role } from '@/generated/prisma';
 import type { ComponentType } from 'react';
-
-export enum Role {
-  ADMIN = 'ADMIN',
-  CLIENT = 'CLIENT',
-  USER = 'USER',
-}
 
 export interface RouteItemType {
   href: string;

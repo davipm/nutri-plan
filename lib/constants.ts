@@ -1,4 +1,5 @@
-import { Role, RouteGroupType } from '@/app/(dashboard)/_types/nav';
+import type { RouteGroupType } from '@/app/(dashboard)/_types/nav';
+import { Role } from '@/generated/prisma';
 import { Apple, Boxes, Ruler, Utensils } from 'lucide-react';
 
 export const patterns = {
@@ -29,7 +30,7 @@ export const nutritionalFields = [
  * Defines the navigation structure for the application, grouped by sections.
  * Each group has associated routes and roles that are allowed to access them.
  */
-export const ROUTE_GROUPS: RouteGroupType[] = [
+export const ROUTE_GROUPS = [
   {
     group: 'Foods Management',
     allowedRoles: [Role.ADMIN],
@@ -56,7 +57,7 @@ export const ROUTE_GROUPS: RouteGroupType[] = [
   },
   {
     group: 'Meals Management',
-    allowedRoles: [Role.ADMIN, Role.CLIENT, Role.USER], // Admin can also access if needed
+    allowedRoles: [Role.ADMIN, Role.USER], // Admin can also access if needed
     items: [
       {
         href: '/client',
@@ -66,4 +67,4 @@ export const ROUTE_GROUPS: RouteGroupType[] = [
       },
     ],
   },
-];
+] as const satisfies RouteGroupType[];

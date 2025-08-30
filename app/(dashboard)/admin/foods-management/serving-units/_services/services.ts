@@ -11,12 +11,12 @@ import prisma from '@/lib/prisma';
  * Asynchronously saves a serving unit to the database. Depending on the action type,
  * it either creates a new serving unit or updates an existing one.
  *
- * @param {ServingUnitSchema} data - The serving unit data, which includes the action type
+ * @param {ServingUnitSchema} data - Parsed via `servingUnitSchema`; includes the action type
  * ('create' or 'update'), the name of the serving unit, and optionally the ID for updates.
- * @returns A promise resolving to the result of the database operation.
+ * @returns The created/updated serving unit.
  */
 export const saveServingUnit = async (data: ServingUnitSchema) => {
-  return await executeAction({
+  return executeAction({
     actionFn: async () => {
       const input = servingUnitSchema.parse(data);
 
@@ -46,7 +46,7 @@ export const saveServingUnit = async (data: ServingUnitSchema) => {
  * @throws {Error} Throws an error if the operation fails or the specified ID does not exist.
  */
 export const deleteServingUnit = async (id: number) => {
-  return await executeAction({
+  return executeAction({
     actionFn: () => prisma.servingUnit.delete({ where: { id } }),
   });
 };
@@ -63,7 +63,7 @@ export const deleteServingUnit = async (id: number) => {
  * @returns A promise that resolves to an array of serving unit objects.
  */
 export const getServingUnits = async () => {
-  return await executeAction({
+  return executeAction({
     actionFn: () => prisma.servingUnit.findMany(),
   });
 };
@@ -76,7 +76,7 @@ export const getServingUnits = async () => {
  * @throws {Error} If the serving unit with the given id is not found.
  */
 export const getServingUnit = async (id: number) => {
-  return await executeAction({
+  return executeAction({
     actionFn: async () => {
       const response = await prisma.servingUnit.findUnique({ where: { id } });
       if (!response) throw new Error(`Serving unit with id ${id} not found`);
