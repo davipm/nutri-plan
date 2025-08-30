@@ -17,8 +17,15 @@ import { useQuery } from '@tanstack/react-query';
 export const useMeals = () => {
   const { mealFilters } = useMealStore();
 
+  const keyFilters = {
+    ...mealFilters,
+    dateTime: (mealFilters as any).dateTime
+      ? new Date((mealFilters as any).dateTime).toISOString()
+      : undefined,
+  };
+
   return useQuery({
-    queryKey: ['meals', mealFilters],
+    queryKey: ['meals', keyFilters],
     queryFn: () => getMeals(mealFilters),
   });
 };

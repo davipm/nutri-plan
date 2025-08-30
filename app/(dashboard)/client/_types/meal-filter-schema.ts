@@ -6,6 +6,8 @@ export const mealFilterSchema = z.object({
 
 export type MealFilterSchema = z.infer<typeof mealFilterSchema>;
 
-export const mealFilterDefaultValues: MealFilterSchema = {
+export const getMealFilterDefaultValues = (): MealFilterSchema => ({
   dateTime: new Date(),
-};
+});
+
+export const mealFilterDefaultValues: MealFilterSchema = getMealFilterDefaultValues();

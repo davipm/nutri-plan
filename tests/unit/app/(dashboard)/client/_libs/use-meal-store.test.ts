@@ -1,16 +1,16 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { useMealStore } from "@/app/(dashboard)/client/_libs/use-meal-store";
-import { mealFilterDefaultValues } from "@/app/(dashboard)/client/_types/meal-filter-schema";
+import { useMealStore } from '@/app/(dashboard)/client/_libs/use-meal-store';
+import { mealFilterDefaultValues } from '@/app/(dashboard)/client/_types/meal-filter-schema';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock the createStore function
-vi.mock("@/store/create-store", () => ({
+vi.mock('@/store/create-store', () => ({
   createStore: vi.fn((storeCreator, config) => {
     // Create a simple mock store that behaves like Zustand
     let state = storeCreator(
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
       (updater) => {
-        if (typeof updater === "function") {
+        if (typeof updater === 'function') {
           const newState = updater(state);
           if (newState) {
             state = { ...state, ...newState };
@@ -24,7 +24,7 @@ vi.mock("@/store/create-store", () => ({
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         setState: (newState) => {
-          state = typeof newState === "function" ? newState(state) : newState;
+          state = typeof newState === 'function' ? newState(state) : newState;
         },
         getState: () => state,
         subscribe: vi.fn(),
@@ -37,7 +37,7 @@ vi.mock("@/store/create-store", () => ({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     store.setState = (newState) => {
-      state = typeof newState === "function" ? newState(state) : newState;
+      state = typeof newState === 'function' ? newState(state) : newState;
     };
     store.subscribe = vi.fn();
     store.destroy = vi.fn();
@@ -49,12 +49,17 @@ vi.mock("@/store/create-store", () => ({
   }),
 }));
 
-describe("useMealStore", () => {
+describe('useMealStore', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    useMealStore.setState({
+      selectedMealId: null,
+      mealDialogOpen: false,
+      mealFilters: mealFilterDefaultValues,
+    });
   });
 
-  it("should initialize with correct default values", () => {
+  it('should initialize with correct default values', () => {
     const state = useMealStore.getState();
 
     expect(state.selectedMealId).toBe(null);
@@ -62,7 +67,7 @@ describe("useMealStore", () => {
     expect(state.mealFilters).toEqual(mealFilterDefaultValues);
   });
 
-  it("should update selected meal ID correctly", () => {
+  it('should update selected meal ID correctly', () => {
     const initialState = useMealStore.getState();
 
     initialState.setSelectedMealId(123);
@@ -71,7 +76,7 @@ describe("useMealStore", () => {
     expect(updatedState.selectedMealId).toBe(123);
   });
 
-  it("should reset selected meal ID to null", () => {
+  it('should reset selected meal ID to null', () => {
     const initialState = useMealStore.getState();
 
     // First set an ID
@@ -83,7 +88,7 @@ describe("useMealStore", () => {
     expect(useMealStore.getState().selectedMealId).toBe(null);
   });
 
-  it("should toggle meal dialog open/close state", () => {
+  it('should toggle meal dialog open/close state', () => {
     const initialState = useMealStore.getState();
 
     // Open dialog
@@ -95,7 +100,7 @@ describe("useMealStore", () => {
     expect(useMealStore.getState().mealDialogOpen).toBe(false);
   });
 
-  it("should update meal filters with new filter values", () => {
+  it('should update meal filters with new filter values', () => {
     const initialState = useMealStore.getState();
 
     const newDate = new Date('2024-01-15T10:30:00Z');
@@ -110,7 +115,7 @@ describe("useMealStore", () => {
     expect(updatedState.mealFilters.dateTime).toBe(newDate);
   });
 
-  it("should preserve meal filter structure when updating", () => {
+  it('should preserve meal filter structure when updating', () => {
     const initialState = useMealStore.getState();
 
     const customDate = new Date('2024-03-20T14:45:00Z');
@@ -126,7 +131,7 @@ describe("useMealStore", () => {
     expect(updatedState.mealFilters.dateTime).toBe(customDate);
   });
 
-  it("should handle date objects in meal filters correctly", () => {
+  it('should handle date objects in meal filters correctly', () => {
     const initialState = useMealStore.getState();
 
     const testDate1 = new Date('2024-06-01T08:00:00Z');
@@ -144,13 +149,13 @@ describe("useMealStore", () => {
     expect(useMealStore.getState().mealFilters.dateTime).toBeInstanceOf(Date);
   });
 
-  it("should be created with correct store configuration", () => {
+  it('should be created with correct store configuration', () => {
     // Access the mock configuration
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     const config = useMealStore._config;
 
     expect(config).toBeDefined();
-    expect(config.name).toBe("meal-store");
+    expect(config.name).toBe('meal-store');
   });
 });

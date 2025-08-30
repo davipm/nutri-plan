@@ -141,7 +141,7 @@ export const saveMeal = async (data: MealSchema) => {
         return prisma.$transaction(async (prisma) => {
           const meal = await prisma.meal.create({
             data: {
-              userId: toNumberSafe(input.userId),
+              userId: +session.user.id,
               dateTime: input.dateTime,
             },
           });
@@ -219,12 +219,20 @@ export const deleteMeal = async (id: number) => {
       }
 
       return prisma.$transaction(async (prisma) => {
+        const existingMeal = await prisma.meal.findFirst({
+          where: { id: toNumberSafe(id), userId: +session.user.id },
+        });
+
+        if (!existingMeal) {
+          throw new Error('Meal not found or unauthorized');
+        }
+
         await prisma.mealFood.deleteMany({
           where: { mealId: toNumberSafe(id) },
         });
 
         return prisma.meal.delete({
-          where: { id: toNumberSafe(id) },
+          where: { id: toNumberSafe(id), userId: +session.user.id },
         });
       });
     },
