@@ -1,5 +1,5 @@
 import { SignInForm } from '@/app/(auth)/sign-in/_components/sign-in-form';
-import { Role } from '@/generated/prisma';
+import { Role } from '@/app/(dashboard)/_types/nav';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 

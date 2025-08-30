@@ -41,7 +41,7 @@ type Props = {
 export function DashboardLayout({ children, session }: Props) {
   const [open, setOpen] = useState(false);
   const { mutate: signOutMutation } = useSignOut();
-  const userRole: Role = (session.user?.role as Role.ADMIN) || Role.USER;
+  const userRole = (session.user?.role as Role.ADMIN) || Role.USER;
 
   const filteredRouterGroup = useMemo(() => {
     return ROUTE_GROUPS.filter((group) => group.allowedRoles.includes(userRole));

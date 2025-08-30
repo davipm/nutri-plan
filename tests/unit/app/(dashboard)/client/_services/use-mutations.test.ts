@@ -1,12 +1,12 @@
-import { useSaveMeal, useDeleteMeal } from '@/app/(dashboard)/client/_services/use-mutations';
 import { deleteMeal, saveMeal } from '@/app/(dashboard)/client/_services/services';
+import { useDeleteMeal, useSaveMeal } from '@/app/(dashboard)/client/_services/use-mutations';
 import type { MealSchema } from '@/app/(dashboard)/client/_types/meal-schema';
 import type { Meal } from '@/generated/prisma/client';
 import { getErrorMessage } from '@/lib/get-error-message';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { toast } from 'sonner';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock external dependencies
 vi.mock('@/app/(dashboard)/client/_services/services', () => ({
@@ -186,7 +186,7 @@ describe('use-mutations', () => {
 
       // Verify mutation configuration
       expect(useMutation).toHaveBeenCalledWith({
-        mutationKey: ['foods', 'delete'],
+        mutationKey: ['meals', 'delete'],
         mutationFn: expect.any(Function),
         onSuccess: expect.any(Function),
         onError: expect.any(Function),
@@ -201,8 +201,8 @@ describe('use-mutations', () => {
       // Test onSuccess callback
       if (capturedOnSuccess) {
         await capturedOnSuccess(mockMeal);
-        expect(toast.success).toHaveBeenCalledWith('Food deleted successfully.');
-        expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({ queryKey: ['foods'] });
+        expect(toast.success).toHaveBeenCalledWith('Meal deleted successfully.');
+        expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({ queryKey: ['meals'] });
       }
     });
 

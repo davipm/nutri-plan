@@ -1,5 +1,5 @@
+import { Role } from '@/app/(dashboard)/_types/nav';
 import type { RouteGroupType } from '@/app/(dashboard)/_types/nav';
-import { Role } from '@/generated/prisma';
 import { Apple, Boxes, Ruler, Utensils } from 'lucide-react';
 
 export const patterns = {
@@ -57,7 +57,7 @@ export const ROUTE_GROUPS = [
   },
   {
     group: 'Meals Management',
-    allowedRoles: [Role.ADMIN, Role.USER], // Admin can also access if needed
+    allowedRoles: [Role.ADMIN, Role.CLIENT, Role.USER], // Admin can also access if needed
     items: [
       {
         href: '/client',

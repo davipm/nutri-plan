@@ -4,9 +4,7 @@ import {
   getMeals,
   saveMeal,
 } from '@/app/(dashboard)/client/_services/services';
-import {
-  MealFilterSchema,
-} from '@/app/(dashboard)/client/_types/meal-filter-schema';
+import { MealFilterSchema } from '@/app/(dashboard)/client/_types/meal-filter-schema';
 import { MealSchema } from '@/app/(dashboard)/client/_types/meal-schema';
 import { Prisma } from '@/generated/prisma';
 import { auth } from '@/lib/auth';
@@ -156,7 +154,9 @@ describe('Client Meal Services', () => {
       (auth as vi.Mock).mockResolvedValue(mockSession);
 
       // Mock schema validation
-      const { mealFilterSchema } = await import('@/app/(dashboard)/client/_types/meal-filter-schema');
+      const { mealFilterSchema } = await import(
+        '@/app/(dashboard)/client/_types/meal-filter-schema'
+      );
       (mealFilterSchema.parse as vi.Mock).mockReturnValue(filters);
 
       // Mock database query
@@ -209,7 +209,9 @@ describe('Client Meal Services', () => {
       (auth as vi.Mock).mockResolvedValue(mockSession);
 
       // Mock schema validation
-      const { mealFilterSchema } = await import('@/app/(dashboard)/client/_types/meal-filter-schema');
+      const { mealFilterSchema } = await import(
+        '@/app/(dashboard)/client/_types/meal-filter-schema'
+      );
       (mealFilterSchema.parse as vi.Mock).mockReturnValue(filters);
 
       // Mock database query
@@ -444,7 +446,7 @@ describe('Client Meal Services', () => {
     it('should update existing meal and replace meal foods', async () => {
       const mealData: MealSchema = {
         action: 'update',
-        id: '1',
+        id: 1,
         userId: '123',
         dateTime: new Date('2024-01-15T13:00:00Z'),
         mealFoods: [

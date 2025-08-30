@@ -162,8 +162,16 @@ export const saveMeal = async (data: MealSchema) => {
       }
 
       return prisma.$transaction(async (prisma) => {
+        const existingMeal = await prisma.meal.findFirst({
+          where: { id: toNumberSafe(input.id), userId: +session.user.id },
+        });
+
+        if (!existingMeal) {
+          throw new Error('Meal not found or unauthorized');
+        }
+
         const meal = await prisma.meal.update({
-          where: { id: toNumberSafe(input.id) },
+          where: { id: toNumberSafe(input.id), userId: +session.user.id },
           data: { dateTime: input.dateTime },
         });
 
@@ -202,7 +210,7 @@ export const saveMeal = async (data: MealSchema) => {
  * deletion operation.
  */
 export const deleteMeal = async (id: number) => {
-  return await executeAction({
+  return executeAction({
     actionFn: async () => {
       const session = await auth();
 
