@@ -8,9 +8,15 @@ export const mealSchema = z.intersection(
     dateTime: z.date(),
     mealFoods: z.array(
       z.object({
-        foodId: requiredStringSchema,
-        servingUnitId: requiredStringSchema,
-        amount: regexSchema(patterns.zeroTo9999),
+        foodId: z.coerce.number().int().positive({
+          message: 'Food ID must be a positive integer',
+        }),
+        servingUnitId: z.coerce.number().int().positive({
+          message: 'Serving Unit ID must be a positive integer',
+        }),
+        amount: z.coerce.number().int().max(9999).positive({
+          message: 'Amount must be a positive integer',
+        }),
       }),
     ),
   }),
