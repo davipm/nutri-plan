@@ -5,8 +5,8 @@ import { useCategoriesStore } from '@/app/(dashboard)/admin/foods-management/cat
 import { useCategories } from '@/app/(dashboard)/admin/foods-management/categories/_services/use-queries';
 import { SpecifyFoodServingUnits } from '@/app/(dashboard)/admin/foods-management/foods/_components/specify-food-serving-units';
 import { useFoodsStore } from '@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store';
-import { useSaveFood } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-mutations';
-import { useFood } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-queries';
+import { useSaveFood } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-mutations';
+import { useFood } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-queries';
 import {
   FoodSchema,
   foodDefaultValues,

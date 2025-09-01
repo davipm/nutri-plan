@@ -4,10 +4,14 @@ import {
   FoodFiltersSchema,
   foodFiltersSchema,
 } from '@/app/(dashboard)/admin/foods-management/foods/_types/food-filter-schema';
+import {
+  FoodSchema,
+  foodSchema,
+} from '@/app/(dashboard)/admin/foods-management/foods/_types/food-schema';
 import { Prisma } from '@/generated/prisma';
 import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
-import { toStringSafe } from '@/lib/utils';
+import { toNumberSafe, toStringSafe } from '@/lib/utils';
 import { PaginateResult } from '@/types/paginate-result';
 
 type FoodWithServingUnits = Prisma.FoodGetPayload<{
@@ -175,7 +179,7 @@ function parseNumericValue(value: string): number | null {
  * @throws Error if no food item with the given ID exists.
  */
 export const getFood = async (id: number) => {
-  return executeAction({
+  return await executeAction({
     actionFn: async () => {
       const response = await prisma.food.findUnique({
         where: { id },
@@ -200,6 +204,95 @@ export const getFood = async (id: number) => {
             grams: toStringSafe(unit.grams),
           })) ?? [],
       };
+    },
+  });
+};
+
+export const saveFood = async (data: FoodSchema) => {
+  return await executeAction({
+    actionFn: async () => {
+      const input = foodSchema.parse(data);
+
+      if (input.action === 'create') {
+        return prisma.$transaction(async (prisma) => {
+          const food = await prisma.food.create({
+            data: {
+              name: input.name,
+              calories: toNumberSafe(input.calories),
+              carbohydrates: toNumberSafe(input.carbohydrates),
+              fat: toNumberSafe(input.fat),
+              protein: toNumberSafe(input.protein),
+              categoryId: toNumberSafe(input.categoryId) || null,
+              sugar: toNumberSafe(input.sugar),
+              fiber: toNumberSafe(input.fiber),
+            },
+          });
+
+          if (input.foodServingUnits && input.foodServingUnits.length > 0) {
+            await prisma.foodServingUnit.createMany({
+              data: input.foodServingUnits.map((unit) => ({
+                foodId: food.id,
+                servingUnitId: toNumberSafe(unit.foodServingUnitId),
+                grams: toNumberSafe(unit.grams),
+              })),
+            });
+          }
+
+          return food;
+        });
+      }
+
+      return prisma.$transaction(async (prisma) => {
+        const food = await prisma.food.update({
+          where: { id: input.id },
+          data: {
+            name: input.name,
+            calories: toNumberSafe(input.calories),
+            carbohydrates: toNumberSafe(input.carbohydrates),
+            fat: toNumberSafe(input.fat),
+            protein: toNumberSafe(input.protein),
+            categoryId: toNumberSafe(input.categoryId) || null,
+            sugar: toNumberSafe(input.sugar),
+            fiber: toNumberSafe(input.fiber),
+          },
+        });
+
+        await prisma.foodServingUnit.deleteMany({
+          where: { foodId: input.id },
+        });
+
+        if (input.foodServingUnits && input.foodServingUnits.length > 0) {
+          await prisma.foodServingUnit.createMany({
+            data: input.foodServingUnits.map((unit) => ({
+              foodId: food.id,
+              servingUnitId: toNumberSafe(unit.foodServingUnitId),
+              grams: toNumberSafe(unit.grams),
+            })),
+          });
+        }
+
+        return food;
+      });
+    },
+  });
+};
+
+export const deleteFood = async (id: number) => {
+  return await executeAction({
+    actionFn: () => {
+      return prisma.$transaction(async (prisma) => {
+        await prisma.foodServingUnit.deleteMany({
+          where: {
+            foodId: id,
+          },
+        });
+
+        return prisma.food.delete({
+          where: {
+            id,
+          },
+        });
+      });
     },
   });
 };

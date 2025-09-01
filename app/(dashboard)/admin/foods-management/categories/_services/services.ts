@@ -8,7 +8,7 @@ import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
 
 export const saveCategory = async (data: CategorySchema) => {
-  return executeAction({
+  return await executeAction({
     actionFn: async () => {
       const input = categorySchema.parse(data);
 
@@ -36,8 +36,8 @@ export const saveCategory = async (data: CategorySchema) => {
  * @throws {Error} Throws an error if the deletion operation fails.
  */
 export const deleteCategory = async (id: number) => {
-  await executeAction({
-    actionFn: async () => prisma.category.delete({ where: { id } }),
+  return await executeAction({
+    actionFn: () => prisma.category.delete({ where: { id } }),
   });
 };
 

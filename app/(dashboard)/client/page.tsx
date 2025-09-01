@@ -1,7 +1,20 @@
-export default function Page() {
+import { MealCards } from '@/app/(dashboard)/client/_components/meal-cards';
+import { MealFilters } from '@/app/(dashboard)/client/_components/meal-filters';
+import { MealFormDialog } from '@/app/(dashboard)/client/_components/meal-form-dialog';
+import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+
+export default async function Page() {
+  const session = await auth();
+  if (!session) redirect('/sign-in');
+
   return (
-    <div>
-      <p>Page</p>
-    </div>
+    <>
+      <div className="flex justify-between">
+        <MealFilters />
+        <MealFormDialog session={session} />
+      </div>
+      <MealCards />
+    </>
   );
 }

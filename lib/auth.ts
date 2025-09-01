@@ -74,3 +74,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
 });
+
+export const getCurrentUser = async () => {
+  const session = await auth();
+  if (!session?.user.id) throw new Error('Unauthorized');
+  return session;
+};

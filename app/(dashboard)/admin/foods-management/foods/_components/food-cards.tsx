@@ -3,10 +3,10 @@
 import { FoodCard } from '@/app/(dashboard)/admin/foods-management/foods/_components/food-card';
 import { FoodCardsSkeleton } from '@/app/(dashboard)/admin/foods-management/foods/_components/food-cards-skeleton';
 import { useFoodsStore } from '@/app/(dashboard)/admin/foods-management/foods/_libs/use-food-store';
-import { useDeleteFood } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-mutations';
-import { useFoods } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-food-queries';
+import { useDeleteFood } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-mutations';
+import { useFoods } from '@/app/(dashboard)/admin/foods-management/foods/_services/use-queries';
 import { HasError } from '@/components/has-error';
-import NoItemFound from '@/components/no-item-found';
+import { NoItemFound } from '@/components/no-item-found';
 import { Pagination } from '@/components/pagination';
 import { useCallback } from 'react';
 

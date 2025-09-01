@@ -2,7 +2,7 @@ import { useFoodsStore } from '@/app/(dashboard)/admin/foods-management/foods/_l
 import {
   getFood,
   getFoods,
-} from '@/app/(dashboard)/admin/foods-management/foods/_services/queries';
+} from '@/app/(dashboard)/admin/foods-management/foods/_services/services';
 import { useQuery } from '@tanstack/react-query';
 
 /**

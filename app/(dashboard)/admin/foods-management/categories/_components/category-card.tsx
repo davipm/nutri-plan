@@ -1,9 +1,7 @@
-'use client';
-
 import { useCategoriesStore } from '@/app/(dashboard)/admin/foods-management/categories/_libs/use-categories-store';
 import { useDeleteCategory } from '@/app/(dashboard)/admin/foods-management/categories/_services/use-mutations';
 import { Button } from '@/components/ui/button';
-import { Category } from '@/generated/prisma';
+import type { Category } from '@/generated/prisma';
 import { alert } from '@/store/use-global-store';
 import { Edit, Trash } from 'lucide-react';
 import { memo, useCallback } from 'react';
@@ -12,7 +10,7 @@ type CategoryCardProps = {
   category: Category;
 };
 
-function CategoryCard({ category }: CategoryCardProps) {
+export const CategoryCard = memo(({ category }: CategoryCardProps) => {
   const { setSelectedCategoryId, setCategoryDialogOpen } = useCategoriesStore();
   const { mutate: deleteCategoryMutation } = useDeleteCategory();
 
@@ -54,6 +52,6 @@ function CategoryCard({ category }: CategoryCardProps) {
       </div>
     </div>
   );
-}
+});
 
-export default memo(CategoryCard);
+CategoryCard.displayName = 'CategoryCard';

@@ -1,7 +1,7 @@
 import {
   deleteFood,
   saveFood,
-} from '@/app/(dashboard)/admin/foods-management/foods/_services/mutations';
+} from '@/app/(dashboard)/admin/foods-management/foods/_services/services';
 import type { FoodSchema } from '@/app/(dashboard)/admin/foods-management/foods/_types/food-schema';
 import type { Food } from '@/generated/prisma/client';
 import { getErrorMessage } from '@/lib/get-error-message';
@@ -13,7 +13,9 @@ export const useSaveFood = () => {
 
   return useMutation<Food, Error, FoodSchema>({
     mutationKey: ['foods', 'save'],
-    mutationFn: async (data) => await saveFood(data),
+    mutationFn: (data) => {
+      return saveFood(data);
+    },
     onSuccess: async (_, { action }) => {
       toast.success(`Food ${action === 'create' ? 'created' : 'updated'} successfully.`);
       await queryClient.invalidateQueries({ queryKey: ['foods'] });
@@ -27,10 +29,10 @@ export const useSaveFood = () => {
 export const useDeleteFood = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<void, Error, number>({
+  return useMutation<Food, Error, number>({
     mutationKey: ['foods', 'delete'],
-    mutationFn: async (id) => {
-      await deleteFood(id);
+    mutationFn: (id) => {
+      return deleteFood(id);
     },
     onSuccess: async () => {
       toast.success('Food deleted successfully.');

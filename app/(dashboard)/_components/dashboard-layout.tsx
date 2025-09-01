@@ -2,6 +2,7 @@
 
 import { useSignOut } from '@/app/(auth)/sign-in/_services/use-mutations';
 import { RouterGroup } from '@/app/(dashboard)/_components/router-group';
+import { Role } from '@/app/(dashboard)/_types/nav';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -16,11 +17,10 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { ROUTE_GROUPS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-import { Role } from '@/types/nav-types';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { ChevronLeft, LogOut, Menu } from 'lucide-react';
 import { Session } from 'next-auth';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 
 type Props = {
   children: ReactNode;
@@ -28,35 +28,27 @@ type Props = {
 };
 
 /**
- * DashboardLayout component that provides the main structure of the dashboard,
- * including navigation, theme toggling, and user session management.
+ * Renders the dashboard layout component, which includes a collapsible sidebar,
+ * a top navigation bar, and a main content area. The layout adjusts based
+ * on the user's role and supports dynamic routing for the allowed role-based
+ * navigation groups.
  *
- * @param {Object} props - The properties object.
- * @param {React.ReactNode} props.children - Child components to render within the layout.
- * @param {Object} props.session - The session object which contains user data.
- * @param - The user information within the session.
- * @param - The name of the user.
- * @param - The email of the user.
+ * @param props The properties passed to the component.
+ * @param props.children The content to be displayed within the main layout area.
+ * @param  props.session The session object containing the user's authentication and role information.
+ * @returns The rendered dashboard layout component.
  */
 export function DashboardLayout({ children, session }: Props) {
   const [open, setOpen] = useState(false);
-  const signOutMutation = useSignOut();
-  const userRole: Role = (session.user?.role as Role) || Role.USER;
+  const { mutate: signOutMutation } = useSignOut();
+  const userRole = session.user?.role === Role.ADMIN ? Role.ADMIN : Role.USER;
 
-  /**
-   * Filters route groups based on the user's role.
-   *
-   * The `getFilteredRouteGroups` variable contains the result of filtering the `ROUTE_GROUPS` array.
-   * Each group is included in the filtered result if the `allowedRoles` of the group includes the specified `userRole`.
-   *
-   * @constant {Array} getFilteredRouteGroups - The array of route groups filtered based on the user's role.
-   */
-  const getFilteredRouteGroups = ROUTE_GROUPS.filter((group) =>
-    group.allowedRoles.includes(userRole),
-  );
+  const filteredRouterGroup = useMemo(() => {
+    return ROUTE_GROUPS.filter((group) => group.allowedRoles.includes(userRole as Role.ADMIN));
+  }, [userRole]);
 
   const handleSignOut = () => {
-    signOutMutation.mutate();
+    signOutMutation();
   };
 
   return (
@@ -121,7 +113,9 @@ export function DashboardLayout({ children, session }: Props) {
             )}
           >
             <div className="flex items-center justify-between">
-              <h1 className="font-semibold">Admin Dashboard</h1>
+              <h1 className="font-semibold">
+                {userRole === Role.ADMIN ? 'Admin Dashboard' : 'Dashboard'}
+              </h1>
               <Collapsible.Trigger asChild>
                 <Button size="icon" variant="outline">
                   <ChevronLeft />
@@ -132,7 +126,7 @@ export function DashboardLayout({ children, session }: Props) {
             <Separator className="my-2" />
 
             <div className="mt-4 flex flex-col">
-              {getFilteredRouteGroups.map((group) => (
+              {filteredRouterGroup.map((group) => (
                 <RouterGroup {...group} key={group.group} />
               ))}
             </div>
