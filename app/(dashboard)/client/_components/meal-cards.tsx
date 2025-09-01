@@ -18,7 +18,7 @@ export function MealCards() {
   const { data: mealsQuery = [], isLoading } = useMeals();
 
   const meals = useMemo(() => {
-    return mealsQuery as MealWithFoods[];
+    return mealsQuery as unknown as MealWithFoods[];
   }, [mealsQuery]);
 
   const nutritionTotal = useMemo(() => {
