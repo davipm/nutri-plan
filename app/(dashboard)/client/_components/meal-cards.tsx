@@ -15,10 +15,10 @@ import { useMemo } from 'react';
 export function MealCards() {
   const { mealFilters, setMealDialogOpen } = useMealStore();
 
-  const { data: mealsQuery = [], isLoading } = useMeals();
+  const { data: mealsQuery = [], isLoading } = useMeals<MealWithFoods[]>();
 
   const meals = useMemo(() => {
-    return mealsQuery as MealWithFoods[];
+    return mealsQuery;
   }, [mealsQuery]);
 
   const nutritionTotal = useMemo(() => {

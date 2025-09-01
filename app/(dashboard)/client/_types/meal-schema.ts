@@ -1,5 +1,4 @@
-import { patterns } from '@/lib/constants';
-import { regexSchema, requiredStringSchema } from '@/lib/zod-schemas';
+import { requiredStringSchema } from '@/lib/zod-schemas';
 import { z } from 'zod';
 
 export const mealSchema = z.intersection(

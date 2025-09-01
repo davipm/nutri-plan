@@ -1,5 +1,6 @@
 import { useMealStore } from '@/app/(dashboard)/client/_libs/use-meal-store';
 import { getMeal, getMeals } from '@/app/(dashboard)/client/_services/services';
+import { MealWithFoods } from '@/app/(dashboard)/client/_types/meals';
 import { useQuery } from '@tanstack/react-query';
 
 /**
@@ -14,19 +15,17 @@ import { useQuery } from '@tanstack/react-query';
  * @returns An object containing the state and methods provided by the `useQuery` hook,
  * encapsulating the status and data of the meal query.
  */
-export const useMeals = () => {
+export const useMeals = <T = MealWithFoods[]>() => {
   const { mealFilters } = useMealStore();
 
   const keyFilters = {
     ...mealFilters,
-    dateTime: (mealFilters as any).dateTime
-      ? new Date((mealFilters as any).dateTime).toISOString()
-      : undefined,
+    dateTime: mealFilters.dateTime.toISOString(),
   };
 
   return useQuery({
     queryKey: ['meals', keyFilters],
-    queryFn: () => getMeals(mealFilters),
+    queryFn: () => getMeals(mealFilters) as Promise<T>,
   });
 };
 
