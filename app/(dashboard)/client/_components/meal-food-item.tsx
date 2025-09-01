@@ -27,7 +27,7 @@ export const MealFoodItem = ({
   });
 
   const selectedFood = useMemo(
-    () => foodsData?.data.find((food) => food.id === selectedFoodId),
+    () => foodsData?.data.find((food) => food.id === Number(selectedFoodId)),
     [foodsData, selectedFoodId],
   );
 
@@ -61,6 +61,8 @@ export const MealFoodItem = ({
         label="Amount"
         type="number"
         placeholder="0"
+        min={1}
+        step={1}
       />
 
       <Button size="icon" variant="outline" type="button" className="mt-3" onClick={onRemove}>

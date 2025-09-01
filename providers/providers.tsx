@@ -46,7 +46,7 @@ export function Providers({ children }: Props) {
     >
       <SessionProvider>
         <QueryClientProvider client={queryClient}>
-          <NextThemesProvider>{children}</NextThemesProvider>
+          {children}
           <Toaster />
           <AlertDialogProvider />
           <ReactQueryDevtools initialIsOpen={false} />
