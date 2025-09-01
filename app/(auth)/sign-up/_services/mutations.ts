@@ -10,16 +10,16 @@ import { hashPassword } from '@/lib/utils';
  * and creating a new user record in the database.
  *
  * @param data - The input data containing user details such as name, email, and password.
- * @returns {Promise<void>} A promise that resolves when the user is successfully signed up.
+ * @returns A promise that resolves when the user is successfully signed up.
  * @throws {Error} Throws an error if validation or database interaction fails.
  */
-export const signUp = async (data: SignUpSchema): Promise<void> => {
-  await executeAction({
+export const signUp = async (data: SignUpSchema) => {
+  return executeAction({
     actionFn: async () => {
       const validateData = signUpSchema.parse(data);
       const hashedPassword = await hashPassword(validateData.password);
 
-      await prisma.user.create({
+      return prisma.user.create({
         data: {
           name: validateData.name,
           email: validateData.email,

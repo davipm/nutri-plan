@@ -14,9 +14,13 @@ import prisma from '@/lib/prisma';
 import { toNumberSafe, toStringSafe } from '@/lib/utils';
 import { PaginateResult } from '@/types/paginate-result';
 
-type FoodWithServingUnits = Prisma.FoodGetPayload<{
+export type FoodWithServingUnits = Prisma.FoodGetPayload<{
   include: {
-    foodServingUnits: true;
+    foodServingUnits: {
+      include: {
+        servingUnit: true;
+      };
+    };
   };
 }>;
 
@@ -51,14 +55,18 @@ export const getFoods = async (
   const skip = (page - 1) * pageSize;
 
   // Execute queries in parallel
-  const [total, data] = await Promise.all([
+  const [total, data] = await prisma.$transaction([
     prisma.food.count({ where }),
     prisma.food.findMany({
       where,
-      include: {
-        foodServingUnits: true,
-      },
       skip,
+      include: {
+        foodServingUnits: {
+          include: {
+            servingUnit: true,
+          },
+        },
+      },
       take: pageSize,
       orderBy: {
         [sortBy]: sortOrder,
@@ -183,7 +191,13 @@ export const getFood = async (id: number) => {
     actionFn: async () => {
       const response = await prisma.food.findUnique({
         where: { id },
-        include: { foodServingUnits: true },
+        include: {
+        foodServingUnits: {
+          include: {
+            servingUnit: true,
+          },
+        },
+      },
       });
 
       if (!response) throw new Error(`Food with id ${id} not found`);
@@ -198,11 +212,10 @@ export const getFood = async (id: number) => {
         protein: toStringSafe(response.protein),
         sugar: toStringSafe(response.sugar),
         categoryId: toStringSafe(response.categoryId),
-        foodServingUnits:
-          response.foodServingUnits.map((unit) => ({
-            foodServingUnitId: toStringSafe(unit.servingUnitId),
-            grams: toStringSafe(unit.grams),
-          })) ?? [],
+        foodServingUnits: response.foodServingUnits.map((unit) => ({
+          foodServingUnitId: toStringSafe(unit.servingUnitId),
+          grams: toStringSafe(unit.grams),
+        })),
       };
     },
   });

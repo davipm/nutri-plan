@@ -1,22 +1,23 @@
-"use client";
+'use client';
 
-import { ReactNode } from "react";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { toast } from "sonner";
-import { Toaster } from "@/components/ui/sonner";
-import { AlertDialogProvider } from "@/providers/alert-dialog-provider";
+import { Toaster } from '@/components/ui/sonner';
+import { AlertDialogProvider } from '@/providers/alert-dialog-provider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { SessionProvider } from 'next-auth/react';
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { ReactNode } from 'react';
+import { toast } from 'sonner';
 
 const queryClient = new QueryClient({
   defaultOptions: {
     mutations: {
       onError: (error) => {
-        if (error.message === "NEXT_REDIRECT") return;
+        if (error.message === 'NEXT_REDIRECT') return;
         toast.error(error.message);
       },
       onSuccess: () => {
-        toast.success("Operation was successful");
+        toast.success('Operation was successful');
       },
     },
   },
@@ -43,12 +44,14 @@ export function Providers({ children }: Props) {
       enableSystem
       disableTransitionOnChange
     >
-      <QueryClientProvider client={queryClient}>
-        <NextThemesProvider>{children}</NextThemesProvider>
-        <Toaster />
-        <AlertDialogProvider />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      <SessionProvider>
+        <QueryClientProvider client={queryClient}>
+          {children}
+          <Toaster />
+          <AlertDialogProvider />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </SessionProvider>
     </NextThemesProvider>
   );
 }
