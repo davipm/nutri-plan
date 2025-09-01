@@ -11,7 +11,7 @@ export function NoItemFound({ onClick }: NoItemsFoundProps) {
       <CircleOff className="text-primary mb-2" aria-hidden="true" />
       <h3 className="text-lg font-medium">No items found</h3>
       <p className="text-foreground/60 mt-1 text-sm">Try add new items</p>
-      <Button variant="outline" className="mt-4" onClick={onClick}>
+      <Button variant="outline" className="mt-4" onClick={onClick} aria-label="Add new item">
         Add new item
       </Button>
     </div>
