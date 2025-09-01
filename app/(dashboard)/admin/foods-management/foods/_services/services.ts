@@ -51,14 +51,12 @@ export const getFoods = async (
   const skip = (page - 1) * pageSize;
 
   // Execute queries in parallel
-  const [total, data] = await Promise.all([
+  const [total, data] = await prisma.$transaction([
     prisma.food.count({ where }),
     prisma.food.findMany({
       where,
-      include: {
-        foodServingUnits: true,
-      },
       skip,
+      include: { foodServingUnits: true },
       take: pageSize,
       orderBy: {
         [sortBy]: sortOrder,
@@ -198,11 +196,10 @@ export const getFood = async (id: number) => {
         protein: toStringSafe(response.protein),
         sugar: toStringSafe(response.sugar),
         categoryId: toStringSafe(response.categoryId),
-        foodServingUnits:
-          response.foodServingUnits.map((unit) => ({
-            foodServingUnitId: toStringSafe(unit.servingUnitId),
-            grams: toStringSafe(unit.grams),
-          })) ?? [],
+        foodServingUnits: response.foodServingUnits.map((unit) => ({
+          foodServingUnitId: toStringSafe(unit.servingUnitId),
+          grams: toStringSafe(unit.grams),
+        })),
       };
     },
   });

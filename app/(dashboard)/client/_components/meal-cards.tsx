@@ -26,7 +26,7 @@ export function MealCards() {
   }, [meals]);
 
   const displayDate = mealFilters.dateTime
-    ? format(mealFilters.dateTime, 'MMMM dd, yyyy')
+    ? format(mealFilters.dateTime, 'EEEE, MMMM dd, yyyy')
     : 'Today';
 
   return (

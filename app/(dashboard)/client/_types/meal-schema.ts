@@ -9,10 +9,10 @@ export const mealSchema = z.intersection(
       z.object({
         foodId: z.coerce.number().int().positive({
           message: 'Food ID must be a positive integer',
-        }),
+        }).nullable(),
         servingUnitId: z.coerce.number().int().positive({
           message: 'Serving Unit ID must be a positive integer',
-        }),
+        }).nullable(),
         amount: z.coerce.number().int().max(9999).positive({
           message: 'Amount must be a positive integer',
         }),

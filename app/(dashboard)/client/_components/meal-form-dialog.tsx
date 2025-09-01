@@ -1,15 +1,14 @@
 'use client';
 
-import { Session } from 'next-auth';
-import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 type Props = {
   smallTrigger?: boolean;
-  session: Session;
 };
 
-export function MealFormDialog({ smallTrigger, session }: Props) {
-  const [item, setItem] = useState(null);
+export function MealFormDialog({ smallTrigger }: Props) {
+  const { data } = useSession();
+  console.log({ data, smallTrigger });
 
   return (
     <div>
