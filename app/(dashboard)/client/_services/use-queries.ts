@@ -19,8 +19,8 @@ export const useMeals = () => {
 
   const keyFilters = {
     ...mealFilters,
-    dateTime: (mealFilters as any).dateTime
-      ? new Date((mealFilters as any).dateTime).toISOString()
+    dateTime: mealFilters.dateTime
+      ? mealFilters.dateTime.toISOString()
       : undefined,
   };
 
