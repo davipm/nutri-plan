@@ -27,7 +27,7 @@ export const getMeals = async (filters: MealFilterSchema) => {
 
       const userId = Number.parseInt(session.user.id, 10);
 
-      if (!Number.isInteger(userId || userId <= 0)) {
+      if (!Number.isInteger(userId) || userId <= 0) {
         throw new Error('Invalid session user ID');
       }
 
@@ -90,7 +90,7 @@ export const getMeal = async (id: number) => {
 
       const userId = Number.parseInt(session.user.id, 10);
 
-      if (!Number.isInteger(userId || userId <= 0)) {
+      if (!Number.isInteger(userId) || userId <= 0) {
         throw new Error('Invalid session user ID');
       }
 
@@ -137,7 +137,7 @@ export const saveMeal = async (data: MealSchema) => {
 
       const userId = Number.parseInt(session.user.id, 10);
 
-      if (!Number.isInteger(userId || userId <= 0)) {
+      if (!Number.isInteger(userId) || userId <= 0) {
         throw new Error('Invalid session user ID');
       }
 
@@ -222,7 +222,7 @@ export const deleteMeal = async (id: number) => {
 
       const userId = Number.parseInt(session.user.id, 10);
 
-      if (!Number.isInteger(userId || userId <= 0)) {
+      if (!Number.isInteger(userId) || userId <= 0) {
         throw new Error('Invalid session user ID');
       }
 
