@@ -14,9 +14,13 @@ import prisma from '@/lib/prisma';
 import { toNumberSafe, toStringSafe } from '@/lib/utils';
 import { PaginateResult } from '@/types/paginate-result';
 
-type FoodWithServingUnits = Prisma.FoodGetPayload<{
+export type FoodWithServingUnits = Prisma.FoodGetPayload<{
   include: {
-    foodServingUnits: true;
+    foodServingUnits: {
+      include: {
+        servingUnit: true;
+      };
+    };
   };
 }>;
 
@@ -56,7 +60,13 @@ export const getFoods = async (
     prisma.food.findMany({
       where,
       skip,
-      include: { foodServingUnits: true },
+      include: {
+        foodServingUnits: {
+          include: {
+            servingUnit: true,
+          },
+        },
+      },
       take: pageSize,
       orderBy: {
         [sortBy]: sortOrder,
@@ -181,7 +191,13 @@ export const getFood = async (id: number) => {
     actionFn: async () => {
       const response = await prisma.food.findUnique({
         where: { id },
-        include: { foodServingUnits: true },
+        include: {
+        foodServingUnits: {
+          include: {
+            servingUnit: true,
+          },
+        },
+      },
       });
 
       if (!response) throw new Error(`Food with id ${id} not found`);
