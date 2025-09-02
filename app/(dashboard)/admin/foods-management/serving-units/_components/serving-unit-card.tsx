@@ -42,7 +42,7 @@ function ServingUnitCard({ servingUnit }: ServingUnitCardProps) {
   return (
     <div className="flex flex-col justify-between gap-3 rounded-lg border p-6">
       <p className="truncate font-medium">{servingUnit.name}</p>
-      <div className="flex gap-1">
+      <div className="flex items-center gap-1">
         <Button
           className="size-6"
           variant="ghost"
