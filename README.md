@@ -1,14 +1,20 @@
 # Nutri-Plan
 
-Nutri-Plan is a web application designed to help users create and manage nutrition plans. It features an admin dashboard for managing a database of foods, including their nutritional information, categories, and serving units. The client-side of the application is currently under development and will allow users to build and track their personalized nutrition plans.
+Nutri-Plan is a comprehensive web application designed to empower users in creating, managing, and tracking their personalized nutrition plans. It features a robust admin dashboard for detailed management of food data, including nutritional information, categories, and serving units. The client-side application provides intuitive tools for users to build and monitor their dietary intake, offering a complete solution for personal nutrition management.
 
 ## ✨ Features
 
-- **Food Management**: Admins can add, edit, and delete food items, including detailed nutritional information.
-- **Categorization**: Organize foods into custom categories.
-- **Serving Units**: Define various serving units for accurate portion tracking.
-- **User Roles**: The application supports different user roles (Admin, User) for managing access to features.
-- **Responsive Design**: A modern and responsive user interface that works on all devices.
+### Admin Dashboard
+- **Food Management**: Admins can effortlessly add, edit, and delete food items, including detailed nutritional information (calories, protein, carbs, fats).
+- **Categorization**: Organize foods into custom categories for better organization and searchability.
+- **Serving Units**: Define and manage various serving units (e.g., grams, cups, pieces) for accurate portion tracking and nutritional calculations.
+- **User Roles**: Supports distinct user roles (Admin, User) to manage access permissions and functionalities within the application.
+
+### Client Application
+- **Meal Creation & Management**: Users can easily create, edit, and delete meals for specific dates, allowing for flexible meal planning.
+- **Food Item Customization**: Add multiple food items to each meal, specifying precise amounts and selecting appropriate serving units.
+- **Nutritional Overview**: Automatically calculates and displays total calories, protein, carbohydrates, and fats for each meal, providing immediate insights into dietary intake.
+- **Date-based Filtering**: Filter and view meals by date, enabling users to track their nutrition over time and review past dietary habits.
 
 ## 🚀 Getting Started
 
@@ -50,6 +56,7 @@ Now you can run the development server:
 ```bash
 npm run dev
 ```
+*(Note: The `dev` script uses `--turbopack` for faster development builds.)*
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
@@ -57,7 +64,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 In the project directory, you can run:
 
-- `npm run dev`: Runs the app in development mode.
+- `npm run dev`: Runs the app in development mode with Turbopack for faster builds.
 - `npm run build`: Builds the app for production.
 - `npm run start`: Starts a production server.
 - `npm run lint`: Lints the code for errors and style issues.
@@ -67,7 +74,7 @@ In the project directory, you can run:
 - `npm run db:pull`: Pulls the database schema from the database.
 - `npm run db:generate`: Generates the Prisma client.
 - `npm run db:studio`: Opens the Prisma Studio to view and edit data.
-- `npm run db:seed`: Seeds the database with initial data.
+- `npm run db:seed`: Seeds the database with initial data. *(Note: This script uses `tsx` to execute the seed file.)*
 
 ## 🛠️ Stack
 
@@ -82,4 +89,3 @@ In the project directory, you can run:
 - **Database**: [SQLite](https://www.sqlite.org/index.html)
 - **Authentication**: [NextAuth.js](https://next-auth.js.org/)
 - **Testing**: [Vitest](https://vitest.dev/), [React Testing Library](https://testing-library.com/)
-
