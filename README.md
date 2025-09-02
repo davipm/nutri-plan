@@ -89,3 +89,7 @@ In the project directory, you can run:
 - **Database**: [SQLite](https://www.sqlite.org/index.html)
 - **Authentication**: [NextAuth.js](https://next-auth.js.org/)
 - **Testing**: [Vitest](https://vitest.dev/), [React Testing Library](https://testing-library.com/)
+
+## Authors
+
+* **Davi Pereira**
