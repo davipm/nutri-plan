@@ -12,7 +12,7 @@ type CategoryCardProps = {
 
 export const CategoryCard = memo(({ category }: CategoryCardProps) => {
   const { setSelectedCategoryId, setCategoryDialogOpen } = useCategoriesStore();
-  const { mutate: deleteCategoryMutation } = useDeleteCategory();
+  const { mutate: deleteCategoryMutation, isPending } = useDeleteCategory();
 
   const handleEdit = useCallback(() => {
     setSelectedCategoryId(category.id);
@@ -30,24 +30,27 @@ export const CategoryCard = memo(({ category }: CategoryCardProps) => {
   return (
     <div className="flex flex-col justify-between gap-3 rounded-lg border p-6">
       <p className="truncate font-medium">{category.name}</p>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <Button
+          className="size-6"
           variant="ghost"
           size="icon"
-          type="button"
           onClick={handleEdit}
           aria-label={`Edit ${category.name}`}
+          title={`Edit ${category.name}`}
         >
-          <Edit className="size-4" />
+          <Edit />
         </Button>
         <Button
+          className="size-6"
           variant="ghost"
           size="icon"
-          type="button"
           onClick={handleDelete}
           aria-label={`Delete ${category.name}`}
+          disabled={isPending}
+          aria-disabled={isPending}
         >
-          <Trash className="size-4" />
+          <Trash />
         </Button>
       </div>
     </div>

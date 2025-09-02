@@ -187,17 +187,17 @@ function parseNumericValue(value: string): number | null {
  * @throws Error if no food item with the given ID exists.
  */
 export const getFood = async (id: number) => {
-  return await executeAction({
+  return executeAction({
     actionFn: async () => {
       const response = await prisma.food.findUnique({
         where: { id },
         include: {
-        foodServingUnits: {
-          include: {
-            servingUnit: true,
+          foodServingUnits: {
+            include: {
+              servingUnit: true,
+            },
           },
         },
-      },
       });
 
       if (!response) throw new Error(`Food with id ${id} not found`);
@@ -222,7 +222,7 @@ export const getFood = async (id: number) => {
 };
 
 export const saveFood = async (data: FoodSchema) => {
-  return await executeAction({
+  return executeAction({
     actionFn: async () => {
       const input = foodSchema.parse(data);
 
@@ -291,7 +291,7 @@ export const saveFood = async (data: FoodSchema) => {
 };
 
 export const deleteFood = async (id: number) => {
-  return await executeAction({
+  await executeAction({
     actionFn: () => {
       return prisma.$transaction(async (prisma) => {
         await prisma.foodServingUnit.deleteMany({
@@ -300,7 +300,7 @@ export const deleteFood = async (id: number) => {
           },
         });
 
-        return prisma.food.delete({
+        await prisma.food.delete({
           where: {
             id,
           },
