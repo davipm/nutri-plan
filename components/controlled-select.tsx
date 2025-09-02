@@ -41,7 +41,7 @@ export const ControlledSelect = <T extends FieldValues>({
       render={({ field: { onChange, value, ...restField }, fieldState: { error } }) => (
         <div className="grid w-full items-center gap-1.5">
           {label && <label htmlFor={name}>{label}</label>}
-          <Select onValueChange={onChange} value={value.toString()} {...restField}>
+          <Select onValueChange={onChange} value={value?.toString()} {...restField}>
             <div className="relative">
               <SelectTrigger id={name} className="w-full">
                 <SelectValue placeholder={placeholder} />
