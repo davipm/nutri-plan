@@ -35,6 +35,7 @@ export const CategoryCard = memo(({ category }: CategoryCardProps) => {
           className="size-6"
           variant="ghost"
           size="icon"
+          type="button"
           onClick={handleEdit}
           aria-label={`Edit ${category.name}`}
           title={`Edit ${category.name}`}
@@ -45,6 +46,7 @@ export const CategoryCard = memo(({ category }: CategoryCardProps) => {
           className="size-6"
           variant="ghost"
           size="icon"
+          type="button"
           onClick={handleDelete}
           aria-label={`Delete ${category.name}`}
           disabled={isPending}
