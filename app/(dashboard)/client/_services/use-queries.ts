@@ -37,12 +37,12 @@ export const useMeals = <T = MealWithFoods[]>() => {
  * @returns The query result object from `useQuery`, containing the reactionally updated meal data,
  *          loading status, error, and other metadata.
  */
-export const useMeal = () => {
+export const useMeal = <T = MealWithFoods[]>() => {
   const { selectedMealId } = useMealStore();
 
   return useQuery({
     queryKey: ['meal', { id: selectedMealId }],
-    queryFn: () => getMeal(selectedMealId!),
+    queryFn: () => getMeal(selectedMealId!) as Promise<T>,
     enabled: !!selectedMealId,
   });
 };
