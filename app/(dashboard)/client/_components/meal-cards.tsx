@@ -144,7 +144,7 @@ export function MealCards() {
             Array.from({ length: 8 }).map((_, index) => <MealCardsSkeleton key={index} />)}
 
           {meals.map((meal) => (
-            <MealCard key={meal.id} meal={meal} />
+            <MealCard key={meal.id} {...meal} />
           ))}
         </div>
       </div>

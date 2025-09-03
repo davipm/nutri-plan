@@ -11,29 +11,25 @@ import { Edit, Trash, Utensils } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 import { memo } from 'react';
 
-type Props = {
-  meal: MealWithFoods;
-};
-
-export const MealCard = memo(({ meal }: Props) => {
+export const MealCard = memo(({ mealFoods, id, dateTime }: MealWithFoods) => {
   const { setSelectedMealId, setMealDialogOpen } = useMealStore();
 
   const { mutate: deleteMealMutation, isPending: isDeleting } = useDeleteMeal();
 
   const totalCalories = useMemo(() => {
-    return calculateTotalCalories(meal.mealFoods);
-  }, [meal.mealFoods]);
+    return calculateTotalCalories(mealFoods);
+  }, [mealFoods]);
 
   const handleEdit = useCallback(() => {
-    setSelectedMealId(meal.id);
+    setSelectedMealId(id);
     setMealDialogOpen(true);
-  }, [meal.id, setMealDialogOpen, setSelectedMealId]);
+  }, [id, setMealDialogOpen, setSelectedMealId]);
 
   const handleDelete = () => {
     alert({
       title: `Delete Meal`,
       description: 'Are you sure you want to delete this Meal? This action cannot be undone.',
-      onConfirm: () => deleteMealMutation(meal.id),
+      onConfirm: () => deleteMealMutation(id),
     });
   };
 
@@ -41,7 +37,7 @@ export const MealCard = memo(({ meal }: Props) => {
     <div className="border-border/40 hover:border-border/80 flex flex-col gap-3 rounded-lg border p-6 transition-colors">
       <div className="flex items-center justify-between">
         <div>
-          <p className="font-medium">{format(new Date(meal.dateTime), 'PPp')}</p>
+          <p className="font-medium">{format(new Date(dateTime), 'PPp')}</p>
           <Badge variant="outline" className="mt-1">
             {totalCalories} kcal
           </Badge>
@@ -69,15 +65,15 @@ export const MealCard = memo(({ meal }: Props) => {
         <div className="flex items-center gap-2">
           <Utensils className="text-primary size-4" />
           <p className="text-foreground/70 text-sm font-medium">
-            {meal.mealFoods.length} {meal.mealFoods.length === 1 ? 'item' : 'items'}
+            {mealFoods.length} {mealFoods.length === 1 ? 'item' : 'items'}
           </p>
         </div>
 
-        {meal.mealFoods.length === 0 ? (
+        {mealFoods.length === 0 ? (
           <p className="text-foreground/60 text-sm italic">No foods added</p>
         ) : (
           <div className="space-y-3">
-            {meal.mealFoods.map(({ id, food, servingUnit, amount }) => (
+            {mealFoods.map(({ id, food, servingUnit, amount }) => (
               <div key={id} className="bg-muted/40 rounded-md p-3">
                 <div className="flex items-start justify-between">
                   <p className="font-medium">{food.name}</p>
