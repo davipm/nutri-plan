@@ -10,7 +10,7 @@ export const mealSchema = z.intersection(
       z.object({
         foodId: requiredStringSchema,
         servingUnitId: requiredStringSchema,
-        amount: regexSchema(patterns.zeroTo9999),
+        amount: regexSchema(patterns.zeroTo9999).refine((v) => v !== '', 'Amount is required'),
       }),
     ),
   }),
