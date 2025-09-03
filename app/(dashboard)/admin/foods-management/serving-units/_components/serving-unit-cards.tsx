@@ -1,6 +1,6 @@
 'use client';
 
-import ServingUnitCard from '@/app/(dashboard)/admin/foods-management/serving-units/_components/serving-unit-card';
+import { ServingUnitCard } from '@/app/(dashboard)/admin/foods-management/serving-units/_components/serving-unit-card';
 import ServingUnitSkeleton from '@/app/(dashboard)/admin/foods-management/serving-units/_components/serving-unit-skeleton';
 import { useServingUnitsStore } from '@/app/(dashboard)/admin/foods-management/serving-units/_libs/use-serving-units-store';
 import { useServingUnits } from '@/app/(dashboard)/admin/foods-management/serving-units/_services/use-queries';
