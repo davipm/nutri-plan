@@ -77,27 +77,24 @@ export const MealCard = memo(({ meal }: Props) => {
           <p className="text-foreground/60 text-sm italic">No foods added</p>
         ) : (
           <div className="space-y-3">
-            {meal.mealFoods.map((mealFood) => (
-              <div key={mealFood.id} className="bg-muted/40 rounded-md p-3">
+            {meal.mealFoods.map(({ id, food, servingUnit, amount }) => (
+              <div key={id} className="bg-muted/40 rounded-md p-3">
                 <div className="flex items-start justify-between">
-                  <p className="font-medium">{mealFood.food.name}</p>
-                  <Badge variant="secondary">
-                    {(mealFood.food.calories ?? 0) * (mealFood.amount || 1)} kcal
-                  </Badge>
+                  <p className="font-medium">{food.name}</p>
+                  <Badge variant="secondary">{(food.calories ?? 0) * (amount || 1)} kcal</Badge>
                 </div>
                 <div className="text-foreground/70 mt-2 flex justify-between text-sm">
                   <div>
                     <span>Serving: </span>
                     <span className="font-medium">
-                      {mealFood.amount > 0 ? mealFood.amount : 'Not specified'}{' '}
-                      {mealFood.servingUnit?.name || 'serving'}
+                      {amount > 0 ? amount : 'Not specified'} {servingUnit?.name || 'serving'}
                     </span>
                   </div>
 
                   <div className="space-x-1 text-xs">
-                    <span>P: {mealFood.food.protein ?? 0}g</span>
-                    <span>C: {mealFood.food.carbohydrates ?? 0}g</span>
-                    <span>F: {mealFood.food.fat ?? 0}g</span>
+                    <span>P: {food.protein ?? 0}g</span>
+                    <span>C: {food.carbohydrates ?? 0}g</span>
+                    <span>F: {food.fat ?? 0}g</span>
                   </div>
                 </div>
               </div>
