@@ -15,6 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Edit, Trash } from 'lucide-react';
+import { memo } from 'react';
 
 export type FoodData = NonNullable<ReturnType<typeof useFoods>['data']>['data'][number];
 
@@ -24,7 +25,7 @@ type FoodCardProps = {
   deleteFoodMutation: ReturnType<typeof useDeleteFood>;
 };
 
-export function FoodCard({ item, onEdit, deleteFoodMutation }: FoodCardProps) {
+export const FoodCard = memo(({ item, onEdit, deleteFoodMutation }: FoodCardProps) => {
   const { mutate, variables, isPending } = deleteFoodMutation;
   const isDeleting = isPending && variables === item.id;
 
@@ -81,4 +82,6 @@ export function FoodCard({ item, onEdit, deleteFoodMutation }: FoodCardProps) {
       </div>
     </div>
   );
-}
+});
+
+FoodCard.displayName = 'FoodCard';

@@ -13,9 +13,15 @@ import prisma from '@/lib/prisma';
 import { toNumberSafe, toStringSafe } from '@/lib/utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/lib/auth', () => ({
-  auth: vi.fn(),
-}));
+vi.mock('@/lib/auth', () => {
+  const auth = vi.fn();
+  const getCurrentUser = vi.fn(async () => {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error('User not authenticated');
+    return session as any;
+  });
+  return { auth, getCurrentUser };
+});
 
 vi.mock('@/lib/prisma', () => ({
   default: {

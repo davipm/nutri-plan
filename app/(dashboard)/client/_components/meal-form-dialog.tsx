@@ -47,12 +47,7 @@ export function MealFormDialog({ smallTrigger }: Props) {
 
   useEffect(() => {
     if (isEditMode && mealToEdit) {
-      form.reset({
-        ...mealToEdit,
-        dateTime:
-          mealToEdit.dateTime instanceof Date ? mealToEdit.dateTime : new Date(mealToEdit.dateTime),
-        action: 'update',
-      });
+      form.reset({ ...mealToEdit, action: 'update' });
     } else if (!isEditMode) {
       form.reset(mealDefaultValues);
     }

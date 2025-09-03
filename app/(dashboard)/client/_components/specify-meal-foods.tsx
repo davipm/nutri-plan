@@ -32,9 +32,9 @@ export function SpecifyMealFoods() {
           className="flex items-center gap-1"
           onClick={() =>
             append({
-              foodId: null,
-              servingUnitId: null,
-              amount: 0,
+              foodId: '',
+              servingUnitId: '',
+              amount: '0',
             })
           }
         >

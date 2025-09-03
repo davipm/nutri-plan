@@ -1,6 +1,6 @@
 'use client';
 
-import MealCard from '@/app/(dashboard)/client/_components/meal-card';
+import { MealCard } from '@/app/(dashboard)/client/_components/meal-card';
 import MealCardsSkeleton from '@/app/(dashboard)/client/_components/meal-cards-skeleton';
 import { useMealStore } from '@/app/(dashboard)/client/_libs/use-meal-store';
 import { useMeals } from '@/app/(dashboard)/client/_services/use-queries';

@@ -8,8 +8,8 @@ import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
 
 export const saveCategory = async (data: CategorySchema) => {
-  return await executeAction({
-    actionFn: async () => {
+  return executeAction({
+    actionFn: () => {
       const input = categorySchema.parse(data);
 
       if (input.action === 'create') {
@@ -36,7 +36,7 @@ export const saveCategory = async (data: CategorySchema) => {
  * @throws {Error} Throws an error if the deletion operation fails.
  */
 export const deleteCategory = async (id: number) => {
-  return await executeAction({
+  return executeAction({
     actionFn: () => prisma.category.delete({ where: { id } }),
   });
 };
@@ -53,7 +53,7 @@ export const deleteCategory = async (id: number) => {
  *          If no categories exist, an empty array is returned.
  */
 export const getCategories = async () => {
-  return await executeAction({
+  return executeAction({
     actionFn: () => prisma.category.findMany(),
   });
 };
@@ -73,7 +73,7 @@ export const getCategories = async () => {
  * @returns A promise that resolves to an object representing the category.
  */
 export const getCategory = async (id: number) => {
-  return await executeAction({
+  return executeAction({
     actionFn: async () => {
       const response = await prisma.category.findUnique({ where: { id } });
       if (!response) throw new Error(`Category with id ${id} not found`);

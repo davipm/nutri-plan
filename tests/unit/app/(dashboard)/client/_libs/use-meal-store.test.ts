@@ -52,7 +52,10 @@ vi.mock('@/store/create-store', () => ({
 describe('useMealStore', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Reset only state fields to avoid overriding action methods in the mocked store
+    const current = useMealStore.getState();
     useMealStore.setState({
+      ...current,
       selectedMealId: null,
       mealDialogOpen: false,
       mealFilters: mealFilterDefaultValues,
