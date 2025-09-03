@@ -65,7 +65,7 @@ export const getMeals = async (filters: MealFilterSchema) => {
           ...mealFood,
           foodId: toStringSafe(mealFood.foodId),
           servingUnitId: toStringSafe(mealFood.servingUnitId),
-          amount: mealFood.amount,
+          amount: toStringSafe(mealFood.amount),
         })),
       }));
     },
@@ -168,7 +168,6 @@ export const saveMeal = async (data: MealSchema) => {
       }
 
       return prisma.$transaction(async (prisma) => {
-        
         const meal = await prisma.meal.update({
           where: { id: input.id },
           data: { dateTime: input.dateTime },
@@ -220,7 +219,6 @@ export const deleteMeal = async (id: number) => {
       }
 
       return prisma.$transaction(async (prisma) => {
-        
         await prisma.mealFood.deleteMany({
           where: { mealId: id },
         });
