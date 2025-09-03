@@ -3,7 +3,7 @@
 import { useServingUnitsStore } from '@/app/(dashboard)/admin/foods-management/serving-units/_libs/use-serving-units-store';
 import { useDeleteServingUnit } from '@/app/(dashboard)/admin/foods-management/serving-units/_services/use-mutations';
 import { Button } from '@/components/ui/button';
-import { type ServingUnit } from '@/generated/prisma';
+import type { ServingUnit } from '@/generated/prisma';
 import { alert } from '@/store/use-global-store';
 import { Edit, Trash } from 'lucide-react';
 import { memo, useCallback } from 'react';
