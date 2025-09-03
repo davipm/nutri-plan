@@ -29,7 +29,7 @@ export const useSaveFood = () => {
 export const useDeleteFood = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<void, Error, number>({
+  return useMutation<Food, Error, number>({
     mutationKey: ['foods', 'delete'],
     mutationFn: (id) => {
       return deleteFood(id);

@@ -291,7 +291,7 @@ export const saveFood = async (data: FoodSchema) => {
 };
 
 export const deleteFood = async (id: number) => {
-  await executeAction({
+  return executeAction({
     actionFn: () => {
       return prisma.$transaction(async (prisma) => {
         await prisma.foodServingUnit.deleteMany({
@@ -300,7 +300,7 @@ export const deleteFood = async (id: number) => {
           },
         });
 
-        await prisma.food.delete({
+        return prisma.food.delete({
           where: {
             id,
           },

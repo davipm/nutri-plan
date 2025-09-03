@@ -21,7 +21,7 @@ type ServingUnitCardProps = {
  * @param {string} props.servingUnit.name - The name of the serving unit.
  * @returns A card component displaying the serving unit details and associated actions.
  */
-function ServingUnitCard({ servingUnit }: ServingUnitCardProps) {
+export const ServingUnitCard = memo(({ servingUnit }: ServingUnitCardProps) => {
   const { updateSelectedServingUnitId, updateServingUnitDialogOpen } = useServingUnitsStore();
   const { mutate: servingUnitsMutation, isPending } = useDeleteServingUnit();
 
@@ -68,6 +68,6 @@ function ServingUnitCard({ servingUnit }: ServingUnitCardProps) {
       </div>
     </div>
   );
-}
+});
 
-export default memo(ServingUnitCard);
+ServingUnitCard.displayName = 'ServingUnitCard';

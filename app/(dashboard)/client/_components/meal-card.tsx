@@ -14,7 +14,7 @@ type Props = {
   meal: MealWithFoods;
 };
 
-export default function MealCard({ meal }: Props) {
+export function MealCard({ meal }: Props) {
   const { setSelectedMealId, setMealDialogOpen } = useMealStore();
 
   const { mutate: deleteMealMutation, isPending: isDeleting } = useDeleteMeal();
