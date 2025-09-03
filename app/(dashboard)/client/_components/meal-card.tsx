@@ -9,12 +9,13 @@ import { alert } from '@/store/use-global-store';
 import { format } from 'date-fns';
 import { Edit, Trash, Utensils } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
+import { memo } from 'react';
 
 type Props = {
   meal: MealWithFoods;
 };
 
-export function MealCard({ meal }: Props) {
+export const MealCard = memo(({ meal }: Props) => {
   const { setSelectedMealId, setMealDialogOpen } = useMealStore();
 
   const { mutate: deleteMealMutation, isPending: isDeleting } = useDeleteMeal();
@@ -106,4 +107,6 @@ export function MealCard({ meal }: Props) {
       </div>
     </div>
   );
-}
+});
+
+MealCard.displayName = 'MealCard';
