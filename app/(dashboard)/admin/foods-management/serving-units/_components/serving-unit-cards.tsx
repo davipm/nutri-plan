@@ -47,7 +47,7 @@ export function ServingUnitCards() {
   return (
     <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-4">
       {data.map((servingUnit) => (
-        <ServingUnitCard key={servingUnit.id} servingUnit={servingUnit} />
+        <ServingUnitCard key={servingUnit.id} id={servingUnit.id} name={servingUnit.name} />
       ))}
     </div>
   );
