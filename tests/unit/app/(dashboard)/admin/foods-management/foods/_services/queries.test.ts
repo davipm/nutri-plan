@@ -694,7 +694,7 @@ describe('Food Queries', () => {
       (prisma.foodServingUnit.deleteMany as vi.Mock).mockResolvedValue({ count: 2 });
       (prisma.food.delete as vi.Mock).mockResolvedValue(mockDeletedFood);
 
-      await expect(deleteFood(foodId)).resolves.toBeUndefined();
+      await expect(deleteFood(foodId)).resolves.toEqual(mockDeletedFood);
 
       expect(prisma.foodServingUnit.deleteMany).toHaveBeenCalledWith({
         where: { foodId: 1 },

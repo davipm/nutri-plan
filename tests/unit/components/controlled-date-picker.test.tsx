@@ -99,10 +99,23 @@ describe("ControlledDatePicker", () => {
   it("Applies muted text class when empty and removes it once a date is present", async () => {
     type FormVals = { date: Date | null };
 
+    const TestFormWithReset = ({ defaultValues }: { defaultValues: FormVals }) => {
+      const methods = useForm<FormVals>({ defaultValues });
+      
+      // Reset form with new values to simulate updating the form
+      useEffect(() => {
+        methods.reset(defaultValues);
+      }, [defaultValues, methods]);
+
+      return (
+        <FormProvider {...methods}>
+          <ControlledDatePicker<FormVals> name={"date"} label="Date" />
+        </FormProvider>
+      );
+    };
+
     const { rerender } = render(
-      <TestFormWrapper<FormVals> defaultValues={{ date: null }}>
-        <ControlledDatePicker<FormVals> name={"date"} label="Date" />
-      </TestFormWrapper>
+      <TestFormWithReset defaultValues={{ date: null }} />
     );
 
     const button = screen.getByLabelText("Date");
@@ -110,12 +123,12 @@ describe("ControlledDatePicker", () => {
 
     // Re-render with a value to verify class removal
     rerender(
-      <TestFormWrapper<FormVals> defaultValues={{ date: new Date("2024-01-15T00:00:00.000Z") }}>
-        <ControlledDatePicker<FormVals> name={"date"} label="Date" />
-      </TestFormWrapper>
+      <TestFormWithReset defaultValues={{ date: new Date("2024-01-15T00:00:00.000Z") }} />
     );
 
     const buttonAfter = screen.getByLabelText("Date");
+    // Check if the button text content has changed (indicating the value was updated)
+    expect(buttonAfter).toHaveTextContent("January 15th, 2024");
     expect(buttonAfter).not.toHaveClass("text-muted-foreground");
   });
 

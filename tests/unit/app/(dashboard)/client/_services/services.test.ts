@@ -200,6 +200,7 @@ describe('Client Meal Services', () => {
               ...mockMealDbResult.mealFoods[0],
               foodId: '1',
               servingUnitId: '1',
+              amount: '100',
             },
           ],
         },
