@@ -1,6 +1,5 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-import bcrypt from "bcryptjs";
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -15,7 +14,7 @@ export function cn(...inputs: ClassValue[]) {
  * @returns {string} The string representation of the given value, or an empty string if the value is null.
  */
 export const toStringSafe = (value: unknown): string => {
-  return value === null ? "" : String(value);
+  return value === null ? '' : String(value);
 };
 
 /**
@@ -31,33 +30,8 @@ export const toStringSafe = (value: unknown): string => {
  */
 export const toNumberSafe = (value: unknown): number => {
   if (value === null) return 0;
-  if (typeof value === "number") return value;
+  if (typeof value === 'number') return value;
 
   const parsedValue = Number(value);
   return isNaN(parsedValue) ? 0 : parsedValue;
-};
-
-/**
- * Asynchronously generates a hashed version of the provided password.
- *
- * This function uses bcrypt to generate a salt and then hashes the provided
- * password with the generated salt. The salt helps ensure the security of the
- * hashed password by making it resistant to rainbow table attacks.
- *
- * @param {string} password - The plain text password to be hashed.
- * @returns {Promise<string>} A promise that resolves to the hashed password.
- */
-export const hashPassword = async (password: string): Promise<string> => {
-  const salt = await bcrypt.genSalt(10);
-  return bcrypt.hash(password, salt);
-};
-
-/**
- * Compares a plain text password with a hashed password to determine if they match.
- */
-export const comparePasswords = async (
-  password: string,
-  hashedPassword: string,
-) => {
-  return bcrypt.compare(password, hashedPassword);
 };

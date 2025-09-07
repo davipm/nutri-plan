@@ -6,10 +6,11 @@ import {
 } from '@/app/(dashboard)/client/_types/meal-filter-schema';
 import { MealSchema, mealSchema } from '@/app/(dashboard)/client/_types/meal-schema';
 import { Prisma } from '@/generated/prisma';
-import { getCurrentUser } from '@/lib/auth';
+import { auth } from '@/lib/auth';
 import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
 import { toNumberSafe, toStringSafe } from '@/lib/utils';
+import { headers } from 'next/headers';
 
 /**
  * Fetches a list of meals for the authenticated user based on the provided filters.
@@ -23,13 +24,15 @@ import { toNumberSafe, toStringSafe } from '@/lib/utils';
 export const getMeals = async (filters: MealFilterSchema) => {
   return executeAction({
     actionFn: async () => {
-      const session = await getCurrentUser();
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      });
 
-      const userId = Number.parseInt(session.user.id, 10);
-
-      if (!Number.isInteger(userId) || userId <= 0) {
-        throw new Error('Invalid session user ID');
+      if (!session?.user.id) {
+        throw new Error('User not authenticated');
       }
+
+      const userId = session?.user?.id;
 
       const validatedFilters = mealFilterSchema.parse(filters);
 
@@ -86,13 +89,15 @@ export const getMeals = async (filters: MealFilterSchema) => {
 export const getMeal = async (id: number) => {
   return executeAction({
     actionFn: async () => {
-      const session = await getCurrentUser();
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      });
 
-      const userId = Number.parseInt(session.user.id, 10);
-
-      if (!Number.isInteger(userId) || userId <= 0) {
-        throw new Error('Invalid session user ID');
+      if (!session?.user.id) {
+        throw new Error('User not authenticated');
       }
+
+      const userId = session?.user?.id;
 
       const response = await prisma.meal.findFirst({
         where: { id, userId },
@@ -133,13 +138,15 @@ export const getMeal = async (id: number) => {
 export const saveMeal = async (data: MealSchema) => {
   return executeAction({
     actionFn: async () => {
-      const session = await getCurrentUser();
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      });
 
-      const userId = Number.parseInt(session.user.id, 10);
-
-      if (!Number.isInteger(userId) || userId <= 0) {
-        throw new Error('Invalid session user ID');
+      if (!session?.user.id) {
+        throw new Error('User not authenticated');
       }
+
+      const userId = session?.user?.id;
 
       const input = mealSchema.parse(data);
 
@@ -210,12 +217,12 @@ export const saveMeal = async (data: MealSchema) => {
 export const deleteMeal = async (id: number) => {
   return executeAction({
     actionFn: async () => {
-      const session = await getCurrentUser();
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      });
 
-      const userId = Number.parseInt(session.user.id, 10);
-
-      if (!Number.isInteger(userId) || userId <= 0) {
-        throw new Error('Invalid session user ID');
+      if (!session?.user.id) {
+        throw new Error('User not authenticated');
       }
 
       return prisma.$transaction(async (prisma) => {

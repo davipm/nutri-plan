@@ -1,9 +1,9 @@
 import type { ComponentType } from 'react';
 
 export enum Role {
-  ADMIN = 'ADMIN',
-  CLIENT = 'CLIENT',
-  USER = 'USER',
+  ADMIN = 'admin',
+  CLIENT = 'client',
+  USER = 'user',
 }
 
 export interface RouteItemType {

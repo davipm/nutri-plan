@@ -1,6 +1,7 @@
 import { SignUpForm } from '@/app/(auth)/sign-up/_components/sign-up-form';
 import { Role } from '@/generated/prisma';
 import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 /**
@@ -14,7 +15,9 @@ import { redirect } from 'next/navigation';
  * when no redirection occurs. Otherwise, performs a redirection and returns null.
  */
 export default async function Page() {
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   if (session?.user?.role === Role.ADMIN) {
     redirect('/admin/foods-management/foods');

@@ -1,5 +1,6 @@
 import { Role } from '@/app/(dashboard)/_types/nav';
 import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 
@@ -12,8 +13,13 @@ import { ReactNode } from 'react';
  * Redirects the user if there is no session or based on the user's role.
  */
 export default async function Layout({ children }: { children: ReactNode }) {
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   if (!session) redirect('/sign-in');
+
   if (session.user?.role === Role.USER) redirect('/client');
+
   return <div className="mx-auto max-w-7xl p-6">{children}</div>;
 }

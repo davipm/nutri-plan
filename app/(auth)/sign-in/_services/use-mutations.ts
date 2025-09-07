@@ -4,20 +4,17 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 /**
- * useSingIn is a custom hook that provides a mutation for the sign-in process.
- * It uses the `useMutation` hook from a mutation library (e.g., React Query).
- *
- * The mutation function performs an asynchronous operation for user sign-in,
- * using the provided `SingInSchema` data.
- *
- * The mutation object returned by useMutation,
- * allowing control over the sign-in process, including methods to trigger
- * the mutation and access its status and results.
+ * A custom hook that encapsulates the sign-in functionality using a mutation.
  */
 export const useSignIn = () => {
+  const router = useRouter();
+
   return useMutation({
     mutationFn: async (data: SignInSchema) => {
       await signIn(data);
+    },
+    onSuccess: () => {
+      router.push('/client');
     },
   });
 };

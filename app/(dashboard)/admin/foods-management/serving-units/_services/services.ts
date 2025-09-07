@@ -7,6 +7,7 @@ import {
 import { auth } from '@/lib/auth';
 import { executeAction } from '@/lib/execute-action';
 import prisma from '@/lib/prisma';
+import { headers } from 'next/headers';
 
 /**
  * Asynchronously saves a serving unit to the database. Depending on the action type,
@@ -19,7 +20,9 @@ import prisma from '@/lib/prisma';
 export const saveServingUnit = async (data: ServingUnitSchema) => {
   return executeAction({
     actionFn: async () => {
-      const session = await auth();
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      });
 
       if (!session?.user.id) {
         throw new Error('User not authenticated');
@@ -55,7 +58,9 @@ export const saveServingUnit = async (data: ServingUnitSchema) => {
 export const deleteServingUnit = async (id: number) => {
   return executeAction({
     actionFn: async () => {
-      const session = await auth();
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      });
 
       if (!session?.user.id) {
         throw new Error('User not authenticated');
@@ -83,7 +88,9 @@ export const deleteServingUnit = async (id: number) => {
 export const getServingUnits = async () => {
   return executeAction({
     actionFn: async () => {
-      const session = await auth();
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      });
 
       if (!session?.user.id) {
         throw new Error('User not authenticated');
@@ -104,7 +111,9 @@ export const getServingUnits = async () => {
 export const getServingUnit = async (id: number) => {
   return executeAction({
     actionFn: async () => {
-      const session = await auth();
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      });
 
       if (!session?.user.id) {
         throw new Error('User not authenticated');
