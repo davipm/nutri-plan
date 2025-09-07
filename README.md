@@ -87,7 +87,7 @@ In the project directory, you can run:
 - **Schema Validation**: [Zod](https://zod.dev/)
 - **ORM**: [Prisma](https://www.prisma.io/)
 - **Database**: [SQLite](https://www.sqlite.org/index.html)
-- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
+- **Authentication**: [better-auth.js](https://www.better-auth.com/)
 - **Testing**: [Vitest](https://vitest.dev/), [React Testing Library](https://testing-library.com/)
 
 ## Authors
