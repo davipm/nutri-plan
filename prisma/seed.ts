@@ -1,3 +1,4 @@
+import { Role } from '@/app/(dashboard)/_types/nav';
 import { PrismaClient } from '@/generated/prisma';
 import { auth } from '@/lib/auth';
 
@@ -13,9 +14,9 @@ export async function main() {
     const admin = await auth.api.createUser({
       body: {
         name: 'Admin', // required
-        email: 'admin@example.com', // required
+        email: adminEmail, // required
         password: '1234', // required
-        role: 'admin',
+        role: Role.ADMIN,
       },
     });
 
