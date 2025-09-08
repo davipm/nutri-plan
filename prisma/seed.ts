@@ -5,7 +5,13 @@ import { auth } from '@/lib/auth';
 const prisma = new PrismaClient();
 
 export async function main() {
-  const adminEmail = 'super@admin.com';
+  const adminEmail = process.env.ADMIN_EMAIL || 'super@admin.com';
+  const adminPassword = process.env.ADMIN_PASWORD;
+
+  if (!adminEmail || !adminPassword) {
+    throw new Error('ADMIN_PASSWORD env var is required for seeding');
+  }
+
   const existingAdmin = await prisma.user.findUnique({
     where: { email: adminEmail },
   });
@@ -15,7 +21,7 @@ export async function main() {
       body: {
         name: 'Admin', // required
         email: adminEmail, // required
-        password: '1234', // required
+        password: adminPassword, // required
         role: Role.ADMIN,
       },
     });

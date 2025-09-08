@@ -1,5 +1,5 @@
 import { SignUpForm } from '@/app/(auth)/sign-up/_components/sign-up-form';
-import { Role } from '@/generated/prisma';
+import { Role } from '@/app/(dashboard)/_types/nav';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
