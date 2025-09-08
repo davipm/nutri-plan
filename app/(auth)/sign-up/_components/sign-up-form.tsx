@@ -8,6 +8,7 @@ import {
 } from '@/app/(auth)/sign-up/_types/sign-up-schema';
 import { ControlledInput } from '@/components/controlled-input';
 import { Button } from '@/components/ui/button';
+import { routes } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2Icon } from 'lucide-react';
 import Link from 'next/link';
@@ -58,13 +59,13 @@ export function SignUpForm() {
           />
         </div>
 
-        <Button className="w-full" disabled={isPending}>
-          {isPending ? <Loader2Icon className="animate-spin" /> : 'Sign up'}
+        <Button type="submit" className="w-full" disabled={isPending} aria-busy={isPending}>
+          {isPending ? <Loader2Icon className="animate-spin" aria-hidden="true" /> : 'Sign up'}
         </Button>
 
         <div className="text-center text-sm">
           Already have an account?
-          <Link href="/sign-in" className="text-primary ml-1 font-medium hover:underline">
+          <Link href={routes.signIn} className="text-primary ml-1 font-medium hover:underline">
             Sign in
           </Link>
         </div>
