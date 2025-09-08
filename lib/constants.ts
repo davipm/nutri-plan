@@ -1,5 +1,6 @@
 import { Role } from '@/app/(dashboard)/_types/nav';
 import type { RouteGroupType } from '@/app/(dashboard)/_types/nav';
+import { routes } from '@/lib/utils';
 import { Apple, Boxes, Ruler, Utensils } from 'lucide-react';
 
 export const patterns = {
@@ -36,19 +37,19 @@ export const ROUTE_GROUPS = [
     allowedRoles: [Role.ADMIN],
     items: [
       {
-        href: '/admin/foods-management/foods',
+        href: routes.admin.foods,
         label: 'Foods',
         value: 'foods',
         icon: Apple,
       },
       {
-        href: '/admin/foods-management/categories',
+        href: routes.admin.category,
         label: 'Categories',
         value: 'categories',
         icon: Boxes,
       },
       {
-        href: '/admin/foods-management/serving-units',
+        href: routes.admin.servingUnits,
         label: 'Serving Units',
         value: 'serving-units',
         icon: Ruler,
@@ -60,7 +61,7 @@ export const ROUTE_GROUPS = [
     allowedRoles: [Role.ADMIN, Role.CLIENT, Role.USER], // Admin can also access if needed
     items: [
       {
-        href: '/client',
+        href: routes.client,
         label: 'Meals',
         value: 'meals',
         icon: Utensils,

@@ -8,17 +8,14 @@ import { Trash2 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-export const MealFoodItem = ({
-  index,
-  onRemove,
-  foodsData,
-  foodOptions,
-}: {
+type Props = {
   index: number;
   onRemove: () => void;
   foodsData: PaginateResult<FoodWithServingUnits> | undefined;
   foodOptions: { label: string; value: number }[];
-}) => {
+};
+
+export const MealFoodItem = ({ index, onRemove, foodsData, foodOptions }: Props) => {
   const { control } = useFormContext<MealSchema>();
 
   const selectedFoodId = useWatch({

@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { routes } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -13,7 +14,7 @@ export default function Home() {
           </p>
 
           <div className="mt-2">
-            <Link href="/sign-in">
+            <Link href={routes.signIn}>
               <Button
                 size="lg"
                 className="bg-primary px-8 py-6 text-lg font-medium hover:cursor-pointer"

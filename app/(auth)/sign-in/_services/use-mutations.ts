@@ -2,6 +2,7 @@ import { signIn, signOut } from '@/app/(auth)/sign-in/_services/mutations';
 import { SignInSchema } from '@/app/(auth)/sign-in/_types/sign-in-schema';
 import { Role } from '@/app/(dashboard)/_types/nav';
 import { useSession } from '@/lib/auth-client';
+import { routes } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -19,7 +20,7 @@ export const useSignIn = () => {
     },
     onSuccess: ({ user }) => {
       toast.success(`Logged as ${user.name}`);
-      router.push(session?.user?.role === Role.ADMIN ? '/admin/foods-management/foods' : '/client');
+      router.push(session?.user?.role === Role.ADMIN ? routes.admin.foods : routes.client);
     },
   });
 };
@@ -36,7 +37,7 @@ export const useSignOut = () => {
   return useMutation({
     mutationFn: signOut,
     onSuccess: () => {
-      router.push('/sign-in');
+      router.push(routes.signIn);
     },
   });
 };

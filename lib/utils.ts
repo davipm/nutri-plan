@@ -36,3 +36,15 @@ export const toNumberSafe = (value: unknown): number => {
   const parsedValue = Number(value);
   return isNaN(parsedValue) ? 0 : parsedValue;
 };
+
+export const routes = {
+  home: '/',
+  signIn: '/sign-in',
+  signUp: '/sign-up',
+  client: '/client',
+  admin: {
+    category: '/admin/foods-management/categories',
+    foods: '/admin/foods-management/foods',
+    servingUnits: '/admin/foods-management/serving-units',
+  },
+};
