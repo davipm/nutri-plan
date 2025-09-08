@@ -24,7 +24,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     () =>
       ROUTE_GROUPS.find((group) => group.group === 'Foods Management')
         ?.items.map((item) => ({
-          value: item.value || item.href,
+          value: item.value,
           label: item.label,
           href: item.href,
           icon: item.icon,

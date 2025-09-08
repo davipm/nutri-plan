@@ -1,27 +1,32 @@
-import { PrismaClient, Role } from "@/generated/prisma";
-import * as bcrypt from "bcryptjs";
+import { Role } from '@/app/(dashboard)/_types/nav';
+import { PrismaClient } from '@/generated/prisma';
+import { auth } from '@/lib/auth';
 
 const prisma = new PrismaClient();
 
 export async function main() {
-  const adminEmail = "super@admin.com";
+  const adminEmail = process.env.ADMIN_EMAIL || 'super@admin.com';
+  const adminPassword = process.env.ADMIN_PASWORD;
+
+  if (!adminEmail || !adminPassword) {
+    throw new Error('ADMIN_PASSWORD env var is required for seeding');
+  }
+
   const existingAdmin = await prisma.user.findUnique({
     where: { email: adminEmail },
   });
 
   if (!existingAdmin) {
-    const hashedPassword = await bcrypt.hash("1234", 10);
-
-    const admin = await prisma.user.create({
-      data: {
-        name: "Super Admin",
-        email: adminEmail,
-        password: hashedPassword,
+    const admin = await auth.api.createUser({
+      body: {
+        name: 'Admin', // required
+        email: adminEmail, // required
+        password: adminPassword, // required
         role: Role.ADMIN,
       },
     });
 
-    console.log(`Created admin user: ${admin.name} ${admin.email}`);
+    console.log(`Created admin user: ${admin.user.name} ${admin.user.email}`);
   } else {
     console.log(`Admin user already exists: ${existingAdmin.email}`);
   }

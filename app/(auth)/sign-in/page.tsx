@@ -1,6 +1,7 @@
 import { SignInForm } from '@/app/(auth)/sign-in/_components/sign-in-form';
 import { Role } from '@/app/(dashboard)/_types/nav';
 import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 /**
@@ -10,7 +11,9 @@ import { redirect } from 'next/navigation';
  * Otherwise, it renders a sign-in form.
  */
 export default async function Page() {
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   if (session?.user?.role === Role.ADMIN) {
     redirect('/admin/foods-management/foods');

@@ -1,9 +1,8 @@
 'use server';
 
 import { SignUpSchema, signUpSchema } from '@/app/(auth)/sign-up/_types/sign-up-schema';
+import { auth } from '@/lib/auth';
 import { executeAction } from '@/lib/execute-action';
-import prisma from '@/lib/prisma';
-import { hashPassword } from '@/lib/utils';
 
 /**
  * Handles user sign-up functionality by validating input data, hashing the user's password,
@@ -16,15 +15,10 @@ import { hashPassword } from '@/lib/utils';
 export const signUp = async (data: SignUpSchema) => {
   return executeAction({
     actionFn: async () => {
-      const validateData = signUpSchema.parse(data);
-      const hashedPassword = await hashPassword(validateData.password);
+      const { email, name, password } = signUpSchema.parse(data);
 
-      return prisma.user.create({
-        data: {
-          name: validateData.name,
-          email: validateData.email,
-          password: hashedPassword,
-        },
+      await auth.api.signUpEmail({
+        body: { email, name, password },
       });
     },
   });

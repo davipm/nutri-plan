@@ -15,16 +15,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
+import { useSession } from '@/lib/auth-client';
 import { ROUTE_GROUPS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import * as Collapsible from '@radix-ui/react-collapsible';
 import { ChevronLeft, LogOut, Menu } from 'lucide-react';
-import { Session } from 'next-auth';
 import { ReactNode, useMemo, useState } from 'react';
 
 type Props = {
   children: ReactNode;
-  session: Session;
 };
 
 /**
@@ -35,13 +34,14 @@ type Props = {
  *
  * @param props The properties passed to the component.
  * @param props.children The content to be displayed within the main layout area.
- * @param  props.session The session object containing the user's authentication and role information.
  * @returns The rendered dashboard layout component.
  */
-export function DashboardLayout({ children, session }: Props) {
+export function DashboardLayout({ children }: Props) {
   const [open, setOpen] = useState(false);
   const { mutate: signOutMutation } = useSignOut();
-  const userRole = session.user?.role === Role.ADMIN ? Role.ADMIN : Role.USER;
+  const { data: session } = useSession();
+
+  const userRole = session?.user?.role === Role.ADMIN ? Role.ADMIN : Role.USER;
 
   const filteredRouterGroup = useMemo(() => {
     return ROUTE_GROUPS.filter((group) => group.allowedRoles.includes(userRole as Role.ADMIN));

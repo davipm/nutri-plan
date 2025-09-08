@@ -26,7 +26,11 @@ export function SignInForm() {
   });
 
   const onSubmit: SubmitHandler<SignInSchema> = (data: SignInSchema) => {
-    signInMutation(data);
+    signInMutation(data, {
+      onError: () => {
+        form.reset(signInDefaultValues);
+      },
+    });
   };
 
   return (

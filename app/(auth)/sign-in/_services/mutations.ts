@@ -1,8 +1,9 @@
 'use server';
 
 import { SignInSchema, signInSchema } from '@/app/(auth)/sign-in/_types/sign-in-schema';
-import { signOut as authSignOut, signIn as nextAuthSignIn } from '@/lib/auth';
+import { auth } from '@/lib/auth';
 import { executeAction } from '@/lib/execute-action';
+import { headers } from 'next/headers';
 
 /**
  * An asynchronous function that handles the sign-in process for a user.
@@ -14,10 +15,12 @@ import { executeAction } from '@/lib/execute-action';
  * To ensure execution safety, the function is wrapped inside an `executeAction` function.
  */
 export const signIn = async (data: SignInSchema) => {
-  await executeAction({
-    actionFn: async () => {
-      const validateData = signInSchema.parse(data);
-      await nextAuthSignIn('credentials', validateData);
+  return executeAction({
+    actionFn: () => {
+      const { email, password } = signInSchema.parse(data);
+      return auth.api.signInEmail({
+        body: { email, password },
+      });
     },
   });
 };
@@ -31,7 +34,10 @@ export const signIn = async (data: SignInSchema) => {
  * @returns A promise that resolves when the sign-out process is complete.
  */
 export const signOut = async () => {
-  return await executeAction({
-    actionFn: authSignOut,
+  return executeAction({
+    actionFn: async () =>
+      await auth.api.signOut({
+        headers: await headers(),
+      }),
   });
 };

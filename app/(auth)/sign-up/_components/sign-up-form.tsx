@@ -8,6 +8,7 @@ import {
 } from '@/app/(auth)/sign-up/_types/sign-up-schema';
 import { ControlledInput } from '@/components/controlled-input';
 import { Button } from '@/components/ui/button';
+import { routes } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2Icon } from 'lucide-react';
 import Link from 'next/link';
@@ -21,7 +22,7 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
  * and performs the sign-up operation when the form is submitted.
  */
 export function SignUpForm() {
-  const signUpMutation = useSignUp();
+  const { mutate: signUpMutation, isPending } = useSignUp();
 
   const form = useForm<SignUpSchema>({
     defaultValues: signUpDefaultValues,
@@ -29,7 +30,11 @@ export function SignUpForm() {
   });
 
   const onSubmit: SubmitHandler<SignUpSchema> = (data) => {
-    signUpMutation.mutate(data);
+    signUpMutation(data, {
+      onError: () => {
+        form.reset(signUpDefaultValues);
+      },
+    });
   };
 
   return (
@@ -54,13 +59,13 @@ export function SignUpForm() {
           />
         </div>
 
-        <Button className="w-full" disabled={signUpMutation.isPending}>
-          {signUpMutation.isPending ? <Loader2Icon className="animate-spin" /> : 'Sign up'}
+        <Button type="submit" className="w-full" disabled={isPending} aria-busy={isPending}>
+          {isPending ? <Loader2Icon className="animate-spin" aria-hidden="true" /> : 'Sign up'}
         </Button>
 
         <div className="text-center text-sm">
           Already have an account?
-          <Link href="/sign-in" className="text-primary ml-1 font-medium hover:underline">
+          <Link href={routes.signIn} className="text-primary ml-1 font-medium hover:underline">
             Sign in
           </Link>
         </div>
