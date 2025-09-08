@@ -19,7 +19,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
 
   if (!session) redirect('/sign-in');
 
-  if (session.user?.role === Role.USER) redirect('/client');
+  if (session.user?.role !== Role.ADMIN) redirect('/client');
 
   return <div className="mx-auto max-w-7xl p-6">{children}</div>;
 }

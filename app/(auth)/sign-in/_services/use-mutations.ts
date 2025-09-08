@@ -1,20 +1,25 @@
 import { signIn, signOut } from '@/app/(auth)/sign-in/_services/mutations';
 import { SignInSchema } from '@/app/(auth)/sign-in/_types/sign-in-schema';
+import { Role } from '@/app/(dashboard)/_types/nav';
+import { useSession } from '@/lib/auth-client';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 /**
  * A custom hook that encapsulates the sign-in functionality using a mutation.
  */
 export const useSignIn = () => {
   const router = useRouter();
+  const { data: session } = useSession();
 
   return useMutation({
-    mutationFn: async (data: SignInSchema) => {
-      await signIn(data);
+    mutationFn: (data: SignInSchema) => {
+      return signIn(data);
     },
-    onSuccess: () => {
-      router.push('/client');
+    onSuccess: ({ user }) => {
+      toast.success(`Logged as ${user.name}`);
+      router.push(session?.user?.role === Role.ADMIN ? '/admin/foods-management/foods' : '/client');
     },
   });
 };

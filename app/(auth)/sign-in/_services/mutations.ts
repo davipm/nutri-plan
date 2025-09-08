@@ -16,9 +16,9 @@ import { headers } from 'next/headers';
  */
 export const signIn = async (data: SignInSchema) => {
   return executeAction({
-    actionFn: async () => {
+    actionFn: () => {
       const { email, password } = signInSchema.parse(data);
-      await auth.api.signInEmail({
+      return auth.api.signInEmail({
         body: { email, password },
       });
     },

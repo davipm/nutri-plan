@@ -21,7 +21,7 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
  * and performs the sign-up operation when the form is submitted.
  */
 export function SignUpForm() {
-  const signUpMutation = useSignUp();
+  const { mutate: signUpMutation, isPending } = useSignUp();
 
   const form = useForm<SignUpSchema>({
     defaultValues: signUpDefaultValues,
@@ -29,7 +29,11 @@ export function SignUpForm() {
   });
 
   const onSubmit: SubmitHandler<SignUpSchema> = (data) => {
-    signUpMutation.mutate(data);
+    signUpMutation(data, {
+      onError: () => {
+        form.reset(signUpDefaultValues);
+      },
+    });
   };
 
   return (
@@ -54,8 +58,8 @@ export function SignUpForm() {
           />
         </div>
 
-        <Button className="w-full" disabled={signUpMutation.isPending}>
-          {signUpMutation.isPending ? <Loader2Icon className="animate-spin" /> : 'Sign up'}
+        <Button className="w-full" disabled={isPending}>
+          {isPending ? <Loader2Icon className="animate-spin" /> : 'Sign up'}
         </Button>
 
         <div className="text-center text-sm">

@@ -20,7 +20,7 @@ export const useSignUp = () => {
       await signUp(data);
     },
     onSuccess: () => {
-      toast.success('Signed up successfully.');
+      toast.success('User Created Successfully');
       router.replace('/sign-in');
     },
     onError: (error) => {
